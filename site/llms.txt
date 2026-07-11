@@ -1,0 +1,23 @@
+# Ouroboros
+
+> Ouroboros is the specification-first Agent OS for replayable, observable, policy-bound AI coding workflows.
+
+## Canonical resources
+
+- Website: https://ouroboros.page/
+- Core repository and documentation: https://github.com/Q00/ouroboros
+- Getting started: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
+- Runtime guides: https://github.com/Q00/ouroboros/tree/main/docs/runtime-guides
+- PyPI: https://pypi.org/project/ouroboros-ai/
+- Ourocode shell: https://github.com/Ouro-labs/ourocode
+- Plugin ecosystem: https://github.com/Ouro-labs/ouroboros-plugins
+
+## Core loop
+
+Interview -> Seed -> Execute -> Evaluate -> Wonder -> Reflect -> next Seed
+
+Ouroboros exposes assumptions before implementation, crystallizes intent into a Seed, executes through a replayable contract, evaluates outcomes, and feeds evidence into the next generation.
+
+## Boundary
+
+Ouroboros is an open-source developer tool. It is not affiliated with any cryptocurrency, memecoin, trading project, or similarly named token.
