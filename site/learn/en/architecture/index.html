@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://ouroboros.page/learn/en/architecture/">
 <link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/architecture/">
 <link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/architecture/">
-<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="stylesheet" href="../../learn.css?v=3">
 <link rel="icon" href="../../../assets/logo-snake.png">
 </head>
 <body>
@@ -20,8 +20,8 @@
 <a href="../../en/">Guide</a>
 <a href="../../en/install/">Install</a>
 <a href="../../en/glossary/">Glossary</a>
-<a class="lang" href="/learn/architecture/">한국어</a>
 <a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="Language"><a href="/learn/architecture/" hreflang="ko">KO</a><a aria-current="true" href="/learn/en/architecture/" hreflang="en">EN</a></div>
 <button class="theme" data-theme-toggle type="button">Theme</button>
 </nav>
 </div>
@@ -40,7 +40,7 @@
 <tbody>
 <tr><td>You</td><td>Provide the idea, answer questions, approve the Seed and the result.</td></tr>
 <tr><td><code>ooo</code> command</td><td>The entry point for Ouroboros features inside a Claude Code session, e.g. <code>ooo interview</code>, <code>ooo run</code>.</td></tr>
-<tr><td>Core</td><td>The engine that runs the Interview, generates Seeds, manages execution order, and calls evaluation. Talks to the runtime over MCP.</td></tr>
+<tr><td>Core</td><td>The engine that runs the Interview, generates Seeds, manages execution order, and calls evaluation. Talks to the runtime over MCP (Model Context Protocol).</td></tr>
 <tr><td>Seed</td><td>A YAML work spec holding goal, constraints, completion criteria, and data structure. It does not change during a run.</td></tr>
 <tr><td>Runtime</td><td>The AI coding tool that actually touches files and code. Claude Code is the default; Codex CLI, OpenCode, and others are supported.</td></tr>
 <tr><td>EventStore</td><td>A local SQLite database storing every execution event. Used to recover interrupted sessions.</td></tr>
@@ -76,6 +76,6 @@
 <footer class="footer">
 <div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
 </footer>
-<script src="../../learn.js?v=2"></script>
+<script src="../../learn.js?v=3"></script>
 </body>
 </html>

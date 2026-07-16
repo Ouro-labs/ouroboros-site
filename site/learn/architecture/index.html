@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://ouroboros.page/learn/architecture/">
 <link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/architecture/">
 <link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/architecture/">
-<link rel="stylesheet" href="../learn.css?v=2">
+<link rel="stylesheet" href="../learn.css?v=3">
 <link rel="icon" href="../../assets/logo-snake.png">
 </head>
 <body>
@@ -20,8 +20,8 @@
 <a href="../">가이드</a>
 <a href="../install/">설치</a>
 <a href="../glossary/">용어사전</a>
-<a class="lang" href="/learn/en/architecture/">English</a>
 <a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="Language"><a aria-current="true" href="/learn/architecture/" hreflang="ko">KO</a><a href="/learn/en/architecture/" hreflang="en">EN</a></div>
 <button class="theme" data-theme-toggle type="button">테마</button>
 </nav>
 </div>
@@ -40,7 +40,7 @@
 <tbody>
 <tr><td>사용자</td><td>아이디어를 입력하고, 질문에 답하고, Seed와 결과를 승인합니다.</td></tr>
 <tr><td><code>ooo</code> 명령</td><td>Claude Code 세션 안에서 Ouroboros 기능을 부르는 입구입니다. <code>ooo interview</code>, <code>ooo run</code>처럼 사용합니다.</td></tr>
-<tr><td>Core</td><td>Interview 진행, Seed 생성, 실행 순서 관리, 평가 호출을 담당하는 엔진입니다. MCP 서버로 runtime과 통신합니다.</td></tr>
+<tr><td>Core</td><td>Interview 진행, Seed 생성, 실행 순서 관리, 평가 호출을 담당하는 엔진입니다. MCP(runtime과 도구를 잇는 통신 규약) 서버로 runtime과 통신합니다.</td></tr>
 <tr><td>Seed</td><td>목표, 제약, 완료 기준, 데이터 구조를 담은 YAML 작업 기준입니다. 실행 중에는 바뀌지 않습니다.</td></tr>
 <tr><td>runtime</td><td>실제 파일과 코드를 다루는 AI 코딩 도구입니다. Claude Code가 기본이고 Codex CLI, OpenCode 등도 지원합니다.</td></tr>
 <tr><td>EventStore</td><td>모든 실행 이벤트를 저장하는 로컬 SQLite 데이터베이스입니다. 중단된 세션 복구에 사용합니다.</td></tr>
@@ -76,6 +76,6 @@
 <footer class="footer">
 <div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
 </footer>
-<script src="../learn.js?v=2"></script>
+<script src="../learn.js?v=3"></script>
 </body>
 </html>

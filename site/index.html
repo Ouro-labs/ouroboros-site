@@ -1,21 +1,63 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="0; url=/learn/">
-<title>Ouroboros 한국어 가이드</title>
-<meta name="description" content="Ouroboros의 설치와 사용 절차를 장별로 설명하는 한국어 가이드">
-<link rel="canonical" href="https://ouroboros.page/learn/">
+<title>Ouroboros — spec, run, verify AI coding work</title>
+<meta name="description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<link rel="canonical" href="https://ouroboros.page/">
+<link rel="stylesheet" href="/learn/learn.css?v=3">
 <link rel="icon" href="/assets/logo-snake.png">
-<link rel="stylesheet" href="/learn/learn.css?v=2">
+<style>
+.home{max-width:760px;margin:auto;padding:64px 24px 96px}
+.home h1{font-size:clamp(30px,4.5vw,42px);line-height:1.25;letter-spacing:-.02em;margin:18px 0 14px}
+.home .sub{font-size:18px;color:var(--muted);max-width:640px}
+.home h2{font-size:15px;font-weight:600;letter-spacing:.08em;color:var(--accent);margin:56px 0 14px;text-transform:uppercase}
+.home .foot-note{font-size:14px;color:var(--muted);margin-top:-10px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cards a{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--paper)}
+.cards a strong{display:block;margin-bottom:6px}
+.cards a span{font-size:14px;color:var(--muted)}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<main class="layout layout-single" style="padding-top:96px">
-<article>
-<h1>Ouroboros 한국어 가이드</h1>
-<p>잠시 후 <a href="/learn/">가이드</a>로 이동합니다. 제품 소개는 <a href="https://ouroboros.is">ouroboros.is</a>에 있습니다.</p>
-</article>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="/"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="/learn/en/">Guide</a>
+<a href="/learn/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="home">
+<div class="eyebrow">OPEN SOURCE</div>
+<h1>Ouroboros manages the requirements, execution, evaluation, and records of AI coding work.</h1>
+<p class="sub">Your coding agent (Claude Code, Codex) writes the code. Ouroboros pins the spec before the run and verifies the result after it.</p>
+
+<h2 id="install">Install</h2>
+<p>Run in your terminal:</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros</code></pre>
+<p class="foot-note">Requires Claude Code. No Python needed. Prefer a standalone CLI? <code>pip install ouroboros-ai</code> — see the <a href="/learn/en/install/">install guide</a>.</p>
+
+<h2 id="how">How it works</h2>
+<figure class="diagram"><img src="/assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
+
+<h2 id="docs">Documentation</h2>
+<div class="cards">
+<a href="/learn/en/"><strong>Guide (English)</strong><span>What it is, install, and every step from Interview to Ralph.</span></a>
+<a href="/learn/"><strong>한국어 가이드</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
+<a href="https://github.com/Q00/ouroboros"><strong>GitHub</strong><span>Source, official docs, CLI Reference, issues.</span></a>
+</div>
 </main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs · MIT License</span><a href="https://github.com/Q00/ouroboros/blob/main/LICENSE">License</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="/learn/learn.js?v=3"></script>
 </body>
 </html>
