@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4. Install · Ouroboros Guide</title>
+<meta name="description" content="Claude Code login, installing the Ouroboros plugin, ooo setup, MCP connection, verification, and updates">
+<link rel="canonical" href="https://ouroboros.page/learn/en/install/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/install/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/install/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a aria-current="page" href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/install/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li><a href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a></li><li><a href="../why-ouroboros/"><b>02</b>Why use it</a></li><li><a href="../architecture/"><b>03</b>Components</a></li><li class="cur"><a aria-current="page" href="../install/"><b>04</b>Install</a><ol class="sec"><li><a href="#prereq">4.1 Prerequisites</a></li><li><a href="#login">4.2 Claude Code login</a></li><li><a href="#plugin">4.3 Install the plugin</a></li><li><a href="#setup">4.4 ooo setup</a></li><li><a href="#verify">4.5 Verify</a></li><li><a href="#update">4.6 Update</a></li><li><a href="#done">4.7 Definition of done</a></li></ol></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li><a href="../execute/"><b>07</b>Execute</a></li><li><a href="../evaluate/"><b>08</b>Evaluate</a></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">04</div>
+<h1>4. Install</h1>
+<p class="lead">This guide uses the Claude Code plugin as the default path. The order is login, plugin install, <code>ooo setup</code>, then verification.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/install-steps.png" alt="Diagram of the four install steps: login, plugin, setup, verify" width="1536" height="1024" loading="lazy"><figcaption>Installation is four steps: login, plugin, setup, verify.</figcaption></figure>
+<h2 id="prereq">4.1 Prerequisites</h2>
+<ul>
+<li>Claude Code with plugin support must be installed.</li>
+<li>Python is not required. The Claude Code plugin path works without a Python install.</li>
+<li>On Windows, follow the Linux steps inside WSL 2.</li>
+</ul>
+<h2 id="login">4.2 Claude Code login</h2>
+<p>Open a Claude Code session in your terminal.</p>
+<pre><code>claude</code></pre>
+<p>Log in inside the Claude Code session.</p>
+<pre><code>/login</code></pre>
+<p class="result-note">Expected result: after browser authentication, the session shows you are logged in. Without login, later <code>ooo</code> commands will not work.</p>
+<h2 id="plugin">4.3 Install the plugin</h2>
+<p>Run the next two commands in a normal terminal, outside Claude Code.</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros</code></pre>
+<figure class="diagram"><img src="../../../assets/learn/ch02-plugin-install-original.png" alt="Terminal output showing the Ouroboros 0.50.4 plugin installed in Claude Code" loading="lazy"><figcaption>Install output captured on 2026-07-16 on Ubuntu 24.04 with Claude Code 2.1.210.</figcaption></figure>
+<p class="result-note">Expected result: <code>claude plugin list</code> shows <code>ouroboros@ouroboros</code> as enabled.</p>
+<h2 id="setup">4.4 ooo setup — connect Core over MCP</h2>
+<p>Open a Claude Code session in the project folder you will work in, and type:</p>
+<pre><code>ooo setup</code></pre>
+<p><code>ooo setup</code> registers the Ouroboros Core MCP server globally. Registration is needed only once. Optionally it adds a command summary to the project's <code>CLAUDE.md</code>.</p>
+<p class="result-note">Expected result: a message confirms the MCP server registration. Per the official docs, the registration is written to <code>~/.claude/mcp.json</code>. Close Claude Code completely and reopen it after registering.</p>
+<h2 id="verify">4.5 Verify</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo help</code></pre>
+<p class="result-note">Expected result: a command list including interview, seed, run, and evaluate. If it does not appear, see <a href="../troubleshooting/">chapter 11</a>.</p>
+<h2 id="update">4.6 Update</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo update</code></pre>
+<p class="result-note">Expected result: the current and latest versions are compared and updated to match your install method. Reopen the Claude Code session afterwards.</p>
+<h2 id="done">4.7 Definition of done</h2>
+<ul>
+<li><code>claude plugin list</code> shows <code>ouroboros@ouroboros</code> as enabled.</li>
+<li><code>ooo help</code> prints the command list.</li>
+<li>Claude Code's <code>/mcp</code> shows the ouroboros server as connected.</li>
+</ul>
+<details><summary>Installing from the terminal without Claude Code</summary>
+<p>The standalone CLI requires Python 3.12 or later and installs from a normal terminal.</p>
+<pre><code>pip install ouroboros-ai
+ouroboros setup</code></pre>
+<p>Other runtimes such as Codex CLI are selected with <code>ouroboros setup --runtime codex</code>. The main text of this guide uses Claude Code's <code>ooo</code> commands.</p>
+</details>
+<nav class="pager" aria-label="Chapters"><a href="../architecture/">← Previous<br><strong>03 Components</strong></a><a href="../interview/">Next →<br><strong>05 Interview</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>

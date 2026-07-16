@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2. Why use it · Ouroboros Guide</title>
+<meta name="description" content="Problems that appear when using an AI coding tool alone, what changes with Ouroboros, and which tasks fit">
+<link rel="canonical" href="https://ouroboros.page/learn/en/why-ouroboros/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/why-ouroboros/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/why-ouroboros/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/why-ouroboros/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li><a href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a></li><li class="cur"><a aria-current="page" href="../why-ouroboros/"><b>02</b>Why use it</a><ol class="sec"><li><a href="#problem">2.1 Problems with tools alone</a></li><li><a href="#change">2.2 What changes</a></li><li><a href="#fit">2.3 Good fit</a></li><li><a href="#unfit">2.4 Not needed</a></li></ol></li><li><a href="../architecture/"><b>03</b>Components</a></li><li><a href="../install/"><b>04</b>Install</a></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li><a href="../execute/"><b>07</b>Execute</a></li><li><a href="../evaluate/"><b>08</b>Evaluate</a></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">02</div>
+<h1>2. Why use it</h1>
+<p class="lead">AI coding tools are fast, but pinning down requirements and verifying completion are left to you. Ouroboros turns those two jobs into a procedure.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div>
+<h2 id="problem">2.1 Problems when using an AI coding tool alone</h2>
+<p>A request like "build a to-do app" says nothing about storage, number of users, or how completion is handled. When the AI picks those values on its own, you fix the code after it is written.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Problem</th><th>Consequence</th></tr></thead>
+<tbody>
+<tr><td>The AI fills in missing decisions by itself</td><td>Rework after the code is done</td></tr>
+<tr><td>Only a "done" message remains</td><td>No way to check whether it is actually done</td></tr>
+<tr><td>Long chats blur the original requirements</td><td>A result different from what was agreed</td></tr>
+<tr><td>A dropped session loses its context</td><td>You cannot find where it stopped and explain everything again</td></tr>
+<tr><td>Repeated failures leave no record</td><td>Fixes do not accumulate</td></tr>
+</tbody>
+</table></div>
+<h2 id="change">2.2 What changes with Ouroboros</h2>
+<figure class="diagram"><img src="../../../assets/learn/diagrams/why-before-after.png" alt="Diagram comparing the guess-code-rework loop of a tool used alone against the ask-Seed-code-verify line with Ouroboros" width="1536" height="1024" loading="lazy"><figcaption>Left: an AI tool used alone. Right: the same work with Ouroboros.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Change</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>Decisions are fixed before coding</td><td>The Interview asks about missing decisions (<a href="../interview/">ch. 5</a>)</td></tr>
+<tr><td>Completion criteria are written down</td><td>Acceptance Criteria are saved in the Seed (<a href="../seed/">ch. 6</a>)</td></tr>
+<tr><td>Completion is verified</td><td>A 3-stage evaluation checks tests and criteria (<a href="../evaluate/">ch. 8</a>)</td></tr>
+<tr><td>Interrupted work can resume</td><td>Execution events are stored in a local database (<a href="../troubleshooting/">ch. 11</a>)</td></tr>
+<tr><td>Failures feed the next run</td><td>Evaluation results update the Seed for re-execution (<a href="../evolve/">ch. 9</a>)</td></tr>
+</tbody>
+</table></div>
+<h2 id="fit">2.3 Tasks that fit</h2>
+<ul>
+<li>Feature work with several requirements that need sorting out</li>
+<li>Work whose completion must be proven by tests</li>
+<li>Work that will clearly go through several revisions</li>
+<li>Long work that must survive interruptions</li>
+</ul>
+<h2 id="unfit">2.4 Tasks that do not need it</h2>
+<p>For a typo fix or a one-line change that needs no explanation, an AI coding tool alone is faster. The question-and-evaluation procedure would be bigger than the work itself.</p>
+<nav class="pager" aria-label="Chapters"><a href="../what-is-ouroboros/">← Previous<br><strong>01 What is Ouroboros</strong></a><a href="../architecture/">Next →<br><strong>03 Components</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>

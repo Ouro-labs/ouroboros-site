@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1. What is Ouroboros · Ouroboros Guide</title>
+<meta name="description" content="What Ouroboros is, what you put in, what Ouroboros and the runtime each do, and what remains after a run">
+<link rel="canonical" href="https://ouroboros.page/learn/en/what-is-ouroboros/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/what-is-ouroboros/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/what-is-ouroboros/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/what-is-ouroboros/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li class="cur"><a aria-current="page" href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a><ol class="sec"><li><a href="#define">1.1 Definition</a></li><li><a href="#input">1.2 Inputs</a></li><li><a href="#role">1.3 Division of roles</a></li><li><a href="#output">1.4 What remains</a></li><li><a href="#diff">1.5 Before and after</a></li></ol></li><li><a href="../why-ouroboros/"><b>02</b>Why use it</a></li><li><a href="../architecture/"><b>03</b>Components</a></li><li><a href="../install/"><b>04</b>Install</a></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li><a href="../execute/"><b>07</b>Execute</a></li><li><a href="../evaluate/"><b>08</b>Evaluate</a></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">01</div>
+<h1>1. What is Ouroboros</h1>
+<p class="lead">Ouroboros is an open-source tool that manages the requirements, execution, evaluation, and records of AI coding work.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div>
+<h2 id="define">1.1 Definition</h2>
+<p>Ouroboros does not write code itself. Code is written by an AI coding tool such as Claude Code or Codex. Ouroboros works before and after that tool: it pins down requirements, hands off execution, verifies results, and records the process.</p>
+<figure class="diagram"><img src="../../../assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024" loading="lazy"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
+<h2 id="input">1.2 What you put in</h2>
+<p>You describe the feature you want or the problem you want fixed, in plain sentences. You do not need a polished specification. Missing decisions are collected by Ouroboros through questions.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Input</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>A one-line idea</td><td>"A web app that adds to-dos and marks them done"</td></tr>
+<tr><td>Answers to questions</td><td>"The list should survive a page refresh"</td></tr>
+<tr><td>An existing repository (optional)</td><td>A project folder you already have</td></tr>
+</tbody>
+</table></div>
+<h2 id="role">1.3 Division of roles</h2>
+<p>Ouroboros and the AI coding tool do different jobs. Ouroboros is the management layer; the AI coding tool is the execution layer. Ouroboros calls the execution layer the runtime.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Actor</th><th>Responsibility</th></tr></thead>
+<tbody>
+<tr><td>You</td><td>Provide the idea, answer questions, approve the Seed, check the result</td></tr>
+<tr><td>Ouroboros</td><td>Ask questions (Interview), write the work spec (Seed), manage execution, evaluate, record</td></tr>
+<tr><td>Runtime (Claude Code, etc.)</td><td>Write files, edit code, run commands, run tests</td></tr>
+</tbody>
+</table></div>
+<p>The Seed is the work-spec document that connects the two layers. Goal, constraints, and completion criteria are saved as a YAML file, and the runtime works against that file. The Seed is covered in <a href="../seed/">chapter 6</a>.</p>
+<h2 id="output">1.4 What remains after a run</h2>
+<p>More than code remains. The following five things are kept.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Artifact</th><th>Content</th><th>Location</th></tr></thead>
+<tbody>
+<tr><td>Code</td><td>Files and tests written by the runtime</td><td>Your working folder</td></tr>
+<tr><td>Seed</td><td>The work spec used for this run</td><td><code>~/.ouroboros/seeds/</code></td></tr>
+<tr><td>Test results</td><td>Whether lint, build, and tests passed</td><td>Evaluation output</td></tr>
+<tr><td>Evaluation results</td><td>Verdict on the completion criteria</td><td>Evaluation output</td></tr>
+<tr><td>Execution records</td><td>Every execution event</td><td><code>~/.ouroboros/ouroboros.db</code></td></tr>
+</tbody>
+</table></div>
+<p>Because execution records persist, you can find interrupted work again and check later what was run and why.</p>
+<h2 id="diff">1.5 Before and after</h2>
+<p>With an AI coding tool alone, the request, the code, and the verification all flow by inside a chat. With Ouroboros, requirements live in a Seed file, the process lives in records, and completion lives in an evaluation verdict. Why this difference matters is explained in <a href="../why-ouroboros/">chapter 2</a>.</p>
+<nav class="pager" aria-label="Chapters"><a href="../">← Previous<br><strong>Contents</strong></a><a href="../why-ouroboros/">Next →<br><strong>02 Why use it</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>

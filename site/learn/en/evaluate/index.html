@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8. Evaluate · Ouroboros Guide</title>
+<meta name="description" content="The 3-stage evaluation of ooo evaluate (Mechanical, Semantic, Consensus), checking the result yourself, and how ooo qa differs">
+<link rel="canonical" href="https://ouroboros.page/learn/en/evaluate/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evaluate/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evaluate/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/evaluate/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li><a href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a></li><li><a href="../why-ouroboros/"><b>02</b>Why use it</a></li><li><a href="../architecture/"><b>03</b>Components</a></li><li><a href="../install/"><b>04</b>Install</a></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li><a href="../execute/"><b>07</b>Execute</a></li><li class="cur"><a aria-current="page" href="../evaluate/"><b>08</b>Evaluate</a><ol class="sec"><li><a href="#what">8.1 What it does</a></li><li><a href="#run">8.2 Run</a></li><li><a href="#stages">8.3 The 3 stages</a></li><li><a href="#check">8.4 Check it yourself</a></li><li><a href="#qa">8.5 Difference from ooo qa</a></li><li><a href="#done">8.6 Definition of done</a></li></ol></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">08</div>
+<h1>8. Evaluate</h1>
+<p class="lead">In chapter 7 the runtime built the to-do app. Evaluation verifies whether that result satisfies the Seed's completion criteria.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div>
+<h2 id="what">8.1 What it does</h2>
+<p><code>ooo evaluate</code> verifies the execution result in three stages. Use it when a run finishes, or when evaluation did not follow automatically. The input is the <code>session_id</code> printed by the run.</p>
+<h2 id="run">8.2 Run</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo evaluate &lt;session_id&gt;</code></pre>
+<p class="result-note">Expected result: per-stage pass results and a verdict on the completion criteria. Per the official docs, a finished run may still be in an unverified state before formal evaluation, so run this yourself if evaluation did not follow.</p>
+<h2 id="stages">8.3 The 3 stages</h2>
+<figure class="diagram"><img src="../../../assets/learn/diagrams/evaluate-gates.png" alt="Diagram of three gates passed in order: Mechanical, Semantic, Consensus" width="1536" height="1024" loading="lazy"><figcaption>Cheap checks run before expensive ones. Failing an earlier stage skips the later ones.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Stage</th><th>Content</th><th>Pass condition</th></tr></thead>
+<tbody>
+<tr><td>1. Mechanical</td><td>Auto-detects the project type and runs lint, build, test, static analysis, and coverage commands. No LLM involved.</td><td>All checks exit normally. Default coverage threshold 70%</td></tr>
+<tr><td>2. Semantic</td><td>An LLM compares the result against the Acceptance Criteria and scores it.</td><td>Criteria judged met, plus a score of 0.8 or higher</td></tr>
+<tr><td>3. Consensus</td><td>Multiple models vote independently on approval. Runs only under specific conditions.</td><td>At least a two-thirds majority approves</td></tr>
+</tbody>
+</table></div>
+<details><summary>The 6 conditions that trigger Consensus</summary>
+<p>After stage 2 passes, the conditions below are checked in priority order, and the first match triggers stage 3. If none match, the result is approved immediately.</p>
+<ol>
+<li>The Seed was modified</li>
+<li>The Ontology (data structure) changed</li>
+<li>The Goal was reinterpreted</li>
+<li>The Drift score exceeded 0.3</li>
+<li>Stage 2's uncertainty exceeded 0.3</li>
+<li>An alternative approach was adopted</li>
+</ol>
+<p>Separately, if you request Consensus directly, it runs with priority over the conditions above.</p>
+</details>
+<p>Drift is a 0-to-1 value showing how far the result moved from the original Seed's intent. Lower means the original direction was kept. Low drift does not mean the feature is correct, so read it together with the criteria verdict.</p>
+<h2 id="check">8.4 Check the result yourself</h2>
+<p>Do not stop at the pass message. For the to-do example, open the app in a browser and reproduce each Acceptance Criterion.</p>
+<ol>
+<li>Check that an empty title is not added.</li>
+<li>Add a to-do, refresh, and check it is still there.</li>
+<li>Check the done state shows immediately and is stored.</li>
+</ol>
+<h2 id="qa">8.5 Difference from ooo qa</h2>
+<p><code>ooo evaluate</code> is the formal procedure that verifies a whole execution session. <code>ooo qa</code> is a one-shot check comparing a single file or text against a quality bar.</p>
+<pre><code>ooo qa</code></pre>
+<p class="result-note">Expected result: one of pass, revise, or fail, with reasons. A score of 0.80 or higher is pass; below 0.40 is fail. Works without an execution session.</p>
+<h2 id="done">8.6 Definition of done</h2>
+<ul>
+<li>The 3-stage evaluation ended in a pass.</li>
+<li>You reproduced the Acceptance Criteria on the actual result.</li>
+<li>Remaining issues, if any, are noted. They become the input to <a href="../evolve/">chapter 9</a>.</li>
+</ul>
+<nav class="pager" aria-label="Chapters"><a href="../execute/">← Previous<br><strong>07 Execute</strong></a><a href="../evolve/">Next →<br><strong>09 Iterate</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>

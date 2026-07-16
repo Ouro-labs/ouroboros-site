@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3. Components · Ouroboros Guide</title>
+<meta name="description" content="The roles of the user, the ooo command, Core, Seed, runtime, EventStore and Ledger, and the Evaluator, plus the data flow">
+<link rel="canonical" href="https://ouroboros.page/learn/en/architecture/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/architecture/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/architecture/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/architecture/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li><a href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a></li><li><a href="../why-ouroboros/"><b>02</b>Why use it</a></li><li class="cur"><a aria-current="page" href="../architecture/"><b>03</b>Components</a><ol class="sec"><li><a href="#parts">3.1 Components</a></li><li><a href="#flow">3.2 Data flow</a></li><li><a href="#storage">3.3 Storage locations</a></li></ol></li><li><a href="../install/"><b>04</b>Install</a></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li><a href="../execute/"><b>07</b>Execute</a></li><li><a href="../evaluate/"><b>08</b>Evaluate</a></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">03</div>
+<h1>3. Components</h1>
+<p class="lead">Ouroboros splits into a command entry point, a management engine, a work spec, an execution layer, a record store, and an evaluator.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/architecture.png" alt="Diagram: the user reaches Core through the ooo command; Core produces a Seed and hands it to the runtime; records accumulate in EventStore and Ledger" width="1536" height="1024" loading="lazy"><figcaption>Work flows user → ooo command → Core → runtime. Records land in the EventStore and the Ledger.</figcaption></figure>
+<h2 id="parts">3.1 What each component does</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Component</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td>You</td><td>Provide the idea, answer questions, approve the Seed and the result.</td></tr>
+<tr><td><code>ooo</code> command</td><td>The entry point for Ouroboros features inside a Claude Code session, e.g. <code>ooo interview</code>, <code>ooo run</code>.</td></tr>
+<tr><td>Core</td><td>The engine that runs the Interview, generates Seeds, manages execution order, and calls evaluation. Talks to the runtime over MCP.</td></tr>
+<tr><td>Seed</td><td>A YAML work spec holding goal, constraints, completion criteria, and data structure. It does not change during a run.</td></tr>
+<tr><td>Runtime</td><td>The AI coding tool that actually touches files and code. Claude Code is the default; Codex CLI, OpenCode, and others are supported.</td></tr>
+<tr><td>EventStore</td><td>A local SQLite database storing every execution event. Used to recover interrupted sessions.</td></tr>
+<tr><td>Ledger</td><td>A record of the assumptions and exclusions confirmed while questioning and writing the Seed.</td></tr>
+<tr><td>Evaluator</td><td>Verifies results in three stages: run the tests, compare against the completion criteria, and cross-check with multiple models when needed.</td></tr>
+</tbody>
+</table></div>
+<h2 id="flow">3.2 Data flow</h2>
+<ol>
+<li>You enter an idea through the <code>ooo</code> command.</li>
+<li>Core asks about missing decisions in the Interview and turns the answers into a Seed.</li>
+<li>Core hands the Seed to the runtime, and the runtime writes the code.</li>
+<li>The Evaluator compares the result against the Seed's completion criteria.</li>
+<li>Every step's events go to the EventStore; decision grounds go to the Ledger.</li>
+</ol>
+<p>Because Core and the runtime are separate, the same Seed can be used with a different runtime.</p>
+<h2 id="storage">3.3 Storage locations</h2>
+<p>Ouroboros stores its data under <code>~/.ouroboros/</code> in your home folder.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>File / folder</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td><code>config.yaml</code></td><td>Main configuration, including the runtime choice</td></tr>
+<tr><td><code>seeds/</code></td><td>Generated Seed YAML files</td></tr>
+<tr><td><code>ouroboros.db</code></td><td>EventStore (SQLite)</td></tr>
+<tr><td><code>logs/ouroboros.log</code></td><td>Logs</td></tr>
+<tr><td><code>data/</code>, <code>worktrees/</code></td><td>Auto-session state and isolated work folders</td></tr>
+</tbody>
+</table></div>
+<p>Depending on your choices, the project folder may gain a <code>CLAUDE.md</code> command summary and a <code>.ouroboros/</code> configuration.</p>
+<nav class="pager" aria-label="Chapters"><a href="../why-ouroboros/">← Previous<br><strong>02 Why use it</strong></a><a href="../install/">Next →<br><strong>04 Install</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>

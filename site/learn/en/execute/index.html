@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7. Execute · Ouroboros Guide</title>
+<meta name="description" content="Starting a run with ooo run, the execution phases, ID types, status checks, cancelling, and the definition of done">
+<link rel="canonical" href="https://ouroboros.page/learn/en/execute/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/execute/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/execute/">
+<link rel="stylesheet" href="../../learn.css?v=2">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a class="lang" href="/learn/execute/">한국어</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc"><details class="map-box" open><summary>Guide map</summary><ol class="map"><li><a href="../what-is-ouroboros/"><b>01</b>What is Ouroboros</a></li><li><a href="../why-ouroboros/"><b>02</b>Why use it</a></li><li><a href="../architecture/"><b>03</b>Components</a></li><li><a href="../install/"><b>04</b>Install</a></li><li><a href="../interview/"><b>05</b>Interview</a></li><li><a href="../seed/"><b>06</b>Seed</a></li><li class="cur"><a aria-current="page" href="../execute/"><b>07</b>Execute</a><ol class="sec"><li><a href="#what">7.1 What it does</a></li><li><a href="#run">7.2 Start</a></li><li><a href="#phases">7.3 Phases</a></li><li><a href="#ids">7.4 ID types</a></li><li><a href="#status">7.5 Status</a></li><li><a href="#cancel">7.6 Cancel</a></li><li><a href="#done">7.7 Definition of done</a></li></ol></li><li><a href="../evaluate/"><b>08</b>Evaluate</a></li><li><a href="../evolve/"><b>09</b>Iterate</a></li><li><a href="../existing-project/"><b>10</b>Existing projects</a></li><li><a href="../troubleshooting/"><b>11</b>Troubleshooting</a></li><li><a href="../glossary/"><b>12</b>Glossary</a></li></ol></details></aside>
+<article>
+
+<div class="eyebrow">07</div>
+<h1>7. Execute</h1>
+<p class="lead">Chapter 6 confirmed the Seed. Execution hands that Seed to the runtime to produce actual code.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div>
+<h2 id="what">7.1 What it does</h2>
+<p><code>ooo run</code> validates the Seed and hands execution to the runtime. The runtime writes files and runs commands; Ouroboros manages order and state. The input is the Seed reviewed in chapter 6.</p>
+<h2 id="run">7.2 Start</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo run</code></pre>
+<p class="result-note">Expected result: execution starts and IDs for status queries are printed. The run continues in the background, so starting is not finishing.</p>
+<h2 id="phases">7.3 Phases</h2>
+<figure class="diagram"><img src="../../../assets/learn/diagrams/execute-diamond.png" alt="Double Diamond diagram: a Seed passes through Discover, Define, Design, and Deliver to become code" width="1536" height="1024" loading="lazy"><figcaption>Execution follows a four-phase order called the Double Diamond.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Phase</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Discover</td><td>Examine the repository, the environment, and what the requirements still need confirmed.</td></tr>
+<tr><td>Define</td><td>Decide what to build and what to leave out.</td></tr>
+<tr><td>Design</td><td>Decide the structure and the order of implementation.</td></tr>
+<tr><td>Deliver</td><td>Create files and run tests.</td></tr>
+</tbody>
+</table></div>
+<p>This order exists to stop implementation from starting before understanding.</p>
+<h2 id="ids">7.4 ID types</h2>
+<p>Each command prints IDs with different roles. Copy the values below from the output.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Shape</th><th>Where you get it</th><th>Where you use it</th></tr></thead>
+<tbody>
+<tr><td><code>session_id</code></td><td><code>orch_…</code></td><td>Interview and run output</td><td><code>ooo status</code>, <code>ooo evaluate</code>, session resume</td></tr>
+<tr><td><code>job_id</code></td><td><code>job_…</code></td><td>Background job start output</td><td>Status and result queries for background jobs</td></tr>
+<tr><td><code>execution_id</code></td><td><code>exec_…</code></td><td>Run start output</td><td><code>ooo cancel</code></td></tr>
+<tr><td><code>auto_session_id</code></td><td><code>auto_…</code></td><td><code>ooo auto</code> output</td><td><code>ooo auto --resume</code></td></tr>
+<tr><td><code>lineage_id</code></td><td><code>lin_…</code></td><td><code>ooo evolve</code> output</td><td>Revision history queries, <code>ooo ralph</code></td></tr>
+</tbody>
+</table></div>
+<h2 id="status">7.5 Status</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo status &lt;session_id&gt;</code></pre>
+<p class="result-note">Expected result: the current phase and progress. In a separate terminal, <code>ouroboros monitor</code> opens a live progress view.</p>
+<h2 id="cancel">7.6 Cancel</h2>
+<p>Run this inside the Claude Code session.</p>
+<pre><code>ooo cancel</code></pre>
+<p class="result-note">Expected result: a list of active executions appears; pick one or pass an ID to cancel. Confirm the state afterwards with <code>ooo status</code>.</p>
+<h2 id="done">7.7 Definition of done</h2>
+<ul>
+<li>The run state shows completed.</li>
+<li>The result files exist in the working folder.</li>
+<li>You saved the <code>session_id</code> from the completion summary for the next step. It is used in <a href="../evaluate/">chapter 8</a>.</li>
+</ul>
+<nav class="pager" aria-label="Chapters"><a href="../seed/">← Previous<br><strong>06 Seed</strong></a><a href="../evaluate/">Next →<br><strong>08 Evaluate</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=2"></script>
+</body>
+</html>
