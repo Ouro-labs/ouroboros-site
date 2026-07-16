@@ -3,124 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5. 실행과 평가 · Ouroboros 가이드</title>
-<meta name="description" content="Seed 실행, 상태 확인, 3단계 평가, 결과물 직접 검증, 진화와 프로젝트 이관">
-<link rel="canonical" href="https://ouroboros.page/learn/how-it-works/">
+<meta http-equiv="refresh" content="0; url=../execute/">
+<title>이동된 페이지 · Ouroboros 가이드</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://ouroboros.page/learn/execute/">
 <link rel="stylesheet" href="../learn.css">
 <link rel="icon" href="../../assets/logo-snake.png">
 </head>
 <body>
-<a class="skip" href="#content">본문으로 건너뛰기</a>
-<header class="top">
-<div class="top-inner">
-<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
-<nav aria-label="주 메뉴">
-<a href="../">가이드</a>
-<a href="https://github.com/Q00/ouroboros#quick-start">설치</a>
-<a href="../glossary/">용어사전</a>
-<a href="https://github.com/Q00/ouroboros">GitHub</a>
-<button class="theme" data-theme-toggle type="button">테마</button>
-</nav>
-</div>
-</header>
-<main id="content" class="layout">
-<aside class="toc">
-<strong>이 페이지</strong>
-<ol>
-<li><a href="#chapter-5">5. 실행과 평가</a></li>
-<li><a href="#ids">5.2 실행 ID 확인</a></li>
-<li><a href="#evaluate">5.5 실행 결과 평가</a></li>
-<li><a href="#verify">5.6 결과물 직접 확인</a></li>
-<li><a href="#evolve">6. 수정과 프로젝트 이관</a></li>
-</ol>
-</aside>
+<main class="layout" style="grid-template-columns:minmax(0,720px)">
 <article>
-<div class="eyebrow">05 · 실행과 평가</div>
-<h1 id="chapter-5">5. 실행과 평가</h1>
-<p class="lead">Seed를 승인했다면 runtime에 실행을 맡깁니다. 실행 성공 문구로 끝내지 않고, 화면과 테스트를 실제로 확인해 평가까지 통과시킵니다.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>Ubuntu 24.04 · Claude Code 2.1.210</span><span>2026-07-16 확인</span></div>
-<h2>5.1 run으로 실행 시작</h2>
-<pre><code>ooo run</code></pre>
-<p>최근 Seed나 전달한 YAML을 검증하고 배경 실행을 시작합니다. 실제 파일 작성과 명령 실행은 설정한 runtime, 여기서는 Claude Code가 맡습니다.</p>
-<p>3장에서 <code>ooo auto</code>를 실행했다면 A등급 Seed가 만들어진 뒤 실행이 이어집니다. <code>--skip-run</code>으로 멈췄다면 Seed를 확인한 뒤 <code>ooo run</code>을 입력합니다.</p>
-<h2 id="ids">5.2 실행 ID 확인</h2>
-<p>명령마다 받는 ID가 다르므로, 출력에 나온 값을 역할별로 구분해 복사해 둡니다.</p>
-<table>
-<thead><tr><th>ID</th><th>출처</th><th>사용처</th></tr></thead>
-<tbody>
-<tr><td><code>job_id</code></td><td>run 시작 출력</td><td>배경 작업의 상태·결과 조회</td></tr>
-<tr><td><code>session_id</code></td><td>Interview·run 출력</td><td><code>ooo status</code>, <code>ooo evaluate</code>, 세션 재개</td></tr>
-<tr><td><code>execution_id</code></td><td>run 시작 출력</td><td><code>ooo cancel</code>, <code>ouroboros cancel execution</code></td></tr>
-<tr><td><code>lineage_id</code></td><td>evolve 출력</td><td><code>ooo evolve --status</code>, <code>ooo ralph --lineage-id</code></td></tr>
-</tbody>
-</table>
-<h2 id="diamond">5.3 실행 단계 확인</h2>
-<div class="loop">
-<div><b>Discover</b>저장소와 환경, 요구의 빈칸을 확인합니다.</div>
-<div><b>Define</b>무엇을 풀고 무엇을 빼는지 좁힙니다.</div>
-<div><b>Design</b>구조와 구현 순서를 정합니다.</div>
-<div><b>Deliver</b>파일을 만들고 테스트와 실제 동작을 확인합니다.</div>
-</div>
-<p>네 단계는 진행 표시 이름이 아닙니다. 이해하지 않은 채 구현으로 뛰는 일을 막는 실행 순서입니다.</p>
-<h2>5.4 진행 상태와 변경 확인</h2>
-<pre><code>ooo status &lt;session_id&gt;</code></pre>
-<p>현재 상태와 진행을 읽습니다. 원래 Seed에서 멀어졌는지 물으면 Goal 50%, Constraints 30%, Ontology 20% 가중으로 Drift를 잽니다. 0.3을 넘으면 경계를 다시 확인할 시점입니다.</p>
-<div class="callout"><strong>Drift가 낮아도 기능이 맞다는 뜻은 아닙니다.</strong><br>원래 방향을 지켰다는 신호입니다. 작동과 완료 기준은 평가에서 따로 확인합니다.</div>
-<h2 id="evaluate">5.5 실행 결과 평가</h2>
-<pre><code>ooo evaluate &lt;session_id&gt;</code></pre>
-<ol>
-<li><strong>Mechanical.</strong> lint, build, test를 실행합니다. 실패하면 다음 평가로 넘어가지 않습니다.</li>
-<li><strong>Semantic.</strong> 결과가 Goal과 Acceptance Criteria를 충족했는지 확인합니다.</li>
-<li><strong>Multi-Model Consensus.</strong> 추가 판단이 필요한 경우 여러 모델의 결과를 비교합니다.</li>
-</ol>
-<details><summary>Consensus가 실행되는 조건</summary><p>Seed 수정, ontology 변경, Goal 재해석, Drift 0.3 초과, 불확실성 0.3 초과, 별도 제안 채택 중 하나에 해당하면 실행됩니다. Semantic 점수가 0.8 이상이고 해당 조건이 없으면 생략됩니다.</p></details>
-<p>run이 성공해도 정식 평가 전 상태는 <code>executed_unverified</code>일 수 있습니다. 평가가 자동으로 이어지지 않았다면 위 명령을 직접 실행합니다.</p>
-<h2 id="verify">5.6 결과물 직접 확인</h2>
-<p>평가 통과 문구만 읽고 끝내지 않습니다. 출력 확인, 판정 확인, 직접 검증의 순서로 마무리합니다.</p>
-<ol>
-<li><strong>출력 확인</strong> — run 완료 메시지에서 결과물이 생성된 폴더 경로를 확인합니다. 이 예제라면 할 일 앱의 HTML 파일이 있는 작업 폴더입니다.</li>
-<li><strong>판정 확인</strong> — <code>ooo evaluate &lt;session_id&gt;</code>의 세 단계 결과와 남은 지적을 읽습니다.</li>
-<li><strong>직접 검증</strong> — 생성된 앱을 브라우저에서 직접 엽니다. 이 예제라면 작업 폴더의 <code>index.html</code>을 여는 것으로 충분합니다. 그 화면에서 Seed의 Acceptance Criteria를 하나씩 재현합니다. 빈 제목이 추가되지 않는지, 추가한 할 일이 새로고침 뒤에도 남는지, 체크한 완료 상태가 즉시 보이고 저장되는지 확인합니다.</li>
-</ol>
-<h2>5.7 qa로 단건 확인</h2>
-<pre><code>ooo qa</code></pre>
-<p><code>qa</code>는 최근 결과나 지정 파일을 품질 기준과 한 번 비교해 PASS, REVISE, FAIL을 돌려줍니다. 3단계 정식 실행 검증인 <code>evaluate</code>와 역할이 다릅니다. 화면이나 API처럼 실제 행동이 있는 결과는 소스만 읽지 말고 직접 실행한 증거를 함께 넣습니다.</p>
-<p>이 문서의 검증 범위는 플러그인 설치까지 실측이며, 이 장의 실행·평가 절차는 공식 문서 기준으로 서술합니다. 전체 고지는 <a href="../">가이드 홈</a>에 있습니다.</p>
-<nav class="pager" aria-label="장 이동"><a href="../first-loop/#seed">← 이전 장<br><strong>4. Seed 확인</strong></a><a href="#evolve">이 페이지 다음 절 ↓<br><strong>6. 수정과 프로젝트 이관</strong></a></nav>
-<section id="evolve" aria-labelledby="evolve-title">
-<div class="eyebrow" style="margin-top:90px">06 · 수정과 이관</div>
-<h2 id="evolve-title">6. 수정과 프로젝트 이관</h2>
-<p class="lead">평가에서 찾은 문제를 다음 Seed에 반영합니다. 예제 작업을 마친 뒤에는 같은 절차를 기존 저장소에 적용할 수 있습니다.</p>
-<h3>6.1 evolve로 한 번 수정</h3>
-<pre><code>ooo evolve "할 일 앱 평가 결과를 반영해 완성도를 높여줘"</code></pre>
-<p>Wonder는 평가에서 확인하지 못한 항목을 찾습니다. Reflect는 그 결과를 바탕으로 Seed의 목표, 제약, 완료 기준 변경안을 만듭니다. 연속된 Seed의 ontology 유사도가 0.95 이상이면 변화가 거의 없는 상태로 판단하며, 최대 30세대에서 멈춥니다.</p>
-<p>코드를 다시 만들지 않고 Seed 변경안만 확인하려면 <code>--no-execute</code>를 붙입니다. 이어진 실행 목록은 아래 명령으로 확인합니다.</p>
-<pre><code>ooo evolve --status &lt;lineage_id&gt;</code></pre>
-<h3>6.2 Ralph로 반복 실행</h3>
-<pre><code>ooo ralph --lineage-id &lt;lineage_id&gt;</code></pre>
-<p>Ralph는 완료 기준 충족, 변화가 거의 없는 상태, 사용자 취소, 복구할 수 없는 실패, 반복 횟수 제한 중 하나에 도달할 때까지 배경에서 실행을 반복합니다. 먼저 Interview와 Seed를 만든 뒤 출력된 <code>lineage_id</code>를 사용합니다.</p>
-<div class="callout"><strong>사람이 멈출 이유도 분명합니다.</strong><br>완료 기준이 이미 충족됐거나, 같은 질문이 반복되거나, 비용에 비해 바뀌는 내용이 작거나, 제품 방향을 사람이 다시 정해야 한다면 중단합니다. 자동 반복 횟수가 품질을 보장하지 않습니다.</div>
-<h2>6.3 첫 작업 종료</h2>
-<p>아이디어가 Interview를 거쳐 Seed가 됐고, runtime이 만들고 평가했으며, 결과물을 직접 열어 완료 기준을 확인했습니다. 평가에서 배운 것은 evolve의 다음 입력이 됩니다. 여기까지가 첫 순환입니다.</p>
-<h2 id="next-steps">6.4 기존 프로젝트에 적용</h2>
-<p>아래 명령들은 첫 예제를 닫은 뒤 자기 프로젝트와 팀 작업으로 넘어갈 때 사용합니다. 첫 순환을 완주하기 전에는 필요하지 않습니다.</p>
-<h3>6.4.1 brownfield: 기존 저장소 연결</h3>
-<pre><code>ooo brownfield</code></pre>
-<p>기존 git 저장소와 worktree를 찾아 Interview의 기본 컨텍스트로 등록합니다. 새 프로젝트처럼 추측하지 않고 현재 코드, 제약, 빌드 명령을 바탕으로 질문하게 됩니다. 여러 저장소가 나오면 실제 작업할 저장소만 기본값으로 선택합니다.</p>
-<h3>6.4.2 pm: 제품 요구 정리</h3>
-<pre><code>ooo pm</code></pre>
-<p>제품 요구사항을 질문하고 PRD와 작업 전달 자료를 만듭니다. 이 자료는 곧바로 실행할 Seed가 아닙니다. 출력된 경로를 <code>ooo interview</code>에 넣고 <code>ooo seed</code>로 실행 명세를 다시 만듭니다.</p>
-<h3>6.4.3 publish: 팀 작업 발행</h3>
-<pre><code>ooo publish &lt;seed_path&gt;</code></pre>
-<p>Seed의 Goal을 Epic으로, Acceptance Criteria를 작업 이슈로 나눠 GitHub에 발행합니다. <code>gh</code> 설치와 로그인이 필요하고, 실제 생성 전에 대상 저장소와 이슈 구조를 확인합니다.</p>
-<p>기존 프로젝트에서도 Interview, Seed, 실행, 평가, 수정 순서를 유지합니다. 기능 이름을 전부 외울 필요는 없습니다.</p>
-<nav class="pager" aria-label="장 이동"><a href="#chapter-5">↑ 이 페이지 앞 절<br><strong>5. 실행과 평가</strong></a><a href="../troubleshooting/">다음 장 →<br><strong>7. 문제 해결</strong></a></nav>
-</section>
+<h1>페이지가 이동했습니다</h1>
+<p>가이드 구조를 장별 독립 페이지로 개편했습니다. 잠시 후 <a href="../execute/">새 페이지</a>로 이동합니다.</p>
+<ul>
+<li><a href="../execute/">실행(구 5장)</a></li>
+<li><a href="../evaluate/">평가(구 5장)</a></li>
+<li><a href="../evolve/">수정과 이관(구 6장)</a></li>
+</ul>
+<p><a href="../">전체 목차로 이동</a></p>
 </article>
 </main>
-<footer class="footer">
-<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
-</footer>
-<script src="../learn.js"></script>
 </body>
 </html>

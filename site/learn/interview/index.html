@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5. Interview · Ouroboros 가이드</title>
+<meta name="description" content="ooo interview의 목적, 시작 명령, 질문 기준, Ambiguity Score, 종료 조건, session_id">
+<link rel="canonical" href="https://ouroboros.page/learn/interview/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href=".././">가이드</a>
+<a href="../install/">설치</a>
+<a href="../glossary/">용어사전</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>이 페이지</strong>
+<ol>
+<li><a href="#what">5.1 무엇을 하는가</a></li>
+<li><a href="#start">5.2 시작</a></li>
+<li><a href="#answer">5.3 답변 방법</a></li>
+<li><a href="#score">5.4 Ambiguity Score</a></li>
+<li><a href="#end">5.5 종료 조건</a></li>
+<li><a href="#session">5.6 session_id</a></li>
+<li><a href="#auto">5.7 auto</a></li>
+</ol>
+</aside>
+<article>
+
+<div class="eyebrow">05</div>
+<h1>5. Interview</h1>
+<p class="lead">Interview는 아이디어에서 아직 정해지지 않은 결정을 질문으로 확인하는 기능입니다. 여기서부터 할 일 앱 예제 하나로 9장까지 이어갑니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>2026-07-16 문서·코드 확인</span></div>
+<h2 id="what">5.1 무엇을 하는가</h2>
+<p>"할 일 앱"이라는 요청만으로는 저장 방식과 완료 처리 방법을 정할 수 없습니다. Interview는 결과에 영향을 주는 이런 결정을 찾아 질문하고, 답을 모아 다음 장의 Seed 재료로 만듭니다. 입력은 아이디어 한 문장이면 됩니다.</p>
+<h2 id="start">5.2 시작</h2>
+<p>Claude Code 대화창에서 실행합니다.</p>
+<pre><code>ooo interview "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱"</code></pre>
+<p class="result-note">정상 결과: 첫 질문이 표시됩니다. 질문의 수와 순서는 아이디어에 따라 달라집니다.</p>
+<p>실제 작업 전에 질문 방식만 체험하고 싶다면 <code>ooo tutorial</code>을 먼저 실행할 수 있습니다.</p>
+<h2 id="answer">5.3 답변 방법</h2>
+<p>질문 하나가 결정 하나를 고정합니다. 예제 기준으로는 아래와 같은 결정이 확인됩니다.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>질문 주제</th><th>답의 예</th><th>고정되는 결정</th></tr></thead>
+<tbody>
+<tr><td>데이터 유지</td><td>"새로고침해도 남아야 해요"</td><td>저장 방식</td></tr>
+<tr><td>완료 처리</td><td>"지우지 말고 줄을 그어 주세요"</td><td>완료 상태 표현</td></tr>
+<tr><td>사용자 범위</td><td>"한 사람만 써요"</td><td>계정·동기화 제외</td></tr>
+</tbody>
+</table></div>
+<p>답은 자유 문장으로 하면 됩니다. 모르는 항목은 모른다고 답하고 제안을 받는 편이, 대충 답하는 것보다 낫습니다.</p>
+<h2 id="score">5.4 Ambiguity Score</h2>
+<figure class="diagram"><img src="../../assets/learn/diagrams/interview-score.png" alt="문답이 진행되며 Ambiguity Score가 0.5에서 0.15로 내려가고 0.2 게이트를 통과하는 도해" width="1536" height="1024" loading="lazy"><figcaption>답이 쌓일수록 점수가 내려가고, 0.2 이하가 되면 Seed를 만들 수 있습니다.</figcaption></figure>
+<p>Ambiguity Score는 요구사항에 남은 모호함을 0~1로 나타낸 값입니다. 목표 명확성 40%, 제약 명확성 30%, 성공 기준 명확성 30%의 가중 합으로 계산합니다. 0에 가까울수록 분명한 상태입니다.</p>
+<h2 id="end">5.5 종료 조건</h2>
+<p>점수가 0.2 이하로 내려가면 Interview가 충분하다고 판단하고 Seed 생성 단계로 넘어갈 수 있습니다. 점수가 낮아도 내용이 사용자 의도와 다르면 진행해서는 안 되므로, 숫자와 함께 정리된 내용을 확인합니다.</p>
+<h2 id="session">5.6 session_id</h2>
+<p>Interview가 끝나면 출력에 <code>session_id</code>가 남습니다. 이 값은 다음 장에서 Seed를 생성할 때 입력으로 사용하므로 복사해 둡니다.</p>
+<h2 id="auto">5.7 질문부터 실행까지 한 번에 — auto</h2>
+<p>질문, Seed 생성, 실행을 한 명령에 맡기려면 <code>ooo auto</code>를 사용합니다.</p>
+<pre><code>ooo auto "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱"</code></pre>
+<p class="result-note">정상 결과: 자동으로 질문 라운드를 진행하고, Seed가 A등급을 통과한 뒤에만 실행을 시작합니다. 중간에 멈추면 <code>auto_session_id</code>와 재개 명령이 표시됩니다. A등급은 <a href="../seed/">6장</a>에서 설명합니다.</p>
+<p>Seed까지만 만들고 실행은 직접 확인한 뒤 하고 싶다면 <code>--skip-run</code>을 붙입니다. 중단된 세션은 <code>ooo auto --resume &lt;auto_session_id&gt;</code>로 재개합니다.</p>
+<p>처음 사용할 때는 질문마다 직접 답하는 <code>ooo interview</code> 경로를 권합니다. 무엇이 결정되는지 보이기 때문입니다.</p>
+<nav class="pager" aria-label="장 이동"><a href="../install/">← 이전<br><strong>04 설치</strong></a><a href="../seed/">다음 →<br><strong>06 Seed</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>

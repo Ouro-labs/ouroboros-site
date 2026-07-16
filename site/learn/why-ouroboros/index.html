@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2. 왜 사용하는가 · Ouroboros 가이드</title>
+<meta name="description" content="AI 코딩 도구만 사용할 때 생기는 문제와 Ouroboros 사용 시 달라지는 점, 적합한 작업">
+<link rel="canonical" href="https://ouroboros.page/learn/why-ouroboros/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href=".././">가이드</a>
+<a href="../install/">설치</a>
+<a href="../glossary/">용어사전</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>이 페이지</strong>
+<ol>
+<li><a href="#problem">2.1 도구만 쓸 때의 문제</a></li>
+<li><a href="#change">2.2 달라지는 점</a></li>
+<li><a href="#fit">2.3 적합한 작업</a></li>
+<li><a href="#unfit">2.4 필요 없는 작업</a></li>
+</ol>
+</aside>
+<article>
+
+<div class="eyebrow">02</div>
+<h1>2. 왜 사용하는가</h1>
+<p class="lead">AI 코딩 도구는 빠르지만, 요구사항 확정과 완료 검증은 사용자에게 남습니다. Ouroboros는 그 두 가지를 절차로 만듭니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>2026-07-16 문서·코드 확인</span></div>
+<h2 id="problem">2.1 AI 코딩 도구만 사용할 때 생기는 문제</h2>
+<p>"할 일 앱을 만들어 달라"는 요청에는 저장 방식, 사용자 수, 완료 처리 방법이 없습니다. AI가 이 값을 임의로 정하면 코드가 나온 뒤에 고쳐야 합니다.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>문제</th><th>결과</th></tr></thead>
+<tbody>
+<tr><td>빠진 결정을 AI가 임의로 채움</td><td>코드 완성 후 재작업</td></tr>
+<tr><td>"완료했습니다" 보고만 남음</td><td>실제 완료 여부를 확인할 방법이 없음</td></tr>
+<tr><td>대화가 길어지면 초기 요구가 흐려짐</td><td>처음 합의와 다른 결과</td></tr>
+<tr><td>세션이 끊기면 맥락이 사라짐</td><td>중단 지점을 찾지 못하고 처음부터 다시 설명</td></tr>
+<tr><td>같은 실패를 반복해도 기록이 없음</td><td>수정 방향이 누적되지 않음</td></tr>
+</tbody>
+</table></div>
+<h2 id="change">2.2 Ouroboros를 사용하면 달라지는 점</h2>
+<figure class="diagram"><img src="../../assets/learn/diagrams/why-before-after.png" alt="AI 도구만 쓸 때의 추측-코드-재작업 반복과, Ouroboros 사용 시 질문-Seed-코드-검증 직선 흐름을 비교한 도해" width="1536" height="1024" loading="lazy"><figcaption>왼쪽은 도구만 쓸 때, 오른쪽은 Ouroboros를 함께 쓸 때의 작업 흐름입니다.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>변화</th><th>방법</th></tr></thead>
+<tbody>
+<tr><td>코딩 전에 결정을 확정</td><td>Interview가 빠진 결정을 질문합니다(<a href="../interview/">5장</a>)</td></tr>
+<tr><td>완료 기준을 문서로 고정</td><td>Seed에 Acceptance Criteria가 저장됩니다(<a href="../seed/">6장</a>)</td></tr>
+<tr><td>완료 여부를 검증</td><td>테스트와 기준 대조로 3단계 평가를 합니다(<a href="../evaluate/">8장</a>)</td></tr>
+<tr><td>중단 후 재개</td><td>실행 이벤트가 로컬 DB에 남아 세션을 복구합니다(<a href="../troubleshooting/">11장</a>)</td></tr>
+<tr><td>실패를 다음 실행에 반영</td><td>평가 결과로 Seed를 고쳐 다시 실행합니다(<a href="../evolve/">9장</a>)</td></tr>
+</tbody>
+</table></div>
+<h2 id="fit">2.3 적합한 작업</h2>
+<ul>
+<li>요구사항이 여러 개라 정리가 필요한 기능 개발</li>
+<li>완료 여부를 테스트로 증명해야 하는 작업</li>
+<li>여러 차례 수정을 거칠 것이 예상되는 작업</li>
+<li>중간에 끊겨도 이어서 진행해야 하는 긴 작업</li>
+</ul>
+<h2 id="unfit">2.4 사용하지 않아도 되는 작업</h2>
+<p>오타 수정이나 한 줄 변경처럼 설명이 필요 없는 작업은 AI 코딩 도구만 사용하는 편이 빠릅니다. 질문과 평가 절차가 작업 자체보다 커지기 때문입니다.</p>
+<nav class="pager" aria-label="장 이동"><a href="../what-is-ouroboros/">← 이전<br><strong>01 Ouroboros는 무엇인가</strong></a><a href="../architecture/">다음 →<br><strong>03 구성요소</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>

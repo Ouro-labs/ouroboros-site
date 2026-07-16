@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4. 설치 · Ouroboros 가이드</title>
+<meta name="description" content="Claude Code 로그인, Ouroboros plugin 설치, ooo setup, MCP 연결, 설치 확인과 업데이트">
+<link rel="canonical" href="https://ouroboros.page/learn/install/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href=".././">가이드</a>
+<a aria-current="page" href="../install/">설치</a>
+<a href="../glossary/">용어사전</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>이 페이지</strong>
+<ol>
+<li><a href="#prereq">4.1 준비 사항</a></li>
+<li><a href="#login">4.2 Claude Code 로그인</a></li>
+<li><a href="#plugin">4.3 plugin 설치</a></li>
+<li><a href="#setup">4.4 ooo setup</a></li>
+<li><a href="#verify">4.5 설치 확인</a></li>
+<li><a href="#update">4.6 업데이트</a></li>
+<li><a href="#done">4.7 완료 기준</a></li>
+</ol>
+</aside>
+<article>
+
+<div class="eyebrow">04</div>
+<h1>4. 설치</h1>
+<p class="lead">이 가이드는 Claude Code plugin 설치를 기본 경로로 사용합니다. 로그인, plugin 설치, <code>ooo setup</code>, 확인 순서로 진행합니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>2026-07-16 문서·코드 확인</span></div><figure class="diagram"><img src="../../assets/learn/diagrams/install-steps.png" alt="로그인, plugin 설치, setup, 확인 4단계를 차례로 표시한 도해" width="1536" height="1024" loading="lazy"><figcaption>설치는 로그인 → plugin → setup → 확인 4단계입니다.</figcaption></figure>
+<h2 id="prereq">4.1 준비 사항</h2>
+<ul>
+<li>plugin을 지원하는 Claude Code가 설치되어 있어야 합니다.</li>
+<li>Python은 필요 없습니다. Claude Code plugin 경로는 Python 설치 없이 동작합니다.</li>
+<li>Windows는 WSL 2 안에서 Linux 절차를 따릅니다.</li>
+</ul>
+<h2 id="login">4.2 Claude Code 로그인</h2>
+<p>터미널에서 Claude Code 세션을 엽니다.</p>
+<pre><code>claude</code></pre>
+<p>Claude Code 대화창 안에서 로그인합니다.</p>
+<pre><code>/login</code></pre>
+<p class="result-note">정상 결과: 브라우저 인증 후 대화창에 로그인 완료가 표시됩니다. 로그인하지 않으면 이후 <code>ooo</code> 명령이 동작하지 않습니다.</p>
+<h2 id="plugin">4.3 plugin 설치</h2>
+<p>다음 두 명령은 Claude Code 밖의 일반 터미널에서 실행합니다.</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros</code></pre>
+<figure class="diagram"><img src="../../assets/learn/ch02-plugin-install-original.png" alt="Claude Code에서 Ouroboros 0.50.4 플러그인이 설치된 터미널 출력" loading="lazy"><figcaption>2026-07-16 Ubuntu 24.04, Claude Code 2.1.210에서 실측한 설치 출력입니다.</figcaption></figure>
+<p class="result-note">정상 결과: <code>claude plugin list</code>에 <code>ouroboros@ouroboros</code>가 enabled로 표시됩니다.</p>
+<h2 id="setup">4.4 ooo setup — Core와 MCP 연결</h2>
+<p>작업할 프로젝트 폴더에서 Claude Code 세션을 열고, 대화창에 입력합니다.</p>
+<pre><code>ooo setup</code></pre>
+<p><code>ooo setup</code>은 Ouroboros Core의 MCP 서버를 전역으로 등록합니다. 등록은 한 번만 하면 됩니다. 선택에 따라 현재 프로젝트의 <code>CLAUDE.md</code>에 명령 요약을 추가합니다.</p>
+<p class="result-note">정상 결과: MCP 서버 등록 완료 안내가 표시됩니다. 공식 문서 기준으로 등록 정보는 <code>~/.claude/mcp.json</code>에 기록됩니다. 등록 후 Claude Code를 완전히 닫고 다시 엽니다.</p>
+<h2 id="verify">4.5 설치 확인</h2>
+<p>Claude Code 대화창에서 실행합니다.</p>
+<pre><code>ooo help</code></pre>
+<p class="result-note">정상 결과: interview, seed, run, evaluate 등 명령 목록이 표시됩니다. 표시되지 않으면 <a href="../troubleshooting/">11장</a>을 확인합니다.</p>
+<h2 id="update">4.6 업데이트</h2>
+<p>Claude Code 대화창에서 실행합니다.</p>
+<pre><code>ooo update</code></pre>
+<p class="result-note">정상 결과: 현재 버전과 최신 버전을 비교하고, 설치 방식에 맞게 갱신합니다. 업데이트 후 Claude Code 세션을 다시 엽니다.</p>
+<h2 id="done">4.7 설치 완료 기준</h2>
+<ul>
+<li><code>claude plugin list</code>에 <code>ouroboros@ouroboros</code>가 enabled로 표시된다.</li>
+<li><code>ooo help</code>가 명령 목록을 표시한다.</li>
+<li>Claude Code의 <code>/mcp</code>에서 ouroboros 서버가 연결 상태로 표시된다.</li>
+</ul>
+<details><summary>Claude Code 없이 터미널에서 설치하기</summary>
+<p>독립 CLI는 Python 3.12 이상이 필요하며 일반 터미널에서 설치합니다.</p>
+<pre><code>pip install ouroboros-ai
+ouroboros setup</code></pre>
+<p>Codex CLI 등 다른 runtime은 <code>ouroboros setup --runtime codex</code>처럼 지정합니다. 이 가이드 본문은 Claude Code의 <code>ooo</code> 명령 기준으로 설명합니다.</p>
+</details>
+<nav class="pager" aria-label="장 이동"><a href="../architecture/">← 이전<br><strong>03 구성요소</strong></a><a href="../interview/">다음 →<br><strong>05 Interview</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>

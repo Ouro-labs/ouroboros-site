@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6. Seed · Ouroboros 가이드</title>
+<meta name="description" content="Seed의 역할, 생성 명령, 저장 위치, 필드별 확인 방법과 실행 전 확인표">
+<link rel="canonical" href="https://ouroboros.page/learn/seed/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href=".././">가이드</a>
+<a href="../install/">설치</a>
+<a href="../glossary/">용어사전</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>이 페이지</strong>
+<ol>
+<li><a href="#what">6.1 무엇인가</a></li>
+<li><a href="#create">6.2 생성</a></li>
+<li><a href="#fields">6.3 필드별 확인</a></li>
+<li><a href="#grade">6.4 A등급</a></li>
+<li><a href="#edit">6.5 수정</a></li>
+<li><a href="#checklist">6.6 실행 전 확인표</a></li>
+</ol>
+</aside>
+<article>
+
+<div class="eyebrow">06</div>
+<h1>6. Seed</h1>
+<p class="lead">5장 Interview의 답은 Seed라는 작업 기준 파일로 정리됩니다. 실행 전에 이 파일이 자신의 답과 일치하는지 확인합니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>2026-07-16 문서·코드 확인</span></div>
+<h2 id="what">6.1 무엇인가</h2>
+<p>Seed는 목표, 제약, 완료 기준, 데이터 구조를 담은 YAML 파일입니다. runtime은 이 파일을 기준으로 코드를 작성하고, 평가도 이 파일과 대조해 이루어집니다. 실행이 시작되면 그 실행 안에서는 내용이 바뀌지 않습니다.</p>
+<figure class="diagram"><img src="../../assets/learn/diagrams/seed-anatomy.png" alt="Goal, Constraints, Acceptance Criteria, Ontology, Exit Conditions 필드로 구성된 Seed 문서와 저장 폴더 도해" width="1536" height="1024" loading="lazy"><figcaption>Seed의 주요 필드와 저장 위치입니다.</figcaption></figure>
+<h2 id="create">6.2 생성</h2>
+<p>Claude Code 대화창에서, 5장에서 받은 <code>session_id</code>를 넣어 실행합니다.</p>
+<pre><code>ooo seed &lt;session_id&gt;</code></pre>
+<p class="result-note">정상 결과: Seed가 생성되고 <code>~/.ouroboros/seeds/</code> 아래에 YAML 파일로 저장됩니다.</p>
+<p>아래는 예제 문답을 공식 Seed 필드 구조에 맞춰 구성한 가이드용 예시입니다. 실제 생성 결과는 저장된 파일에서 확인합니다.</p>
+<pre><code>goal: 오늘 할 일을 추가하고 완료 표시하는 웹앱 만들기
+constraints:
+  - 한 기기에서 한 사람만 사용
+  - 브라우저 localStorage에 저장
+acceptance_criteria:
+  - 빈 제목은 추가되지 않는다
+  - 할 일을 추가하면 새로고침 뒤에도 남는다
+  - 체크하면 완료 상태가 즉시 보이고 저장된다
+ontology_schema:
+  name: TodoList
+  fields:
+    - name: title
+      type: string
+    - name: completed
+      type: boolean
+metadata:
+  ambiguity_score: 0.15</code></pre>
+<h2 id="fields">6.3 필드별 확인</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>필드</th><th>내용</th><th>확인 방법</th></tr></thead>
+<tbody>
+<tr><td>Goal</td><td>이번 실행이 만들 결과</td><td>사용자가 할 수 있어야 하는 일이 문장으로 적혀 있는지 봅니다. "예쁜 앱"처럼 판정 불가능한 표현은 고칩니다.</td></tr>
+<tr><td>Constraints</td><td>반드시 지킬 제한</td><td>기술·환경·범위 제한이 자신의 답과 같은지 봅니다. 예제에서는 한 사람, localStorage입니다.</td></tr>
+<tr><td>Acceptance Criteria</td><td>완료 판정 기준</td><td>각 항목이 화면이나 테스트에서 직접 확인 가능한 문장인지 봅니다. 8장 평가가 이 기준과 대조합니다.</td></tr>
+<tr><td>Ontology</td><td>다루는 데이터의 구조</td><td>필드 이름과 타입이 기능과 맞는지 봅니다. 예제는 제목(문자열)과 완료 여부(불리언)입니다.</td></tr>
+<tr><td>Exit Conditions</td><td>작업 종료 조건</td><td>어떤 상태가 되면 끝나는지 적혀 있는지 봅니다.</td></tr>
+</tbody>
+</table></div>
+<p>Non-goals(이번에 만들지 않기로 한 일)와 질문 과정의 가정은 Seed 본문이 아니라 Ledger라는 별도 기록에 남습니다. "단일 사용자"가 사용자의 답인지 확인하고 싶을 때 이 기록을 봅니다. 공식 문서 기준으로 독립 터미널의 <code>ouroboros auto --show-ledger</code>가 이 내용을 출력합니다.</p>
+<h2 id="grade">6.4 A등급</h2>
+<p>Seed에는 실행 가능 여부를 판정하는 등급이 있습니다. <code>ooo auto</code>는 A등급 Seed만 실행을 시작합니다.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>등급</th><th>뜻</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>차단 사유가 없고 커버리지·모호성·검증 가능성·실행 가능성·위험 점수가 모두 기준을 통과한 상태. 실행 가능</td></tr>
+<tr><td>B</td><td>차단 사유는 없지만 보완할 지적이 남은 상태. 수리 후 재판정</td></tr>
+<tr><td>C</td><td>차단 사유가 있는 상태. 실행 불가</td></tr>
+</tbody>
+</table></div>
+<h2 id="edit">6.5 수정</h2>
+<p>Seed가 자신의 답과 다르면 실행 전에 고칩니다. 예를 들어 "완료한 일은 남긴다"고 답했는데 삭제로 적혀 있다면 수정 대상입니다. Claude Code 대화창에서 고칠 내용을 말하면 변경안이 제안되고, 사용자가 승인하면 반영됩니다. 저장된 YAML 파일을 직접 편집할 수도 있습니다.</p>
+<h2 id="checklist">6.6 실행 전 확인표</h2>
+<ul>
+<li>Goal이 자신이 만들려는 것과 일치한다.</li>
+<li>Constraints가 자신의 답과 일치한다.</li>
+<li>Acceptance Criteria 각 항목을 직접 재현할 방법이 떠오른다.</li>
+<li>Ontology 필드가 기능에 필요한 데이터와 일치한다.</li>
+<li>ambiguity_score가 0.2 이하다.</li>
+</ul>
+<p>모두 확인했다면 <a href="../execute/">7장</a>에서 실행합니다.</p>
+<nav class="pager" aria-label="장 이동"><a href="../interview/">← 이전<br><strong>05 Interview</strong></a><a href="../execute/">다음 →<br><strong>07 실행</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>
