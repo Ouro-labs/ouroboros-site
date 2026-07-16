@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1. Ouroboros 이해 · 2. 설치 · Ouroboros 가이드</title>
+<meta name="description" content="Ouroboros가 하는 일, 사용하는 이유, 전체 구조와 Claude Code 설치 절차">
+<link rel="canonical" href="https://ouroboros.page/learn/start/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href="../">가이드</a>
+<a href="https://github.com/Q00/ouroboros#quick-start">설치</a>
+<a href="../glossary/">용어사전</a>
+<a href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>이 페이지</strong>
+<ol>
+<li><a href="#chapter-1">1. Ouroboros 이해</a></li>
+<li><a href="#work">1.1 하는 일</a></li>
+<li><a href="#why-spec">1.2 사용하는 이유</a></li>
+<li><a href="#structure">1.3 전체 구조</a></li>
+<li><a href="#loop">1.4 작업 순서</a></li>
+<li><a href="#install">2. Ouroboros 설치</a></li>
+</ol>
+</aside>
+<article>
+<div class="eyebrow">01 · 제품 개요</div>
+<h1 id="chapter-1">1. Ouroboros 이해</h1>
+<p class="lead">Ouroboros는 AI 코딩 작업의 요구사항, 실행, 검증, 기록을 한 흐름으로 관리하는 오픈소스 도구입니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>Ubuntu 24.04 · Claude Code 2.1.210</span><span>2026-07-16 확인</span></div>
+<h2 id="work">1.1 무엇을 하는 도구인가</h2>
+<p>사용자는 만들 기능이나 고칠 문제를 설명합니다. Ouroboros는 바로 코드를 만들지 않고, 결과를 바꾸는 결정이 빠졌는지 질문합니다. 사용자의 답은 Seed라는 명세에 저장됩니다. 연결된 AI 코딩 도구는 Seed를 기준으로 작업하고, 작업이 끝나면 테스트와 완료 기준을 확인합니다.</p>
+<table>
+<thead><tr><th>구분</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td>사용자가 제공하는 것</td><td>아이디어, 기존 저장소, 제약사항, 질문에 대한 답</td></tr>
+<tr><td>Ouroboros가 하는 것</td><td>질문, Seed 작성, 실행 관리, 상태 기록, 결과 평가</td></tr>
+<tr><td>AI 코딩 도구가 하는 것</td><td>파일 작성, 코드 수정, 명령 실행, 테스트 수행</td></tr>
+<tr><td>작업 후 남는 것</td><td>코드, Seed, 테스트 결과, 평가 결과, 실행 기록</td></tr>
+</tbody>
+</table>
+<h2 id="why-spec">1.2 왜 사용하는가</h2>
+<p>“할 일 앱을 만들어 달라”는 요청에는 저장 방식, 사용자 수, 완료 항목 처리, 화면 범위가 없습니다. AI가 이 값을 임의로 정하면 코드를 만든 뒤 다시 고쳐야 합니다.</p>
+<p>Ouroboros는 코딩 전에 필요한 결정을 질문합니다. 긴 기획서를 먼저 작성하라는 뜻은 아닙니다. 결과에 영향을 주는 선택만 확인하고, 확인한 내용을 실행 기준으로 남깁니다.</p>
+<table>
+<thead><tr><th>문제</th><th>Ouroboros가 처리하는 방법</th><th>효과</th></tr></thead>
+<tbody>
+<tr><td>요청에 빠진 결정이 있음</td><td>Interview에서 필요한 내용을 질문</td><td>코딩 후 재작업 감소</td></tr>
+<tr><td>AI가 완료했다고만 보고함</td><td>완료 기준과 테스트 결과를 대조</td><td>완료 여부를 직접 확인 가능</td></tr>
+<tr><td>중간에 작업이 중단됨</td><td>세션과 실행 상태를 기록</td><td>중단 지점 확인과 재개 가능</td></tr>
+<tr><td>다른 AI 도구로 바꾸기 어려움</td><td>Seed와 Core를 runtime에서 분리</td><td>같은 기준을 여러 도구에서 사용</td></tr>
+<tr><td>같은 실패를 반복함</td><td>평가 결과를 다음 Seed에 반영</td><td>다음 실행의 요구사항 개선</td></tr>
+</tbody>
+</table>
+<h2 id="structure">1.3 전체 구조</h2>
+<p>Ouroboros Core가 작업 순서와 기록을 관리하고, Claude Code나 Codex 같은 runtime이 실제 코드를 작성합니다. Seed는 두 부분을 연결하는 작업 기준입니다.</p>
+<div class="loop">
+<div><b>1.3.1 ooo 명령</b>Interview, 실행, 평가 같은 기능을 시작합니다.</div>
+<div><b>1.3.2 Core</b>질문, Seed, 정책, 실행 순서, 평가를 관리합니다.</div>
+<div><b>1.3.3 Runtime</b>Claude Code, Codex 등이 파일과 코드를 다룹니다.</div>
+<div><b>1.3.4 Seed</b>목표, 제약, 완료 기준을 담습니다.</div>
+<div><b>1.3.5 EventStore</b>세션, 실행 상태, 평가 결과를 저장합니다.</div>
+<div><b>1.3.6 Evaluator</b>테스트 결과와 완료 기준 충족 여부를 확인합니다.</div>
+</div>
+<div class="callout"><strong>역할 구분.</strong><br>Ouroboros는 코드를 직접 작성하는 모델이 아닙니다. 작업 기준과 순서를 관리하는 계층입니다. 실제 코드 작성은 연결한 runtime이 담당합니다.</div>
+<h2 id="loop">1.4 한 번 작업하는 순서</h2>
+<ol>
+<li><strong>아이디어 입력.</strong> 만들 기능이나 고칠 문제를 설명합니다.</li>
+<li><strong>Interview.</strong> 결과에 영향을 주는 빠진 결정을 질문합니다.</li>
+<li><strong>Seed 확인.</strong> 목표, 제약, 완료 기준이 사용자 의도와 맞는지 확인합니다.</li>
+<li><strong>실행.</strong> runtime이 Seed를 기준으로 코드를 작성하고 테스트합니다.</li>
+<li><strong>평가.</strong> 테스트 결과와 완료 기준을 확인합니다.</li>
+<li><strong>수정.</strong> 찾은 문제를 다음 Seed에 반영합니다.</li>
+</ol>
+<p>작은 할 일 앱을 예로 들면, 사용자가 기능을 설명하고 저장 방식과 완료 처리에 답합니다. Ouroboros가 이 답을 Seed로 저장합니다. runtime이 앱을 만들고, 새로고침 후 데이터 유지와 완료 표시가 실제로 작동하는지 확인합니다.</p>
+<h2>1.5 주요 이점</h2>
+<ul>
+<li><strong>요구사항 유지.</strong> 대화가 길어져도 확정한 목표와 제약을 Seed에서 다시 확인할 수 있습니다.</li>
+<li><strong>완료 기준 확인.</strong> “완료”라는 보고 대신 테스트와 기준 충족 여부를 확인합니다.</li>
+<li><strong>작업 재개.</strong> 세션과 실행 ID를 사용해 중단된 작업을 찾습니다.</li>
+<li><strong>실행 재현.</strong> 같은 Seed와 정책으로 다시 실행할 수 있습니다.</li>
+<li><strong>도구 선택.</strong> 작업 기준을 유지한 채 Claude Code, Codex 등 runtime을 바꿀 수 있습니다.</li>
+</ul>
+<h2>1.6 이 가이드의 예제</h2>
+<p>오늘 할 일을 추가하고 완료 표시하는 웹앱을 사용합니다. 기능은 작지만 저장, 완료 처리, 사용자 범위, 테스트 기준을 정해야 하므로 Ouroboros의 흐름을 확인하기에 적합합니다.</p>
+<div class="preview" aria-label="완성할 할 일 웹앱 예시"><h3>1.6.1 예제 결과: 오늘 할 일</h3><div class="task done"><input type="checkbox" checked aria-label="가이드 초안 완료"><span>가이드 초안 쓰기</span></div><div class="task"><input type="checkbox" aria-label="명령 확인"><span>명령 실제로 확인하기</span></div></div>
+<p>2장에서 설치하고, 3장에서 아이디어를 입력합니다. 4장에서 Seed를 확인하고, 5장에서 실행과 평가를 진행합니다. 6장에서 평가 결과를 반영합니다. 7장은 오류가 생겼을 때 사용합니다.</p>
+<nav class="pager" aria-label="장 이동"><a href="../">← 가이드 홈<br><strong>전체 목차</strong></a><a href="#install">이 페이지 다음 절 ↓<br><strong>2. Ouroboros 설치</strong></a></nav>
+<section id="install" aria-labelledby="install-title">
+<div class="eyebrow" style="margin-top:90px">02 · 설치</div>
+<h2 id="install-title">2. Ouroboros 설치</h2>
+<p class="lead">이 가이드는 Claude Code 플러그인을 기본 경로로 사용합니다. Claude Code 로그인, 플러그인 설치, Core 연결, 설치 확인 순서로 진행합니다.</p>
+<h3>2.1 Claude Code 실행과 로그인</h3>
+<p>Claude Code 설치를 마친 뒤 터미널에서 대화창을 엽니다.</p>
+<pre><code>claude</code></pre>
+<p>Claude Code 대화창에서 로그인합니다.</p>
+<pre><code>/login</code></pre>
+<p>로그인 후 터미널에서 버전을 확인합니다.</p>
+<pre><code>claude --version</code></pre>
+<h3>2.2 Ouroboros 플러그인 설치</h3>
+<p>다음 두 명령은 일반 터미널에서 실행합니다.</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros</code></pre>
+<figure class="preview"><img src="../../assets/learn/ch02-plugin-install-original.png" alt="Claude Code 2.1.210에서 Ouroboros 0.50.4 플러그인을 설치한 터미널 출력" style="width:100%;height:auto"><figcaption>2026-07-16 Ubuntu에서 확인한 설치 출력입니다. 계정 인증 이후 명령은 공식 문서를 기준으로 설명합니다.</figcaption></figure>
+<h3>2.3 작업 폴더에서 Core 연결</h3>
+<p>작업할 프로젝트 폴더에서 Claude Code를 열고, Claude Code 대화창에 다음 명령을 입력합니다.</p>
+<pre><code>ooo setup</code></pre>
+<p><code>setup</code>은 Ouroboros Core의 MCP 서버를 등록합니다. 사용자가 선택하면 현재 프로젝트의 <code>CLAUDE.md</code>에 명령 요약도 추가합니다.</p>
+<div class="callout"><strong>로컬 저장 위치.</strong><br><code>~/.ouroboros/</code>에 설정, Seed, EventStore, 로그가 저장됩니다. 프로젝트에는 선택에 따라 <code>CLAUDE.md</code> 요약과 <code>.ouroboros/</code> 정보가 생길 수 있습니다.</div>
+<h3>2.4 설치 확인</h3>
+<p>Claude Code 대화창에서 도움말을 실행합니다.</p>
+<pre><code>ooo help</code></pre>
+<p>Interview, Seed, run, evaluate 명령이 표시되면 플러그인이 로드된 것입니다. <code>setup</code> 결과에서 MCP 서버 등록을 확인한 뒤 Claude Code를 다시 시작합니다.</p>
+<h3>2.5 업데이트</h3>
+<pre><code>ooo update</code></pre>
+<p>현재 버전과 최신 버전을 비교하고 설치 방식에 맞춰 패키지와 runtime 연결을 갱신합니다. 업데이트 후 Claude Code 세션을 다시 엽니다.</p>
+<details><summary>다른 runtime 설치</summary><p>독립 터미널 경로는 Python 3.12 이상이 필요합니다. 설치 후 사용할 runtime을 지정합니다.</p><pre><code>pip install ouroboros-ai
+ouroboros setup --runtime codex</code></pre><p>본문의 명령은 Claude Code의 <code>ooo</code> 형식을 기준으로 설명합니다.</p></details>
+<nav class="pager" aria-label="장 이동"><a href="#chapter-1">↑ 이 페이지 앞 절<br><strong>1. Ouroboros 이해</strong></a><a href="../first-loop/">다음 장 →<br><strong>3. 아이디어 정리와 Interview</strong></a></nav>
+</section>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>

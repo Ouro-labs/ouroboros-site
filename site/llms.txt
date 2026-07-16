@@ -5,6 +5,7 @@
 ## Canonical resources
 
 - Website: https://ouroboros.page/
+- Korean beginner guide: https://ouroboros.page/learn/
 - Core repository and documentation: https://github.com/Q00/ouroboros
 - Getting started: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
 - Runtime guides: https://github.com/Q00/ouroboros/tree/main/docs/runtime-guides

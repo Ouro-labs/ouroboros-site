@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7. 문제 해결 · Ouroboros 가이드</title>
+<meta name="description" content="Ouroboros 설치, MCP, 권한, 버전, auto 재개, 세션 복구와 제거">
+<link rel="canonical" href="https://ouroboros.page/learn/troubleshooting/">
+<link rel="stylesheet" href="../learn.css">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="주 메뉴">
+<a href="../">가이드</a>
+<a href="https://github.com/Q00/ouroboros#quick-start">설치</a>
+<a href="../glossary/">용어사전</a>
+<a href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">테마</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout">
+<aside class="toc">
+<strong>증상 목록</strong>
+<ol>
+<li><a href="#command">7.1 ooo 명령 오류</a></li>
+<li><a href="#mcp">7.2 MCP 연결 오류</a></li>
+<li><a href="#auto-resume">7.5 auto 재개</a></li>
+<li><a href="#session">7.6 실행 복구</a></li>
+<li><a href="#stagnation">7.8 같은 실패 반복</a></li>
+<li><a href="#map">7.11 명령 확인</a></li>
+</ol>
+</aside>
+<article>
+<div class="eyebrow">07 · 문제 해결</div>
+<h1>7. 문제 해결</h1>
+<p class="lead">오류 문구를 그대로 확인한 뒤 설치, 로그인, MCP 연결, 실행 세션 중 어느 단계에서 멈췄는지 찾습니다.</p>
+<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>Ubuntu 24.04 · Claude Code 2.1.210</span><span>2026-07-16 확인</span></div>
+<h2 id="command">7.1 ooo 명령을 찾을 수 없음</h2>
+<p><code>ooo</code>를 일반 터미널에 입력했는지 먼저 확인합니다. 이 가이드의 <code>ooo interview</code> 같은 명령은 로그인한 Claude Code 세션 안에서 사용합니다.</p>
+<pre><code>claude plugin list</code></pre>
+<p><code>ouroboros@ouroboros</code>가 enabled가 아니면 다시 설치합니다.</p>
+<pre><code>claude plugin install ouroboros@ouroboros --force</code></pre>
+<p><code>Not logged in · Please run /login</code>이 나오면 Claude Code에서 <code>/login</code>을 먼저 마칩니다. 이 가이드의 실측도 이 지점까지 진행했습니다.</p>
+<h2 id="mcp">7.2 Interview 후 run 또는 status 실패</h2>
+<p>plugin 기능은 읽혔지만 Core의 MCP 서버가 연결되지 않은 상태일 수 있습니다. Claude Code에서 <code>/mcp</code>로 Ouroboros 상태를 확인하고 순서대로 진행합니다.</p>
+<pre><code>ooo setup
+ooo update</code></pre>
+<p>setup 뒤 Claude Code를 완전히 닫고 다시 엽니다. standalone 설치라면 터미널에서 아래 정보를 확인합니다.</p>
+<pre><code>ouroboros mcp info
+ouroboros status health</code></pre>
+<h2>7.3 권한 오류로 파일 수정 실패</h2>
+<p>runtime의 로그인과 프로젝트 폴더 쓰기 권한을 확인합니다. Ouroboros는 runtime의 승인 장치를 우회하지 않습니다. 읽기 전용 폴더라면 쓸 수 있는 작업 폴더로 옮기고 Seed의 경로도 갱신합니다.</p>
+<h2>7.4 업데이트 후 명령 변경</h2>
+<p><code>ooo update</code>를 실행하고 세션을 다시 엽니다. 이 글 상단의 확인 버전과 현재 버전이 다르면 최신 upstream의 Getting Started와 CLI Reference를 기준으로 삼습니다.</p>
+<h2 id="auto-resume">7.5 중단된 auto 재개</h2>
+<p><code>ooo auto</code>가 A등급 게이트나 중간 오류로 멈추면 출력에 <code>auto_session_id</code>가 남습니다. 같은 자동 세션을 이어가려면 재개 명령을 실행합니다.</p>
+<pre><code>ooo auto --resume &lt;auto_session_id&gt;</code></pre>
+<p>ID를 잃었다면 아래의 실행 세션 복구 절차로 중단된 세션을 먼저 찾습니다.</p>
+<h2 id="session">7.6 닫힌 창의 실행 복구</h2>
+<pre><code>ooo resume-session</code></pre>
+<p>EventStore를 직접 읽어 running이나 paused 세션을 보여줍니다. MCP 서버가 꺼져 있어도 읽을 수 있습니다. 원래 Seed 파일이 있다면 표시된 session ID로 재개합니다.</p>
+<pre><code>ouroboros run workflow --orchestrator --resume &lt;session_id&gt; &lt;seed.yaml&gt;</code></pre>
+<p>상태만 먼저 보고 싶다면 <code>ouroboros tui monitor</code>를 엽니다.</p>
+<h2>7.7 실행 취소</h2>
+<pre><code>ooo cancel</code></pre>
+<p>활성 실행 목록에서 고르거나 execution ID를 전달합니다. 셸에서는 <code>ouroboros cancel execution &lt;execution_id&gt;</code>을 사용합니다. 취소 뒤 <code>ooo status</code>로 상태를 확인합니다.</p>
+<h2 id="stagnation">7.8 같은 실패 반복</h2>
+<p>Stagnation은 반복 실행을 해도 결과가 나아지지 않는 상태입니다. 같은 구조와 피드백이 반복되면 실행을 멈추고 접근 방법을 바꿉니다.</p>
+<pre><code>ooo unstuck</code></pre>
+<p>현재 문제와 이미 시도한 방법을 함께 전달합니다. <code>unstuck</code>은 구현, 조사, 단순화, 구조, 반대 검토의 다섯 관점에서 다른 해결 방법을 제안합니다. 사용할 방법은 사람이 선택합니다.</p>
+<h2>7.9 제거</h2>
+<p>먼저 삭제 범위를 미리 확인합니다.</p>
+<pre><code>ouroboros uninstall --dry-run</code></pre>
+<p><code>ouroboros uninstall</code>은 MCP 등록, 프로젝트 설정과 <code>~/.ouroboros/</code> 데이터를 제거합니다. 데이터를 남기려면 <code>--keep-data</code>를 사용합니다. Claude 플러그인은 별도로 제거합니다.</p>
+<pre><code>claude plugin uninstall ouroboros</code></pre>
+<h2>7.10 공식 도움 요청</h2>
+<ul>
+<li><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Getting Started</a></li>
+<li><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a></li>
+<li><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></li>
+<li><a href="https://github.com/Q00/ouroboros/discussions">GitHub Discussions</a></li>
+</ul>
+<h2 id="map">7.11 기능별 명령 확인</h2>
+<div class="loop">
+<div><b>시작</b>setup, tutorial, help, update</div>
+<div><b>명료화</b>interview, seed, auto, pm</div>
+<div><b>실행</b>run, status, resume-session, cancel</div>
+<div><b>검증</b>evaluate, qa, Drift</div>
+<div><b>진화</b>evolve, ralph, unstuck</div>
+<div><b>이관</b>brownfield, publish</div>
+</div>
+<p>낯선 용어는 <a href="../glossary/">용어사전</a>에서 다시 확인합니다.</p>
+<nav class="pager" aria-label="장 이동"><a href="../how-it-works/#evolve">← 이전 장<br><strong>6. 수정과 프로젝트 이관</strong></a><a href="../">가이드 홈 →<br><strong>전체 목차</strong></a></nav>
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">공식 문서</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js"></script>
+</body>
+</html>

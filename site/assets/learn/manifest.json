@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "verified_ouroboros_version": "0.50.4",
+  "upstream_sha": "456a1347195038ad0eea2bcfee21efee495d6cb9",
+  "captures": [
+    {
+      "source": "http://127.0.0.1:4173/learn/start/",
+      "original": "ch01-guide-start-original.png",
+      "annotated": null,
+      "chapter": 1,
+      "order": 1,
+      "os": "Ubuntu 24.04 (Linux 6.8.0-106-generic)",
+      "runtime": "Google Chrome headless via Playwright",
+      "version": "Ouroboros 0.50.4, Claude Code 2.1.210",
+      "captured_at": "2026-07-16",
+      "caption": "실제로 구현해 브라우저에서 연 1장 시작 화면",
+      "alt": "Ouroboros 한국어 가이드 1장과 할 일 웹앱 범위 예시가 보이는 브라우저 화면",
+      "redactions": []
+    },
+    {
+      "source": "dev/active/ouroboros-beginner-guide/logs/ch02-install-2026-07-16.txt",
+      "original": "ch02-plugin-install-original.png",
+      "annotated": null,
+      "chapter": 2,
+      "order": 1,
+      "os": "Ubuntu 24.04 (Linux 6.8.0-106-generic)",
+      "runtime": "Claude Code CLI 2.1.210",
+      "version": "Ouroboros plugin 0.50.4",
+      "captured_at": "2026-07-16",
+      "caption": "Claude Code marketplace 등록과 Ouroboros 플러그인 설치 실측",
+      "alt": "Ouroboros 0.50.4 플러그인이 enabled 상태인 실제 터미널 출력",
+      "redactions": []
+    }
+  ]
+}
