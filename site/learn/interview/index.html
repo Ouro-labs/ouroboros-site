@@ -54,7 +54,7 @@
 <p>답은 자유 문장으로 하면 됩니다. 모르는 항목은 모른다고 답하고 제안을 받는 편이, 대충 답하는 것보다 낫습니다.</p>
 <h2 id="score">5.4 Ambiguity Score</h2>
 <figure class="diagram"><img src="../../assets/learn/diagrams/interview-score.png" alt="문답이 진행되며 Ambiguity Score가 0.5에서 0.15로 내려가고 0.2 게이트를 통과하는 도해" width="1536" height="1024" loading="lazy"><figcaption>답이 쌓일수록 점수가 내려가고, 0.2 이하가 되면 Seed를 만들 수 있습니다.</figcaption></figure>
-<p>Ambiguity Score는 요구사항에 남은 모호함을 0~1로 나타낸 값입니다. 목표 명확성 40%, 제약 명확성 30%, 성공 기준 명확성 30%의 가중 합으로 계산합니다. 0에 가까울수록 분명한 상태입니다.</p>
+<p>Ambiguity Score는 요구사항에 남은 모호함을 0~1로 나타낸 값입니다. 목표 40%, 제약 30%, 성공 기준 30%의 가중치로 각 항목의 명확도를 평균한 뒤, 그 값을 1에서 뺀 것이 점수입니다. 0에 가까울수록 분명한 상태입니다.</p>
 <h2 id="end">5.5 종료 조건</h2>
 <p>점수가 0.2 이하로 내려가면 Interview가 충분하다고 판단하고 Seed 생성 단계로 넘어갈 수 있습니다. 점수가 낮아도 내용이 사용자 의도와 다르면 진행해서는 안 되므로, 숫자와 함께 정리된 내용을 확인합니다.</p>
 <h2 id="session">5.6 session_id</h2>

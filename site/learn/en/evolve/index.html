@@ -50,7 +50,7 @@
 <thead><tr><th>Condition</th><th>Criterion</th></tr></thead>
 <tbody>
 <tr><td>Convergence</td><td>When the Ontology similarity of two consecutive generations is 0.95 or higher, the data structure is considered stable and iteration stops.</td></tr>
-<tr><td>Stagnation</td><td>When similarity stays at or above the threshold for 3 consecutive generations, nothing more is expected to change and iteration stops.</td></tr>
+<tr><td>Stagnation</td><td>When similarity stays at or above the Convergence threshold (0.95) for 3 consecutive generations, nothing more is expected to change and iteration stops.</td></tr>
 <tr><td>Oscillation</td><td>Stops when the structure keeps returning to the one from two generations earlier.</td></tr>
 <tr><td>Generation cap</td><td>Stops at a maximum of 30 generations.</td></tr>
 </tbody>
@@ -59,7 +59,7 @@
 <h2 id="ralph">9.5 Ralph — automatic iteration</h2>
 <p>Instead of calling evolve yourself each generation, hand the iteration to Ralph until a stop condition is reached. Pass the <code>lineage_id</code> from 9.2.</p>
 <pre><code>ooo ralph --lineage-id &lt;lineage_id&gt;</code></pre>
-<p class="result-note">Expected result: a background job starts and its job ID is printed. Generations repeat until one of: QA passes, Convergence, cancellation, an unrecoverable failure, the generation cap, repeated identical results detected, a regressing grade, or a time limit.</p>
+<p class="result-note">Expected result: a background job starts and its job ID is printed. Generations repeat until one of: QA passes, an automatic stop condition from 9.4 (Convergence, Stagnation, Oscillation, or the generation cap), cancellation, an unrecoverable failure, a regressing grade, or a time limit.</p>
 <h2 id="human">9.6 When you should stop it</h2>
 <p>More automatic iterations do not guarantee quality. Stop the loop and reset direction yourself when:</p>
 <ul>

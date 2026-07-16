@@ -57,6 +57,12 @@ ontology_schema:
       type: string
     - name: completed
       type: boolean
+evaluation_principles:
+  - name: completeness
+    description: every acceptance criterion actually works
+exit_conditions:
+  - name: all_criteria_met
+    description: all acceptance criteria pass
 metadata:
   ambiguity_score: 0.15</code></pre>
 <h2 id="fields">6.3 Field-by-field review</h2>
@@ -66,7 +72,7 @@ metadata:
 <tr><td>Goal</td><td>What this run should produce</td><td>Check it states what a user must be able to do. Fix unjudgeable wording like "a pretty app".</td></tr>
 <tr><td>Constraints</td><td>Limits that must hold</td><td>Check the technical, environmental, and scope limits match your answers. In the example: one user, localStorage.</td></tr>
 <tr><td>Acceptance Criteria</td><td>Criteria for judging completion</td><td>Check each item can be verified directly on screen or by a test. Chapter 8's evaluation compares against these.</td></tr>
-<tr><td>Ontology</td><td>Structure of the data handled</td><td>Check field names and types match the feature. In the example: title (string) and completed (boolean).</td></tr>
+<tr><td>Ontology<br><span style="font-weight:400;color:var(--muted)">(YAML key ontology_schema)</span></td><td>Structure of the data handled</td><td>Check field names and types match the feature. In the example: title (string) and completed (boolean).</td></tr>
 <tr><td>Evaluation Principles</td><td>Principles weighted in evaluation</td><td>Check the emphasis, such as completeness, matches your intent.</td></tr>
 <tr><td>Exit Conditions</td><td>When the work ends</td><td>Check it states which state counts as finished.</td></tr>
 </tbody>

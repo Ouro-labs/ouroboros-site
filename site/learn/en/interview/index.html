@@ -54,9 +54,9 @@
 <p>Answer in plain sentences. If you do not know, say so and take a suggestion; that is better than a vague answer.</p>
 <h2 id="score">5.4 Ambiguity Score</h2>
 <figure class="diagram"><img src="../../../assets/learn/diagrams/interview-score.png" alt="Diagram: as questions and answers proceed, the Ambiguity Score falls from 0.5 to 0.15 and passes the 0.2 gate" width="1536" height="1024" loading="lazy"><figcaption>As answers accumulate the score falls; at 0.2 or below a Seed can be generated.</figcaption></figure>
-<p>The Ambiguity Score expresses the remaining ambiguity in the requirements as a value from 0 to 1. It is a weighted sum: goal clarity 40%, constraint clarity 30%, success-criteria clarity 30%. Closer to 0 means clearer.</p>
+<p>The Ambiguity Score expresses the remaining ambiguity in the requirements as a value from 0 to 1. The clarity of the goal (weighted 40%), constraints (30%), and success criteria (30%) is averaged, and the score is 1 minus that average. Closer to 0 means clearer.</p>
 <h2 id="end">5.5 Exit condition</h2>
-<p>When the score drops to 0.2 or below, the Interview is considered sufficient and Seed generation can proceed. A low score with wrong content must still not proceed, so check the summarized content together with the number.</p>
+<p>When the score drops to 0.2 or below, the Interview is considered sufficient and Seed generation can proceed. A low score can still hide wrong content, so review the summary along with the number before generating a Seed.</p>
 <h2 id="session">5.6 session_id</h2>
 <p>When the Interview ends, a <code>session_id</code> remains in the output. Copy it; the next chapter uses it as the input for Seed generation.</p>
 <h2 id="auto">5.7 One command from questions to execution — auto</h2>
