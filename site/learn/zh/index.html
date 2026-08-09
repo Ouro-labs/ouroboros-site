@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ouroboros 指南</title>
+<meta name="description" content="Ouroboros 是什么、怎么装、怎么用的中文说明">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/">
+<link rel="stylesheet" href="../learn.css?v=3">
+<link rel="icon" href="../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a aria-current="page" href="../zh/">指南</a>
+<a href="../en/install/">安装</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/" hreflang="ko">KO</a><a href="/learn/en/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">指南</div>
+<h1>Ouroboros 指南</h1>
+<p class="lead">Ouroboros 管理 AI 编码工作的需求、执行、评估和记录。你的编码 agent（Claude Code、Codex）写代码，Ouroboros 在开工前把规约钉住，在收工后验证结果。</p>
+
+<h2 id="start">先看这三份</h2>
+<div class="chapters paths">
+<a class="chapter-row" href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md"><b>1</b><strong>中文 README</strong><span>它是什么、怎么装、13 个运行时怎么接。</span></a>
+<a class="chapter-row" href="https://github.com/Q00/ouroboros/blob/main/docs/hidden-checklist-convergence/README.zh-CN.md"><b>2</b><strong>隐藏清单收敛（设计说明）</strong><span>run 到评估到有预算的演化链，以及判分断言为什么对 worker 隐藏。</span></a>
+<a class="chapter-row" href="https://github.com/Q00/ouroboros/discussions/1979"><b>3</b><strong>循环工程</strong><span>为什么 agent 循环会「刷分」，以及怎么让它真正收敛。</span></a>
+</div>
+
+<h2 id="install">装上试一下</h2>
+<p>在终端里跑：</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros</code></pre>
+<p>需要 Claude Code，不需要 Python。想要独立的命令行工具就用 <code>pip install ouroboros-ai</code>，详见<a href="../en/install/">安装章节</a>。</p>
+
+<h2 id="loop">一句话说清楚它做什么</h2>
+<p>你给一句话需求，它先反问，把模糊度打成分数；分数没降到阈值以下就不生成规约。规约定下来之后，一条命令驱动执行、三阶段评估和有预算上限的演化循环。判分用的验证命令和断言对执行 agent 隐藏，所以卡住的 agent 没法去糊弄断言字符串。</p>
+
+<h2 id="more">完整章节</h2>
+<p>逐章指南目前有<a href="../en/">英文</a>和<a href="../">한국어</a>两个版本，中文版正在补。上面三份中文材料覆盖了大部分内容；有想先看到哪一章的，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../learn.js?v=3"></script>
+</body>
+</html>
