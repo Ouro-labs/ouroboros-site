@@ -1,15 +1,203 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ouroboros.page/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url><loc>https://ouroboros.page/roadmap/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://ouroboros.page/learn/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://ouroboros.page/learn/start/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://ouroboros.page/learn/first-loop/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://ouroboros.page/learn/how-it-works/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://ouroboros.page/learn/troubleshooting/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ouroboros.page/learn/glossary/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url>
+    <loc>https://ouroboros.page/learn/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/architecture/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/architecture/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/architecture/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/architecture/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/evaluate/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evaluate/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evaluate/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evolve/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/execute/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/execute/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/execute/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/existing-project/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/existing-project/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/existing-project/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/glossary/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/glossary/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/install/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/install/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/install/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/interview/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/interview/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/interview/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/seed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/seed/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/seed/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/troubleshooting/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/troubleshooting/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/troubleshooting/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/what-is-ouroboros/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/what-is-ouroboros/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/what-is-ouroboros/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/en/why-ouroboros/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/why-ouroboros/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/why-ouroboros/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/evaluate/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evaluate/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evaluate/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evolve/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/execute/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/execute/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/execute/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/existing-project/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/existing-project/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/existing-project/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/glossary/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/glossary/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/install/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/install/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/install/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/interview/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/interview/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/interview/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/seed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/seed/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/seed/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/troubleshooting/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/troubleshooting/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/troubleshooting/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/what-is-ouroboros/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/what-is-ouroboros/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/what-is-ouroboros/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/why-ouroboros/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/why-ouroboros/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/why-ouroboros/"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/learn/zh/</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ouroboros.page/roadmap/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
