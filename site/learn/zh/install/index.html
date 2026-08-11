@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>安装 — Ouroboros 指南</title>
+<meta name="description" content="用 Claude Code 插件装 Ouroboros，或者装独立命令行工具。每一步都写了预期结果。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/install/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/install/">
+<meta property="og:title" content="安装 — Ouroboros 指南">
+<meta property="og:description" content="用 Claude Code 插件装 Ouroboros，或者装独立命令行工具。每一步都写了预期结果。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="安装 — Ouroboros 指南">
+<meta name="twitter:description" content="用 Claude Code 插件装 Ouroboros，或者装独立命令行工具。每一步都写了预期结果。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/install/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/install/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/install/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a aria-current="page" href="./">安装</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/install/" hreflang="ko">KO</a><a href="/learn/en/install/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/install/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">安装</div>
+<h1>安装 Ouroboros</h1>
+<p class="lead">默认路径是 Claude Code 插件：登录、装插件、<code>ooo setup</code>、验证，四步。文末另有不依赖 Claude Code 的独立命令行装法。</p>
+
+<h2 id="prereq">1. 装之前先确认</h2>
+<ul>
+<li>装好并且支持插件的 <strong>Claude Code</strong>。</li>
+<li>主机上要有 <strong>uv</strong>。插件的 MCP 描述符用 <code>uvx</code> 拉起服务，技能那边也拿它当 Python ≥ 3.12 的兜底。用 <code>pipx install uv</code>、<code>pip install --user uv</code> 或者 <code>brew install uv</code> 都行。</li>
+<li>Windows 上请在 <strong>WSL 2</strong> 里按 Linux 的步骤走。</li>
+</ul>
+<p>你不需要单独准备一个全局 Python 环境，但 <code>uv</code> 是要的——这一点英文版那页没写清楚，这里补上。</p>
+
+<h2 id="login">2. 登录 Claude Code</h2>
+<p>在终端开一个 Claude Code 会话：</p>
+<pre><code>claude</code></pre>
+<p>然后在会话里登录：</p>
+<pre><code>/login</code></pre>
+<p><strong>预期结果：</strong>浏览器认证之后，会话显示已登录。没登录的话，后面的 <code>ooo</code> 命令不会工作。</p>
+
+<h2 id="plugin">3. 装插件</h2>
+<p>下面这条在<strong>普通终端</strong>里跑，不是在 Claude Code 里面。</p>
+<pre><code>claude plugin marketplace add Q00/ouroboros &amp;&amp; claude plugin install ouroboros@ouroboros</code></pre>
+<p><strong>预期结果：</strong><code>claude plugin list</code> 里能看到 <code>ouroboros@ouroboros</code> 处于 enabled。</p>
+
+<h2 id="setup">4. <code>ooo setup</code> — 把 Core 通过 MCP 接上</h2>
+<p>在你要干活的项目目录里开一个 Claude Code 会话，输入：</p>
+<pre><code>ooo setup</code></pre>
+<p><code>ooo setup</code> 会把 Ouroboros Core 的 MCP 服务注册到全局，只需要做一次。它还可以顺手往项目的 <code>CLAUDE.md</code> 里加一段命令摘要。</p>
+<p><strong>预期结果：</strong>出现确认 MCP 服务已注册的提示。注册完请把 Claude Code 完全关掉再重开。</p>
+
+<h2 id="verify">5. 验证</h2>
+<p>在 Claude Code 会话里跑：</p>
+<pre><code>ooo help</code></pre>
+<p><strong>预期结果：</strong>列出命令，里面应该有 interview、seed、run、evaluate。</p>
+
+<h2 id="update">6. 更新</h2>
+<pre><code>ooo update</code></pre>
+<p><strong>预期结果：</strong>比较当前版本和最新版本，按你的安装方式更新。更新完重开 Claude Code 会话。</p>
+
+<h2 id="done">7. 算装好了的标准</h2>
+<ul>
+<li><code>claude plugin list</code> 里 <code>ouroboros@ouroboros</code> 是 enabled。</li>
+<li><code>ooo help</code> 能打印出命令列表。</li>
+<li>Claude Code 的 <code>/mcp</code> 里 ouroboros 服务显示为已连接。</li>
+</ul>
+
+<h2 id="cli">不用 Claude Code，直接装命令行</h2>
+<p>独立命令行需要 Python 3.12 或更新版本，在普通终端里装：</p>
+<pre><code>pip install ouroboros-ai
+ouroboros setup</code></pre>
+<p>这条装的是<strong>基础包</strong>。如果你要的是 MCP 服务本身（比如接 Kiro 这类运行时），装带 extra 的版本：</p>
+<pre><code>pipx install 'ouroboros-ai[mcp]'   # 或者：uv tool install 'ouroboros-ai[mcp]'</code></pre>
+<p>其他运行时用 <code>ouroboros setup --runtime codex</code> 这样选。各运行时的完整说明在 <a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a> 里。</p>
+
+<h2 id="trouble">装不上的时候</h2>
+<p>如果插件起不来、报 <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code>，先确认版本。0.51.1 修了这个启动失败：在那之前，已有环境里的 <code>mcp</code> 可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。用 <code>ooo update</code> 升到最新版再试。</p>
+
+<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。英文版那页标着 0.50.4，有些地方已经落后。发现对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
