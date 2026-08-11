@@ -78,12 +78,8 @@
 <p>模糊度把「需求里还剩多少没说清」表达成 0 到 1 之间的一个值。目标的清晰度（权重 40%）、约束（30%）、成功标准（30%）加权平均，分数是 1 减去这个平均值。越接近 0 越清楚。阈值是 <strong>0.2</strong>。</p>
 
 <h2 id="gate">5. 什么时候可以往下走</h2>
-<p><strong>访谈还开着的时候</strong>，分数高于 0.2 会挡住规约生成。但绕过这道门槛的路有两条：</p>
-<ul>
-<li>显式传入 <code>force</code>——CLI 会把这个选项直接摆在屏幕上；</li>
-<li>把访谈标记为<strong>完成</strong>——完成状态下，即使存着的分数是 0.8 也会直接通过。</li>
-</ul>
-<p>第二条看起来根本不像在绕过门槛，所以它其实比 <code>force</code> 更值得你知道。这道门槛是一个<strong>可以被反驳的默认值</strong>，不是锁。</p>
+<p>分数高于 0.2 会挡住规约生成。<strong>绕过它的办法只有一个：显式传入 <code>force</code></strong>——CLI 会把这个选项和继续、取消并排摆在屏幕上。这道门槛是一个<strong>可以被反驳的默认值</strong>，不是锁。</p>
+<p><strong>这里我先写错过一次，把经过留在这儿。</strong>我在 <code>mcp/tools/authoring_handlers.py:1385</code> 看到插件分发路径会在访谈被标记为完成时跳过它自己的预检查，就写成「绕过的路有两条」。<strong>那是错的</strong>：真正的闸在 <code>bigbang/seed_generator.py:1762-1780</code>（<code>if force / elif not is_ready_for_seed → ValidationError</code>），那里<strong>没有 <code>is_complete</code> 分支</strong>，而 <code>:1573</code> 把 <code>force</code> 原样传下去。我找到第一道闸就停了，没问下面还有没有第二道。</p>
 <p>还有一点：分数低不代表内容对。它衡量的是你把它的问题答得多完整，不是答案本身是否为真。<strong>一个自信地答错的人也能拿到好分数。</strong>所以生成规约之前，把数字和摘要一起看一遍。</p>
 
 <h2 id="session">6. session_id</h2>
@@ -95,7 +91,7 @@
 <p><strong>预期结果：</strong>提问轮次自动进行，然后进入规约生成和执行。中途停下来的话，输出里会有一个 <code>auto_session_id</code>，用它可以接着跑。</p>
 <p><strong>它不会拿一份没准备好的规约去执行。</strong>auto 模式有一道确定性的 A 级闸：只有等级判定为 A 且没有 blocker 时才放行（<code>auto/grading.py</code> 里是 <code>may_run = grade == SeedGrade.A and not blockers</code>；被挡下来时 <code>auto/pipeline.py</code> 会以 <code>grade_gate</code> 的名义标记 blocked）。等级分 A / B / C 三档。</p>
 
-<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，那是必要条件的说法，实际上通过的路有两条（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话是对的，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。真正的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。现在第 7 节按实际情况补上了。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，读起来像必要条件，但准确的说法是「高于阈值会被挡住，显式 force 可以通过」（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话是对的，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。真正的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。现在第 7 节按实际情况补上了。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 </article>
 </main>
