@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>访谈 — Ouroboros 指南</title>
+<meta name="description" content="访谈把你还没决定的事情逐条问出来，并把模糊度打成 0 到 1 的分数。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/interview/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/interview/">
+<meta property="og:title" content="访谈 — Ouroboros 指南">
+<meta property="og:description" content="访谈把你还没决定的事情逐条问出来，并把模糊度打成 0 到 1 的分数。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="访谈 — Ouroboros 指南">
+<meta name="twitter:description" content="访谈把你还没决定的事情逐条问出来，并把模糊度打成 0 到 1 的分数。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/interview/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/interview/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/interview/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a aria-current="page" href="./">访谈</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/interview/" hreflang="ko">KO</a><a href="/learn/en/interview/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/interview/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">访谈</div>
+<h1>访谈</h1>
+<p class="lead">你的想法里有一堆还没做的决定。访谈把它们找出来，一条一条问你，然后把答案攒成下一步生成规约的原料。一句话的输入就够开始。</p>
+
+<h2 id="what">1. 它到底在干什么</h2>
+<p>「做个待办事项应用」这句话没有决定数据存哪、勾选之后怎么处理。这类决定会实打实改变结果。访谈负责把它们挑出来问清楚。</p>
+
+<h2 id="start">2. 开始</h2>
+<p>在 Claude Code 会话里跑：</p>
+<pre><code>ooo interview "一个能记下今天的待办、勾掉已完成的简单网页应用"</code></pre>
+<p><strong>预期结果：</strong>出现第一个问题。问题的数量和顺序取决于你的想法本身。想先空跑一遍熟悉流程，可以先跑 <code>ooo tutorial</code>。</p>
+
+<h2 id="answer">3. 怎么答</h2>
+<p>每个问题钉住一个决定。拿上面的例子来说：</p>
+<table>
+<thead><tr><th>问题主题</th><th>示例回答</th><th>钉住的决定</th></tr></thead>
+<tbody>
+<tr><td>数据持久化</td><td>「刷新之后还得在」</td><td>存储方式</td></tr>
+<tr><td>完成状态</td><td>「别删掉，划一道线就行」</td><td>已完成怎么呈现</td></tr>
+<tr><td>使用范围</td><td>「就我一个人用」</td><td>排除账号和同步</td></tr>
+</tbody>
+</table>
+<p>用大白话答就行。真不知道的时候，直接说不知道、让它给个建议，比含糊地答一句强。</p>
+
+<h2 id="score">4. 模糊度分数</h2>
+<p>模糊度把「需求里还剩多少没说清」表达成 0 到 1 之间的一个值。目标的清晰度（权重 40%）、约束（30%）、成功标准（30%）加权平均，分数是 1 减去这个平均值。越接近 0 越清楚。阈值是 <strong>0.2</strong>。</p>
+
+<h2 id="gate">5. 什么时候可以往下走</h2>
+<p><strong>访谈还开着的时候</strong>，分数高于 0.2 会挡住规约生成。但绕过这道门槛的路有两条：</p>
+<ul>
+<li>显式传入 <code>force</code>——CLI 会把这个选项直接摆在屏幕上；</li>
+<li>把访谈标记为<strong>完成</strong>——完成状态下，即使存着的分数是 0.8 也会直接通过。</li>
+</ul>
+<p>第二条看起来根本不像在绕过门槛，所以它其实比 <code>force</code> 更值得你知道。这道门槛是一个<strong>可以被反驳的默认值</strong>，不是锁。</p>
+<p>还有一点：分数低不代表内容对。它衡量的是你把它的问题答得多完整，不是答案本身是否为真。<strong>一个自信地答错的人也能拿到好分数。</strong>所以生成规约之前，把数字和摘要一起看一遍。</p>
+
+<h2 id="session">6. session_id</h2>
+<p>访谈结束时，输出里会留下一个 <code>session_id</code>。把它复制下来，下一章生成规约要用它作为输入。</p>
+
+<h2 id="auto">7. 从提问到执行一条命令跑完 — auto</h2>
+<p>想把提问、生成规约、执行交给一条命令：</p>
+<pre><code>ooo auto "一个能记下今天的待办、勾掉已完成的简单网页应用"</code></pre>
+<p><strong>预期结果：</strong>提问轮次自动进行，然后进入规约生成和执行。中途停下来的话，输出里会有一个 <code>auto_session_id</code>，用它可以接着跑。</p>
+
+<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，那是必要条件的说法，实际上通过的路有两条（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」，我在源码里没找到这个门槛，所以这里没写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
