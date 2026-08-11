@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>规约（Seed） — Ouroboros 指南</title>
+<meta name="description" content="访谈的答案会被整理成一个叫 Seed 的工作规约文件。开跑之前，先确认这个文件和你的回答对得上。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/seed/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/seed/">
+<meta property="og:title" content="规约（Seed） — Ouroboros 指南">
+<meta property="og:description" content="访谈的答案会被整理成一个叫 Seed 的工作规约文件。开跑之前，先确认这个文件和你的回答对得上。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="规约（Seed） — Ouroboros 指南">
+<meta name="twitter:description" content="访谈的答案会被整理成一个叫 Seed 的工作规约文件。开跑之前，先确认这个文件和你的回答对得上。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/seed/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/seed/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/seed/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a href="../interview/">访谈</a>
+<a aria-current="page" href="./">规约</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/seed/" hreflang="ko">KO</a><a href="/learn/en/seed/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/seed/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">规约</div>
+<h1>规约（Seed）</h1>
+<p class="lead">访谈的答案被整理成一个 YAML 文件，叫 Seed。运行时照着它写代码，评估也照着它判分。开跑之前先读一遍，确认它写的是你想要的东西。</p>
+
+<h2 id="what">1. 它是什么</h2>
+<p>Seed 是一个 YAML 文件，装着目标、约束、验收标准和数据结构。<strong>一次运行开始之后，这次运行里的 Seed 不会再变。</strong></p>
+
+<h2 id="gen">2. 生成</h2>
+<p>在 Claude Code 会话里，用上一章拿到的 <code>session_id</code>：</p>
+<pre><code>ooo seed &lt;session_id&gt;</code></pre>
+<p><strong>预期结果：</strong>生成 Seed，存成 YAML 文件，默认落在 <code>~/.ouroboros/seeds/</code> 下面。</p>
+
+<h2 id="fields">3. 七个字段</h2>
+<p>Seed 的顶层字段就是下面这七个（<code>core/seed.py</code>）：</p>
+<table>
+<thead><tr><th>字段</th><th>装什么</th><th>怎么检查</th></tr></thead>
+<tbody>
+<tr><td><code>goal</code></td><td>这次运行要产出什么</td><td>看它说的是「用户能做到什么」。像「做得好看点」这种没法判的说法要改掉。</td></tr>
+<tr><td><code>constraints</code></td><td>必须守住的限制</td><td>技术、环境、范围三类限制和你的回答对不对得上。</td></tr>
+<tr><td><code>acceptance_criteria</code></td><td>判断做完了的标准</td><td>每一条都要能在屏幕上看到、或者能被测试直接验。评估那一章就是拿这些来比对。</td></tr>
+<tr><td><code>ontology_schema</code></td><td>要处理的数据结构</td><td>字段名和类型跟功能对得上。</td></tr>
+<tr><td><code>evaluation_principles</code></td><td>评估时加权的原则</td><td>看重点放对了没有。</td></tr>
+<tr><td><code>exit_conditions</code></td><td>什么时候算结束</td><td>结束条件是不是可判定的。</td></tr>
+<tr><td><code>metadata</code></td><td>模糊度分数等元信息</td><td>上一章那个分数会记在这里。</td></tr>
+</tbody>
+</table>
+
+<h2 id="hide">4. 判分用的东西不进 worker 的契约块</h2>
+<p>当一条验收标准定义了自己的<strong>验证命令</strong>或<strong>期望输出</strong>时，那些值不会进执行 agent 拿到的契约块，也没有开关能把它放回去。原因很直接：断言一旦看得见，卡住的 agent 最省力的路就是去糊弄那个字符串，而不是把功能做出来。</p>
+<p>两点要说清楚，免得你以为它比实际更严实：</p>
+<ul>
+<li><strong>这两个字段是可选的。</strong>没有定义验证命令和期望输出的验收标准是合法存在的，所以别把这条读成「每一条都被藏起来」。</li>
+<li><strong>契约块之外的脱敏是逐字的，只覆盖五种编码。</strong>换个形状的副本仍然会漏。这个缺口挂着公开 issue，没有藏着说已经解决。</li>
+</ul>
+<p>另外，项目级的 lint 和 test 命令是<strong>故意</strong>给 agent 的。藏起来的是那条标准自己的答案，不是所有命令。</p>
+
+<h2 id="eternal">5. 进化的时候什么会变、什么不会</h2>
+<p>评估没过而进入演化循环时，验收标准不会被悄悄改松。代码里的做法是：<strong>只有散文描述会被重写，其余字段整份从父代继承过来</strong>（<code>evolution/acceptance_contracts.py</code> 的 <code>evolve_acceptance_contracts</code>）。新的标准可以往后追加，已有的不能删、也不能重排。</p>
+<p>这条设计是为了堵一个具体的漏洞：让 agent 自己出考题，它迟早会把题目改容易。</p>
+
+<h2 id="next">6. 下一步</h2>
+<p>确认 Seed 没问题之后，就可以进入执行。逐章指南的执行、评估、演化目前在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里，中文这几章在补。</p>
+
+<p class="note">这一页对着当前源码核过：七个字段来自 <code>core/seed.py</code>，存储路径来自 <code>auto/adapters.py</code>，继承规则来自 <code>evolution/acceptance_contracts.py</code>。英文版那页标着 0.50.4。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
