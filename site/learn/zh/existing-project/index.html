@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>现有项目 — Ouroboros 指南</title>
+<meta name="description" content="把已经有代码的仓库接进来，访谈就不再凭空猜，而是照着现有代码和约束提问。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/existing-project/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/existing-project/">
+<meta property="og:title" content="现有项目 — Ouroboros 指南">
+<meta property="og:description" content="把已经有代码的仓库接进来，访谈就不再凭空猜，而是照着现有代码和约束提问。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="现有项目 — Ouroboros 指南">
+<meta name="twitter:description" content="把已经有代码的仓库接进来，访谈就不再凭空猜，而是照着现有代码和约束提问。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/existing-project/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/existing-project/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/existing-project/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a href="../evaluate/">评估</a>
+<a href="../evolve/">演化</a>
+<a href="../what-is-ouroboros/">是什么</a>
+<a href="../install/">安装</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/existing-project/" hreflang="ko">KO</a><a href="/learn/en/existing-project/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/existing-project/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">现有项目</div>
+<h1>现有项目（brownfield）</h1>
+<p class="lead">前面几章的例子都是从零开始。真实情况多半不是——你手上已经有一个仓库。把它接进来之后，访谈会照着现有代码和约束提问，而不是像新项目那样凭空猜。</p>
+
+<h2 id="diff">1. 接进来之后有什么不一样</h2>
+<p>不只是「问题换个问法」。<strong>模糊度的算法本身会换一套。</strong></p>
+<table>
+<thead><tr><th>维度</th><th>新项目权重</th><th>现有项目权重</th></tr></thead>
+<tbody>
+<tr><td>目标清晰度</td><td>40%</td><td>35%</td></tr>
+<tr><td>约束清晰度</td><td>30%</td><td>25%</td></tr>
+<tr><td>成功标准</td><td>30%</td><td>25%</td></tr>
+<tr><td><strong>上下文清晰度</strong></td><td>—</td><td><strong>15%</strong></td></tr>
+</tbody>
+</table>
+<p>现有项目多出来的第四个维度是「你摸清现有代码库了吗」，而且它还有一条<strong>单独的下限 0.60</strong>。也就是说：总分够了但对现有代码理解不足，照样过不去。</p>
+
+<h2 id="register">2. 注册仓库</h2>
+<p>在 Claude Code 会话里：</p>
+<pre><code>ooo brownfield</code></pre>
+<p><strong>预期结果：</strong>列出扫描到的 git 仓库和 worktree，你挑要用作访谈默认上下文的那些。<strong>只挑你真的在做的仓库</strong>——挑太多只会让上下文变吵。</p>
+<p>命令行那边对应的是：</p>
+<pre><code>ouroboros setup scan [SCAN_ROOT]
+ouroboros setup list
+ouroboros setup default</code></pre>
+<p>MCP 工具侧的动作名是 <code>scan</code>、<code>register</code>、<code>query</code>、<code>set_default</code>。</p>
+
+<h2 id="pm">3. <code>ooo pm</code> — 产品级需求</h2>
+<p>不是整理一个功能，而是整理整个产品要做什么的时候用：</p>
+<pre><code>ooo pm</code></pre>
+<p><strong>预期结果：</strong>产品级的问题依次进行，产出一份 PRD。</p>
+<p><strong>PRD 和 Seed 不是一回事。</strong>PRD 说的是产品应该是什么样，Seed 是一次运行照着干的工作规约。PRD 不会被直接执行；把它的内容喂给 <code>ooo interview</code>，才会得到可执行的 Seed。</p>
+
+<h2 id="publish">4. <code>ooo publish</code> — 交给团队</h2>
+<p>把 Seed 变成团队可以分工的 GitHub Issues。需要装好并登录 <code>gh</code> CLI。</p>
+<pre><code>ooo publish &lt;seed_path&gt;</code></pre>
+<p><strong>预期结果：</strong>先把将要创建的 issue 结构给你看，确认之后才在目标仓库里真的创建。</p>
+
+<p class="note">这一页对着当前源码核过：四个权重（0.35 / 0.25 / 0.25 / 0.15）和上下文下限 0.60 都在 <code>bigbang/ambiguity.py</code>；命令行子命令来自 <code>docs/cli-reference.md</code>，MCP 动作名来自 <code>mcp/tools/brownfield_handler.py</code>。<strong>英文版那页写的 <code>ooo brownfield defaults</code> 和 <code>ooo brownfield set</code> 在这两处都查不到</strong>，所以这里用的是能查到的那两组名字。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
