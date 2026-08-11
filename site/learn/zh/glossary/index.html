@@ -53,7 +53,7 @@
 <h2 id="spec">1. 规约相关</h2>
 <dl>
 <dt>访谈（Interview）</dt><dd>把你的想法里还没做的决定找出来、逐条问你的环节。→ <a href="../interview/">第 5 章</a></dd>
-<dt>模糊度分数（Ambiguity Score）</dt><dd>需求里还剩多少没说清，取值 0 到 1，越接近 0 越清楚。阈值 <strong>0.2</strong>。<strong>注意：这不是必要条件</strong>——访谈还开着的时候它才挡人，通过的路有两条（<code>force</code>，或把访谈标记为完成）。→ <a href="../interview/">第 5 章</a></dd>
+<dt>模糊度分数（Ambiguity Score）</dt><dd>需求里还剩多少没说清，取值 0 到 1，越接近 0 越清楚。阈值 <strong>0.2</strong>。高于阈值会挡住 Seed 生成，<strong>绕过它的办法是显式传入 <code>force</code></strong>（<code>bigbang/seed_generator.py</code> 的域层闸只认 <code>force</code>）。→ <a href="../interview/">第 5 章</a></dd>
 <dt>Seed（规约）</dt><dd>装着目标、约束、验收标准、数据结构的 YAML 工作规约。运行时照着它写，评估照着它判。七个顶层字段见 <code>core/seed.py</code>。→ <a href="../seed/">第 6 章</a></dd>
 <dt>验收标准（Acceptance Criteria）</dt><dd>判断做完了的标准清单，每条都要能在屏幕上看到或被测试验证。<strong>其中的验证命令和期望输出是可选字段</strong>——没有定义它们的标准是合法存在的。→ <a href="../seed/">第 6 章</a></dd>
 <dt>本体（Ontology）</dt><dd>这次工作处理的数据的结构：字段名和类型。YAML 键是 <code>ontology_schema</code>。→ <a href="../seed/">第 6 章</a></dd>
