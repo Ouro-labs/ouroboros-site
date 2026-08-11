@@ -57,7 +57,7 @@
 <ul>
 <li>装好并且支持插件的 <strong>Claude Code</strong>。</li>
 <li>主机上要有 <strong>uv</strong>。插件的 MCP 描述符用 <code>uvx</code> 拉起服务，技能那边也拿它当 Python ≥ 3.12 的兜底。用 <code>pipx install uv</code>、<code>pip install --user uv</code> 或者 <code>brew install uv</code> 都行。</li>
-<li>Windows 上请在 <strong>WSL 2</strong> 里按 Linux 的步骤走。</li>
+<li>Windows 上请在 <strong>WSL 2</strong> 里按 Linux 的步骤走。Git Bash 不是 WSL 2，在里面装容易失败，WSL 装不上的话看<a href="https://github.com/Q00/ouroboros/blob/main/docs/guides/windows-wsl-troubleshooting.md">故障排查指南</a>。</li>
 </ul>
 <p>你不需要单独准备一个全局 Python 环境，但 <code>uv</code> 是要的——这一点英文版那页没写清楚，这里补上。</p>
 
