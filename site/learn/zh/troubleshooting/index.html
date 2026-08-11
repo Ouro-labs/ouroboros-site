@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>故障排查 — Ouroboros 指南</title>
+<meta name="description" content="按症状找，然后照「先查什么、跑什么命令、期望看到什么」的顺序走。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/troubleshooting/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/troubleshooting/">
+<meta property="og:title" content="故障排查 — Ouroboros 指南">
+<meta property="og:description" content="按症状找，然后照「先查什么、跑什么命令、期望看到什么」的顺序走。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="故障排查 — Ouroboros 指南">
+<meta name="twitter:description" content="按症状找，然后照「先查什么、跑什么命令、期望看到什么」的顺序走。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/troubleshooting/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/troubleshooting/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/troubleshooting/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a href="../evaluate/">评估</a>
+<a href="../evolve/">演化</a>
+<a aria-current="page" href="./">故障排查</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/troubleshooting/" hreflang="ko">KO</a><a href="/learn/en/troubleshooting/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/troubleshooting/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">故障排查</div>
+<h1>故障排查</h1>
+<p class="lead">先按症状找到对应的一节，然后照顺序走：先查什么、跑什么命令、期望看到什么。</p>
+
+<h2 id="e32000">1. 插件报 <code>-32000</code>，MCP 服务起不来</h2>
+<p><strong>症状：</strong><code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code></p>
+<p><strong>先查版本。</strong>这个启动失败在 <strong>0.51.1</strong> 修了，而且是那个版本发布说明里的头一条。在那之前，机器上已有的环境可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。</p>
+<pre><code>ooo update</code></pre>
+<p><strong>期望结果：</strong>升到 0.51.1 或更新的版本。升完把 Claude Code 完全关掉再开。</p>
+<p>这一节英文版和韩文版目前没有。如果你是从 AUR 之类的第三方源装的，先确认那边的版本号——第三方打包可能落后好几个版本。</p>
+
+<h2 id="notfound">2. <code>ooo</code> 命令不认识</h2>
+<p><strong>先查两件事：</strong><code>ooo</code> 只在 Claude Code 会话里能用，别在普通终端里敲；没登录也会失败，先在会话里 <code>/login</code>。</p>
+<p>然后在<strong>普通终端</strong>里查插件状态：</p>
+<pre><code>claude plugin list</code></pre>
+<p><strong>期望结果：</strong><code>ouroboros@ouroboros</code> 显示 enabled。没有或是 disabled 就重装：</p>
+<pre><code>claude plugin install ouroboros@ouroboros --force</code></pre>
+<p>装完重开 Claude Code 会话，<code>ooo help</code> 应该能用。</p>
+
+<h2 id="mcp">3. 访谈能用，但 run 或 status 挂了</h2>
+<p><strong>先查：</strong>插件加载了，但 Core 的 MCP 服务可能没连上。在 Claude Code 里用 <code>/mcp</code> 看 ouroboros 服务的状态。</p>
+<p>在会话里按顺序跑：</p>
+<pre><code>ooo setup
+ooo update</code></pre>
+<p><strong>期望结果：</strong>MCP 服务重新注册。之后把 Claude Code 完全关掉再开。独立命令行安装的话，在普通终端里查 <code>ouroboros mcp info</code> 和 <code>ouroboros status health</code>。</p>
+
+<h2 id="stuck">4. 看着像卡住了</h2>
+<p><strong>先查：</strong>后台跑的活本来就可能很久。<strong>先问状态，别先取消。</strong></p>
+<pre><code>ooo status &lt;session_id&gt;</code></pre>
+<p><strong>期望结果：</strong>显示当前阶段。确认确实没进展再用 <code>ooo cancel</code> 取消重跑。</p>
+
+<h2 id="resume">5. auto 中断了怎么接着跑</h2>
+<p><code>ooo auto</code> 在某个关卡或出错停下来时，输出里会留下 <code>auto_session_id</code> 和恢复命令：</p>
+<pre><code>ooo auto --resume &lt;auto_session_id&gt;</code></pre>
+<p><strong>期望结果：</strong>同一个 auto 会话继续。ID 丢了就看下一节。</p>
+
+<h2 id="lost">6. 窗口关了，会话还找得回来吗</h2>
+<p>找得回来。执行事件存在 EventStore 里，会话不会因为关窗口就没了。</p>
+<pre><code>ooo resume-session</code></pre>
+<p><strong>期望结果：</strong>列出正在跑或暂停的会话，挑一个重新接上。</p>
+
+<p class="note">这一页对着当前源码和发布说明核过：<code>-32000</code> 那一节的依据是 v0.51.1 的发布说明（「shipped launchers now run <code>uvx --isolated</code>」）；<code>resume-session</code>、<code>mcp info</code>、<code>status health</code> 在 CLI 文档里；<code>--resume</code> 在 CLI 文档里查不到，但源码里实际存在（<code>auto/resume_render.py</code> 会直接打印这条命令）。<strong>文档里没有，不等于不存在。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
