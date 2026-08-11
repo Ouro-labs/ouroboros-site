@@ -28,7 +28,7 @@
 <a class="brand" href="../../"><img src="../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
 <nav aria-label="主菜单">
 <a aria-current="page" href="../zh/">指南</a>
-<a href="../en/install/">安装</a>
+<a href="./install/">安装</a>
 <a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
 <div class="lang-switch" role="group" aria-label="语言"><a href="/learn/" hreflang="ko">KO</a><a href="/learn/en/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/" hreflang="zh-Hans">ZH</a></div>
 <button class="theme" data-theme-toggle type="button">主题</button>
@@ -53,13 +53,13 @@
 <p>在终端里跑：</p>
 <pre><code>claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros</code></pre>
-<p>需要 Claude Code，不需要 Python。想要独立的命令行工具就用 <code>pip install ouroboros-ai</code>，详见<a href="../en/install/">安装章节</a>。</p>
+<p>需要 Claude Code，不需要 Python。想要独立的命令行工具就用 <code>pip install ouroboros-ai</code>，详见<a href="./install/">安装章节</a>。</p>
 
 <h2 id="loop">一句话说清楚它做什么</h2>
-<p>你给一句话需求，它先反问，把模糊度打成分数；分数没降到阈值以下就不生成规约。规约定下来之后，一条命令驱动执行、三阶段评估和有预算上限的演化循环。判分用的验证命令和断言对执行 agent 隐藏，所以卡住的 agent 没法去糊弄断言字符串。</p>
+<p>你给一句话需求，它先反问，把模糊度打成分数；访谈还开着的时候，分数高于阈值会挡住规约生成——绕过的路有两条：显式强制（force），或者把访谈标记为完成。规约定下来之后，一条命令驱动执行、分层评估和有预算上限的演化循环（三层齐跑只在直接评估那条路径上成立，演化循环里只跑 Semantic 一层）。当一条验收标准定义了自己的验证命令或期望输出时，那些值不会进执行 agent 的契约块，所以卡住的 agent 没法直接去糊弄断言字符串。</p>
 
 <h2 id="more">完整章节</h2>
-<p>逐章指南目前有<a href="../en/">英文</a>和<a href="../">한국어</a>两个版本，中文版正在补。上面三份中文材料覆盖了大部分内容；有想先看到哪一章的，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p>逐章指南目前有<a href="../en/">英文</a>（13 章）和<a href="../">한국어</a>（16 章）两个版本，中文这边先补了<a href="./install/">安装</a>一章，其余在做。上面三份中文材料覆盖了大部分内容；有想先看到哪一章的，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 </article>
 </main>
