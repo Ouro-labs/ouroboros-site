@@ -93,6 +93,7 @@
 
 <p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，读起来像必要条件，但准确的说法是「高于阈值会被挡住，显式 force 可以通过」（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话是对的，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。真正的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。现在第 7 节按实际情况补上了。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
+<nav class="pager" aria-label="章节"><a href="../install/">← 上一章<br><strong>04 安装</strong></a><a href="../seed/">下一章 →<br><strong>06 规约</strong></a></nav>
 </article>
 </main>
 <footer class="footer">
