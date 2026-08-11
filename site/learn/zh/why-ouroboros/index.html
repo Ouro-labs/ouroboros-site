@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>为什么用它 — Ouroboros 指南</title>
+<meta name="description" content="AI 编码工具很快，但「把需求定下来」和「验证做完没有」这两件事仍然扔给你。Ouroboros 把这两件事变成流程。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/why-ouroboros/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/why-ouroboros/">
+<meta property="og:title" content="为什么用它 — Ouroboros 指南">
+<meta property="og:description" content="AI 编码工具很快，但「把需求定下来」和「验证做完没有」这两件事仍然扔给你。Ouroboros 把这两件事变成流程。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="为什么用它 — Ouroboros 指南">
+<meta name="twitter:description" content="AI 编码工具很快，但「把需求定下来」和「验证做完没有」这两件事仍然扔给你。Ouroboros 把这两件事变成流程。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/why-ouroboros/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/why-ouroboros/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/why-ouroboros/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a href="../evaluate/">评估</a>
+<a href="../evolve/">演化</a>
+<a href="../what-is-ouroboros/">是什么</a>
+<a aria-current="page" href="./">为什么</a>
+<a href="../install/">安装</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/why-ouroboros/" hreflang="ko">KO</a><a href="/learn/en/why-ouroboros/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/why-ouroboros/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">为什么</div>
+<h1>为什么用它</h1>
+<p class="lead">AI 编码工具很快。但「把需求定下来」和「验证到底做完没有」这两件事，它没接手，还是你的。Ouroboros 把这两件事变成有步骤的流程。</p>
+
+<h2 id="alone">1. 只用 AI 编码工具时会发生什么</h2>
+<p>「做个待办应用」这句话没说存哪、几个人用、勾完怎么处理。AI 会自己替你决定这些值——然后你在代码写完之后再返工。</p>
+<table>
+<thead><tr><th>问题</th><th>后果</th></tr></thead>
+<tbody>
+<tr><td>AI 自己补上你没做的决定</td><td>代码写完才发现方向不对，返工</td></tr>
+<tr><td>只留下一句「做好了」</td><td>没办法核对到底做完没有</td></tr>
+<tr><td>长对话把原始需求冲淡</td><td>结果和当初说好的不一样</td></tr>
+<tr><td>会话断了，上下文就没了</td><td>找不到停在哪，只能从头再讲一遍</td></tr>
+<tr><td>反复失败不留记录</td><td>修过的东西攒不下来</td></tr>
+</tbody>
+</table>
+
+<h2 id="change">2. 加上 Ouroboros 之后变什么</h2>
+<table>
+<thead><tr><th>变化</th><th>靠什么</th></tr></thead>
+<tbody>
+<tr><td>决定在写代码之前定下来</td><td>访谈把没做的决定问出来（<a href="../interview/">第 5 章</a>）</td></tr>
+<tr><td>验收标准被写下来</td><td>存进 Seed（<a href="../seed/">第 6 章</a>）</td></tr>
+<tr><td>「做完了」要被验证</td><td>分层评估对着标准和测试查（<a href="../evaluate/">第 8 章</a>）</td></tr>
+<tr><td>中断的活能接着干</td><td>执行事件存在本地数据库里（<a href="../troubleshooting/">第 11 章</a>）</td></tr>
+<tr><td>失败喂给下一次</td><td>评估结果更新 Seed 再跑（<a href="../evolve/">第 9 章</a>）</td></tr>
+</tbody>
+</table>
+<p class="result-note">第三行要按实情说：三层齐跑只在直接评估那条路径上成立，<strong>演化循环里只跑 Semantic 一层</strong>。细节在<a href="../evaluate/">评估那一章</a>。</p>
+
+<h2 id="fit">3. 什么活适合用它</h2>
+<ul>
+<li>需求有好几条要理清楚的功能开发</li>
+<li>「做完了」必须由测试证明的活</li>
+<li>明摆着要改好几轮的活</li>
+<li>时间长、中间可能被打断的活</li>
+</ul>
+
+<h2 id="nofit">4. 什么活不用它更快</h2>
+<p>这一节写在这里不是客套。<strong>用错地方，它只是让你多打几行命令。</strong></p>
+<ul>
+<li>改个错别字、调一行样式——直接让 AI 改，或者自己改。</li>
+<li>你还在探索、根本不知道要什么的时候。访谈问的是「你还没决定的事」，不是「你还没想到的方向」；这种阶段先自己乱试更快。</li>
+<li>没有可验证的完成标准的活。评估拿标准来比对，标准是「看着顺眼」的话，它比不了。</li>
+</ul>
+
+<h2 id="honest">5. 它不解决什么</h2>
+<p>两条限制，先说在前面比让你自己撞上强：</p>
+<ul>
+<li><strong>模糊度分数衡量的是你把它的问题答得多完整，不是答案对不对。</strong>一个自信地答错的人一样能拿到好分数。</li>
+<li><strong>判分值不进契约块，但那不等于「agent 什么都看不到」。</strong>项目级的 lint/test 命令是故意给它的；契约块之外的脱敏是逐字的、只覆盖五种编码，换个形状的副本仍会漏。这个缺口挂着公开 issue。</li>
+</ul>
+
+<p class="note">这一页对着当前源码核过。第 2 节第三行和第 5 节的两条限制，英文版与韩文版目前没有这样写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
