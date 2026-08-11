@@ -101,7 +101,7 @@
 ouroboros setup</code></pre>
 <p>这条装的是<strong>基础包</strong>。如果你要的是 MCP 服务本身（比如接 Kiro 这类运行时），装带 extra 的版本：</p>
 <pre><code>pipx install 'ouroboros-ai[mcp]'   # 或者：uv tool install 'ouroboros-ai[mcp]'</code></pre>
-<p>其他运行时用 <code>ouroboros setup --runtime codex</code> 这样选。各运行时的完整说明在 <a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a> 里。</p>
+<p>其他运行时用 <code>ouroboros setup --runtime codex</code> 这样选，装好之后本指南里的 <code>ooo</code> 命令在那边的会话里一样能用，例子只是站在 Claude Code 对话框的角度写的。各运行时的完整说明在 <a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a> 里。</p>
 
 <h2 id="trouble">装不上的时候</h2>
 <p>如果插件起不来、报 <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code>，先确认版本。0.51.1 修了这个启动失败：在那之前，已有环境里的 <code>mcp</code> 可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。用 <code>ooo update</code> 升到最新版再试。</p>
