@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>演化 — Ouroboros 指南</title>
+<meta name="description" content="评估没过不是终点。演化把评估发现的问题回灌到 Seed，再跑一遍，并且有明确的停止条件。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/evolve/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/evolve/">
+<meta property="og:title" content="演化 — Ouroboros 指南">
+<meta property="og:description" content="评估没过不是终点。演化把评估发现的问题回灌到 Seed，再跑一遍，并且有明确的停止条件。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="演化 — Ouroboros 指南">
+<meta name="twitter:description" content="评估没过不是终点。演化把评估发现的问题回灌到 Seed，再跑一遍，并且有明确的停止条件。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evolve/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evolve/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/evolve/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a href="../evaluate/">评估</a>
+<a aria-current="page" href="./">演化</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/evolve/" hreflang="ko">KO</a><a href="/learn/en/evolve/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/evolve/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">演化</div>
+<h1>演化</h1>
+<p class="lead">评估结束不等于活干完了。演化拿评估里发现的问题去改 Seed，再跑一遍。关键不在于它会重跑，而在于<strong>它什么时候停</strong>。</p>
+
+<h2 id="run">1. 跑起来</h2>
+<pre><code>ooo evolve "待办应用：刷新之后要保留已完成状态"</code></pre>
+<p><strong>预期结果：</strong>一份反映评估结果的 Seed 修改提案、运行结果，以及一个 <code>lineage_id</code>。只想看 Seed 会怎么改、不想重建代码，加 <code>--no-execute</code>。之后用 <code>ooo evolve --status &lt;lineage_id&gt;</code> 看后续。</p>
+
+<h2 id="gen">2. 一代都经过什么</h2>
+<p>代码里的世代阶段是这几个：<code>wondering</code>（先找还有什么没搞清楚）→ <code>reflecting</code>（起草改动）→ <code>seeding</code>（生成新 Seed）→ <code>executing</code> → <code>evaluating</code>，终态是 <code>completed</code> / <code>failed</code> / <code>cancelled</code>。</p>
+<p>同一份工作的 Seed 修订链叫 <strong>lineage</strong>，其中一次「新 Seed + 一次运行」叫一 <strong>代（generation）</strong>。</p>
+
+<h2 id="stop">3. 停止条件是四选一，不是一条</h2>
+<p>这一节值得看仔细：<strong>收敛的判定是 ANY-of，命中任意一条就停。</strong></p>
+<table>
+<thead><tr><th>条件</th><th>判定</th></tr></thead>
+<tbody>
+<tr><td>本体稳定</td><td><strong>最近两代</strong>的本体相似度 ≥ <strong>0.95</strong></td></tr>
+<tr><td>停滞</td><td>相似度在 <strong>3 代</strong>里连续保持在阈值以上——这是「没进展」，不是「做好了」</td></tr>
+<tr><td>反复反馈</td><td>同类的疑问在世代之间反复出现</td></tr>
+<tr><td>预算耗尽</td><td>达到 <strong>30 代</strong>上限，强制终止</td></tr>
+</tbody>
+</table>
+<p>还有一个振荡检测：结构在两代之前的样子和现在之间来回跳，也会停。至少要跑满 <strong>2 代</strong>才开始看前三条信号。</p>
+<p><strong>0.95 常被写成「达到这个数就算收敛」的必要条件，那是误读。</strong>它是四条路里的一条。</p>
+
+<h2 id="gate">4. 光是相似不够，还得有通过的评估</h2>
+<p>相似度到了 0.95 也不一定收敛。代码里有一道闸：<strong>在期望有评估的模式下，如果最新一代没有评估结果、或者评估是被拒绝的，就不会因为「稳定」而收敛。</strong></p>
+<p>理由很直接：两代长得一样，可能是稳定了，也可能是两代都一样地做错了。<strong>没有通过的评估作证，相似只是相似。</strong></p>
+
+<h2 id="focus">5. 下一代会重做哪些验收标准</h2>
+<p>演化时工作会集中到没通过的标准上：代码里把 Seed 的验收标准切成 <code>active</code> 和 <code>frozen</code> 两组，两组互不重叠、并起来正好是全部（<code>evolution/frugality.py</code>）。</p>
+<p>但有一点要说清楚，免得读成比实际更强的保证：<strong>「冻结」是把力气集中到该做的地方，不是「已经过的从此不会再挂」。</strong>代码里另有一个回归检测器，专门看<strong>上一代通过、这一代却挂掉</strong>的验收标准（<code>evolution/regression.py</code>）。如果冻结真能保证不回退，这个检测器就没有存在的必要。另外还有一个不冻结任何标准的 <code>full_graph</code> 对照组。</p>
+
+<h2 id="ids">6. 记住这个 ID</h2>
+<p><code>ooo evolve</code> 会打印 <code>lineage_id</code>（<code>lin_…</code>），修订历史查询和 <code>ooo ralph</code> 都要用它。</p>
+
+<p class="note">这一页的数字都对着当前源码核过：0.95、3 代停滞窗口、最少 2 代、上限 30 代、振荡检测默认开启，都在 <code>evolution/convergence.py</code> 的 <code>ConvergenceCriteria</code> 里；第 4 节那道评估闸也在同一个文件里。第 5 节的说法比英文版和韩文版更保守——它们没有提回归检测器和对照组。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
