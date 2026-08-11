@@ -90,8 +90,9 @@
 <p>想把提问、生成规约、执行交给一条命令：</p>
 <pre><code>ooo auto "一个能记下今天的待办、勾掉已完成的简单网页应用"</code></pre>
 <p><strong>预期结果：</strong>提问轮次自动进行，然后进入规约生成和执行。中途停下来的话，输出里会有一个 <code>auto_session_id</code>，用它可以接着跑。</p>
+<p><strong>它不会拿一份没准备好的规约去执行。</strong>auto 模式有一道确定性的 A 级闸：只有等级判定为 A 且没有 blocker 时才放行（<code>auto/grading.py</code> 里是 <code>may_run = grade == SeedGrade.A and not blockers</code>；被挡下来时 <code>auto/pipeline.py</code> 会以 <code>grade_gate</code> 的名义标记 blocked）。等级分 A / B / C 三档。</p>
 
-<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，那是必要条件的说法，实际上通过的路有两条（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」，我在源码里没找到这个门槛，所以这里没写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，那是必要条件的说法，实际上通过的路有两条（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话是对的，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。真正的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。现在第 7 节按实际情况补上了。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 </article>
 </main>
