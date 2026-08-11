@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>评估 — Ouroboros 指南</title>
+<meta name="description" content="评估负责验证产出到底满不满足 Seed 里的验收标准。便宜的检查先跑，贵的后跑。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/evaluate/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/evaluate/">
+<meta property="og:title" content="评估 — Ouroboros 指南">
+<meta property="og:description" content="评估负责验证产出到底满不满足 Seed 里的验收标准。便宜的检查先跑，贵的后跑。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="评估 — Ouroboros 指南">
+<meta name="twitter:description" content="评估负责验证产出到底满不满足 Seed 里的验收标准。便宜的检查先跑，贵的后跑。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/evaluate/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/evaluate/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/evaluate/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a aria-current="page" href="./">评估</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/evaluate/" hreflang="ko">KO</a><a href="/learn/en/evaluate/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/evaluate/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">评估</div>
+<h1>评估</h1>
+<p class="lead">上一章运行时把东西做出来了。评估回答一个问题：这个结果满足 Seed 里写的验收标准吗？便宜的检查先跑，贵的后跑，前面挂了就不往后送。</p>
+
+<h2 id="run">1. 跑起来</h2>
+<pre><code>ooo evaluate &lt;session_id&gt;</code></pre>
+<p><strong>预期结果：</strong>每一层的通过情况，以及对验收标准的最终判定。<strong>一次运行结束之后，在正式评估之前它可能仍然处于未验证状态</strong>，所以评估没有自动跟上的话，自己跑一次。</p>
+
+<h2 id="stages">2. 三层</h2>
+<table>
+<thead><tr><th>层</th><th>做什么</th><th>过关条件</th></tr></thead>
+<tbody>
+<tr><td>1. Mechanical</td><td>自动识别项目类型，跑 lint、build、test、静态分析和覆盖率。<strong>不用 LLM。</strong></td><td>各项命令正常退出；覆盖率默认阈值 <strong>0.7</strong></td></tr>
+<tr><td>2. Semantic</td><td>LLM 拿结果对着验收标准打分。</td><td>标准判定为满足，且分数 <strong>≥ 0.8</strong></td></tr>
+<tr><td>3. Consensus</td><td>多个模型各自独立投票。<strong>只在特定条件下才跑。</strong></td><td><strong>2/3 多数</strong>通过（至少 3 个模型）</td></tr>
+</tbody>
+</table>
+
+<h2 id="paths">3. 三层齐跑，只在这一条路径上成立</h2>
+<p>这一节是这一页最容易被误读的地方，所以单独拎出来说。</p>
+<p>配置里三层的默认值都是开启的，直接跑 <code>ooo evaluate</code> 走的就是三层。<strong>但演化循环里不是这样</strong>：第一层默认关着（要靠环境变量打开），第三层在那条路径上是<strong>写死关掉</strong>的。也就是说，<strong>演化循环里实际只有 Semantic 一层在判。</strong></p>
+<p>把「三阶段评估」和「演化循环」并排写，读起来就像循环里也跑三层。它不跑。</p>
+
+<h2 id="triggers">4. 什么时候会触发第三层</h2>
+<p>第二层过了之后，按优先级依次检查下面这些条件，第一个命中的触发 Consensus。一个都不中就直接批准。</p>
+<ol>
+<li>Seed 被修改</li>
+<li>本体（数据结构）发生演化</li>
+<li>目标被重新解释</li>
+<li>Drift 分数超过 <strong>0.3</strong></li>
+<li>第二层的不确定度超过 <strong>0.3</strong></li>
+<li>采用了侧向思考给出的替代方案</li>
+</ol>
+<p>另外，你<strong>直接要求</strong> Consensus 的话，它优先于上面这六条。</p>
+<p>Drift 是 0 到 1 的值，表示结果离原本 Seed 的意图跑偏了多少。低不代表功能做对了，只代表方向没走岔。</p>
+
+<h2 id="independence">5. 独立性是被记录下来的，不是被假设的</h2>
+<p>合议庭里同一家 vendor 的票会被排除。每次运行都会打上一个标签：<code>independent</code>、<code>same_vendor</code>、<code>unavailable</code>、<code>unverified</code>。</p>
+<p>限制要说在前面：<strong>判定是按 vendor 家族做的</strong>。如果你只配了一家 vendor 的后端，这个机制就是空转——这时候标签会写 <code>same_vendor</code>，而不是假装独立。<strong>把限制记成标签，比把它藏起来有用。</strong></p>
+
+<h2 id="next">6. 没过怎么办</h2>
+<p>被评估拒绝的结果会进入有预算上限的演化循环，而且只有没通过的验收标准会进下一代，已经通过的直接冻结。演化那一章目前在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里。</p>
+
+<p class="note">这一页的每个数字都对着当前源码核过：覆盖率 0.7（<code>evaluation/languages.py</code>）、语义分 0.8（<code>evaluation/models.py</code>）、2/3 多数与至少 3 个模型（<code>evaluation/consensus.py</code>）、drift 与不确定度阈值 0.3（<code>evaluation/trigger.py</code>）、四个独立性标签（<code>evaluation/reviewer_independence.py</code>）。第 3 节那条路径差异，英文版和韩文版目前都没写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
