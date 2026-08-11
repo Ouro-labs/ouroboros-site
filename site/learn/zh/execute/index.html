@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>执行 — Ouroboros 指南</title>
+<meta name="description" content="把确认过的 Seed 交给运行时，让它真正去写代码。执行在后台跑，所以「开始」不等于「结束」。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/execute/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/execute/">
+<meta property="og:title" content="执行 — Ouroboros 指南">
+<meta property="og:description" content="把确认过的 Seed 交给运行时，让它真正去写代码。执行在后台跑，所以「开始」不等于「结束」。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="执行 — Ouroboros 指南">
+<meta name="twitter:description" content="把确认过的 Seed 交给运行时，让它真正去写代码。执行在后台跑，所以「开始」不等于「结束」。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/execute/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/execute/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/execute/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../install/">安装</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a aria-current="page" href="./">执行</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/execute/" hreflang="ko">KO</a><a href="/learn/en/execute/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/execute/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">执行</div>
+<h1>执行</h1>
+<p class="lead">上一章确认了 Seed。执行就是把这份 Seed 交给运行时，让它产出真正的代码。运行时负责写文件、跑命令，Ouroboros 负责管顺序和状态。</p>
+
+<h2 id="start">1. 开始</h2>
+<p>在 Claude Code 会话里：</p>
+<pre><code>ooo run</code></pre>
+<p><strong>预期结果：</strong>执行开始，并打印出几个用来查状态的 ID。<strong>它在后台继续跑，所以命令返回不代表活干完了。</strong></p>
+
+<h2 id="phases">2. 四个阶段（Double Diamond）</h2>
+<table>
+<thead><tr><th>阶段</th><th>在做什么</th></tr></thead>
+<tbody>
+<tr><td>Discover</td><td>看仓库、看环境、看需求里还有什么需要确认。</td></tr>
+<tr><td>Define</td><td>定下来做什么、不做什么。</td></tr>
+<tr><td>Design</td><td>定结构和实现顺序。</td></tr>
+<tr><td>Deliver</td><td>建文件、跑测试。</td></tr>
+</tbody>
+</table>
+<p>这个顺序存在的理由只有一个：<strong>不让实现在理解之前开始。</strong></p>
+
+<h2 id="ids">3. ID 分几种</h2>
+<p>不同命令打印不同角色的 ID，从输出里复制就行。</p>
+<table>
+<thead><tr><th>ID</th><th>长相</th><th>哪里拿</th><th>哪里用</th></tr></thead>
+<tbody>
+<tr><td><code>session_id</code></td><td><code>orch_…</code></td><td>访谈和 run 的输出</td><td><code>ooo status</code>、<code>ooo evaluate</code>、恢复会话</td></tr>
+<tr><td><code>job_id</code></td><td><code>job_…</code></td><td>后台任务启动输出</td><td>查后台任务状态和结果</td></tr>
+<tr><td><code>execution_id</code></td><td><code>exec_…</code></td><td>run 启动输出</td><td><code>ooo cancel</code></td></tr>
+<tr><td><code>auto_session_id</code></td><td><code>auto_…</code></td><td><code>ooo auto</code> 输出</td><td><code>ooo auto --resume</code></td></tr>
+<tr><td><code>lineage_id</code></td><td><code>lin_…</code></td><td><code>ooo evolve</code> 输出</td><td>查修订历史、<code>ooo ralph</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="status">4. 看状态</h2>
+<pre><code>ooo status &lt;session_id&gt;</code></pre>
+<p><strong>预期结果：</strong>显示当前阶段和进度。想看实时进度，另开一个终端跑 <code>ouroboros monitor</code>。</p>
+
+<h2 id="cancel">5. 取消</h2>
+<pre><code>ooo cancel</code></pre>
+<p><strong>预期结果：</strong>列出正在跑的执行，选一个、或者直接传 ID 取消。取消完用 <code>ooo status</code> 再确认一次状态。</p>
+
+<h2 id="done">6. 算跑完了的标准</h2>
+<ul>
+<li>运行状态显示 completed。</li>
+<li>结果文件确实出现在工作目录里。</li>
+<li>你把完成摘要里的 <code>session_id</code> 存下来了——下一章评估要用。</li>
+</ul>
+<p>第二条值得单独说：<strong>状态说完成了，和文件真的在那儿，是两件事。</strong>用眼睛确认一遍再往下走。</p>
+
+<p class="note">这一页对着当前源码核过：四个阶段名和 Double Diamond 的说法在 <code>orchestrator_stage.py</code> 与 <code>tui/events.py</code> 里，五种 ID 前缀在源码中都能查到（对照组：不存在的前缀查出 0 条）。英文版那页标着 0.50.4。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
