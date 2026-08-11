@@ -61,7 +61,7 @@
 <p>这一节英文版和韩文版目前没有。如果你是从 AUR 之类的第三方源装的，先确认那边的版本号——第三方打包可能落后好几个版本。</p>
 
 <h2 id="notfound">2. <code>ooo</code> 命令不认识</h2>
-<p><strong>先查两件事：</strong><code>ooo</code> 只在 Claude Code 会话里能用，别在普通终端里敲；没登录也会失败，先在会话里 <code>/login</code>。</p>
+<p><strong>先查两件事：</strong><code>ooo</code> 在 Claude Code 会话里能用（Codex CLI、OpenCode 装好插件后也一样，见<a href="../install/#plugin">装插件</a>——下面的排查命令是 Claude Code plugin 专属的），别在普通终端里敲；没登录也会失败，先在会话里 <code>/login</code>。</p>
 <p>然后在<strong>普通终端</strong>里查插件状态：</p>
 <pre><code>claude plugin list</code></pre>
 <p><strong>期望结果：</strong><code>ouroboros@ouroboros</code> 显示 enabled。没有或是 disabled 就重装：</p>

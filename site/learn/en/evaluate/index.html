@@ -38,7 +38,7 @@
 <h2 id="what">8.1 What it does</h2>
 <p><code>ooo evaluate</code> verifies the execution result in three stages. Use it when a run finishes, or when evaluation did not follow automatically. The input is the <code>session_id</code> printed by the run.</p>
 <h2 id="run">8.2 Run</h2>
-<p>Run this inside the Claude Code session.</p>
+<p>Run this inside the Claude Code session. If you installed the Codex CLI or OpenCode plugin instead, the same command works inside that session too; see <a href="../install/#plugin">Install the plugin</a>.</p>
 <pre><code>ooo evaluate &lt;session_id&gt;</code></pre>
 <p class="result-note">Expected result: per-stage pass results and a verdict on the completion criteria. Per the official docs, a finished run may still be in an unverified state before formal evaluation, so run this yourself if evaluation did not follow.</p>
 <h2 id="stages">8.3 The 3 stages</h2>

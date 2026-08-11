@@ -38,7 +38,7 @@
 <h2 id="what">10.1 What differs</h2>
 <p>An existing repository already has chosen technology and constraints. Register it, and the Interview stops guessing like it would for a new project and asks questions grounded in the current code and constraints.</p>
 <h2 id="brownfield">10.2 brownfield — register existing repositories</h2>
-<p>Run this inside the Claude Code session.</p>
+<p>Run this inside the Claude Code session. If you installed the Codex CLI or OpenCode plugin instead, the same command works inside that session too; see <a href="../install/#plugin">Install the plugin</a>.</p>
 <pre><code>ooo brownfield</code></pre>
 <p class="result-note">Expected result: a numbered list of git repositories and worktrees appears, and you pick the ones to use as default Interview context. Select only the repositories you actually work on.</p>
 <p>Subcommands, per the official docs:</p>
@@ -51,12 +51,12 @@
 </tbody>
 </table></div>
 <h2 id="pm">10.3 pm — organize product requirements</h2>
-<p>Use this when organizing requirements at the product level rather than for one feature. Run it inside the Claude Code session.</p>
+<p>Use this when organizing requirements at the product level rather than for one feature. Run it inside the Claude Code session. Codex CLI and OpenCode work the same way.</p>
 <pre><code>ooo pm</code></pre>
 <p class="result-note">Expected result: product-level questions proceed and a PRD (product requirements document) is produced.</p>
 <p>A PRD and a Seed are different. A PRD states what the product should be; a Seed is the work spec one run follows. A PRD is not executed as-is; feed its content to <code>ooo interview</code> to produce an execution-level Seed.</p>
 <h2 id="publish">10.4 publish — hand work to a team</h2>
-<p>Turns a Seed into GitHub Issues a team can divide. Requires the <code>gh</code> CLI installed and logged in. Run inside the Claude Code session.</p>
+<p>Turns a Seed into GitHub Issues a team can divide. Requires the <code>gh</code> CLI installed and logged in. Run inside the Claude Code session. Codex CLI and OpenCode work the same way.</p>
 <pre><code>ooo publish &lt;seed_path&gt;</code></pre>
 <p class="result-note">Expected result: the issue structure to be created is shown first; after confirmation the issues are created in the target repository.</p>
 <h2 id="done">10.5 Definition of done</h2>

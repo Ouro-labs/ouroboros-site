@@ -42,7 +42,7 @@
 <p class="result-note">Expected result: you are on 0.51.1 or later. Close Claude Code completely and reopen it afterwards.</p>
 <p>If you installed from a third-party package such as the AUR, check that package's version first. Third-party packaging can lag several releases behind.</p>
 <h2 id="s1">11.1 The ooo command is not recognized</h2>
-<p><strong>Check:</strong> <code>ooo</code> works only inside a Claude Code session. Make sure you did not type it in a normal terminal. It also fails without login, so complete <code>/login</code> first.</p>
+<p><strong>Check:</strong> <code>ooo</code> works inside a Claude Code session (Codex CLI and OpenCode work the same way once you've completed <a href="../install/#plugin">setup</a> — the check commands below are specific to the Claude Code plugin path). Make sure you did not type it in a normal terminal. It also fails without login, so complete <code>/login</code> first.</p>
 <p>Check the plugin state in a normal terminal.</p>
 <pre><code>claude plugin list</code></pre>
 <p class="result-note">Expected result: <code>ouroboros@ouroboros</code> shows as enabled. If missing or disabled, reinstall:</p>
@@ -50,7 +50,7 @@
 <p class="result-note">Expected result: after installing, reopen the Claude Code session and <code>ooo help</code> works.</p>
 <h2 id="s2">11.2 Interview works but run or status fails</h2>
 <p><strong>Check:</strong> the plugin loaded but Core's MCP server may not be connected. Check the ouroboros server state with <code>/mcp</code> in Claude Code.</p>
-<p>Run these in order inside the Claude Code session.</p>
+<p>Run these in order inside the Claude Code session. Codex CLI and OpenCode sessions work the same way.</p>
 <pre><code>ooo setup
 ooo update</code></pre>
 <p class="result-note">Expected result: the MCP server is registered again. Close Claude Code completely and reopen it. For a standalone install, check <code>ouroboros mcp info</code> and <code>ouroboros status health</code> in a normal terminal.</p>

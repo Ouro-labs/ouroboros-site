@@ -38,7 +38,7 @@
 <h2 id="what">9.1 What it does</h2>
 <p>Evaluation ending does not always mean the work is done. Evolve uses the problems found in evaluation to propose changes to the Seed's goal, constraints, and completion criteria, then repeats execution with the changed Seed. In the example, the failure "the done state resets after a refresh" is applied to the next Seed.</p>
 <h2 id="run">9.2 Run</h2>
-<p>Run this inside the Claude Code session, with a description of the work.</p>
+<p>Run this inside the Claude Code session, with a description of the work. If you installed the Codex CLI or OpenCode plugin instead, the same command works inside that session too; see <a href="../install/#plugin">Install the plugin</a>.</p>
 <pre><code>ooo evolve "to-do app: keep the done state after a refresh"</code></pre>
 <p class="result-note">Expected result: a Seed change proposal reflecting the evaluation, the run result, and a <code>lineage_id</code>. One generation proceeds as Wonder (find what is still unknown), Reflect (draft the changes), execute, evaluate.</p>
 <p>To see only the Seed changes without rebuilding code, add <code>--no-execute</code>. List the runs that followed with <code>ooo evolve --status &lt;lineage_id&gt;</code>.</p>
