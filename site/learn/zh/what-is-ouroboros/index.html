@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ouroboros 是什么 — Ouroboros 指南</title>
+<meta name="description" content="Ouroboros 管理 AI 编码工作的需求、执行、评估和记录。它自己不写代码。">
+<link rel="canonical" href="https://ouroboros.page/learn/zh/what-is-ouroboros/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/zh/what-is-ouroboros/">
+<meta property="og:title" content="Ouroboros 是什么 — Ouroboros 指南">
+<meta property="og:description" content="Ouroboros 管理 AI 编码工作的需求、执行、评估和记录。它自己不写代码。">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ouroboros 是什么 — Ouroboros 指南">
+<meta name="twitter:description" content="Ouroboros 管理 AI 编码工作的需求、执行、评估和记录。它自己不写代码。">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/learn/what-is-ouroboros/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/learn/en/what-is-ouroboros/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/learn/zh/what-is-ouroboros/">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">跳到正文</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="主菜单">
+<a href="../">指南</a>
+<a href="../interview/">访谈</a>
+<a href="../seed/">规约</a>
+<a href="../execute/">执行</a>
+<a href="../evaluate/">评估</a>
+<a href="../evolve/">演化</a>
+<a aria-current="page" href="./">是什么</a>
+<a href="../install/">安装</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<div class="lang-switch" role="group" aria-label="语言"><a href="/learn/what-is-ouroboros/" hreflang="ko">KO</a><a href="/learn/en/what-is-ouroboros/" hreflang="en">EN</a><a aria-current="true" href="/learn/zh/what-is-ouroboros/" hreflang="zh-Hans">ZH</a></div>
+<button class="theme" data-theme-toggle type="button">主题</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">是什么</div>
+<h1>Ouroboros 是什么</h1>
+<p class="lead">一句话：<strong>Ouroboros 自己不写代码。</strong>代码由 Claude Code、Codex 这类 AI 编码工具写。Ouroboros 站在那个工具的前面和后面——开工前把需求钉住，收工后验证结果，并且把过程记下来。</p>
+
+<h2 id="io">1. 进去什么，出来什么</h2>
+<p>进去的是一个想法，出来的是<strong>代码加上记录</strong>。中间 Ouroboros 管流程，运行时写代码。</p>
+<p>你不需要先写好一份规范。用大白话说清楚你想要什么功能、想修什么问题就行；缺掉的决定，Ouroboros 会通过提问补上。</p>
+
+<h2 id="roles">2. 谁负责什么</h2>
+<table>
+<thead><tr><th>角色</th><th>负责</th></tr></thead>
+<tbody>
+<tr><td>你</td><td>给想法、回答问题、确认 Seed、检查结果</td></tr>
+<tr><td>Ouroboros</td><td>提问（访谈）、写工作规约（Seed）、管执行、评估、记录</td></tr>
+<tr><td>运行时（Claude Code 等）</td><td>建文件、改代码、跑命令、跑测试</td></tr>
+</tbody>
+</table>
+<p>连接两层的东西就是 <strong>Seed</strong>：目标、约束、验收标准存成 YAML，运行时照着这份文件干活。细节看<a href="../seed/">规约那一章</a>。</p>
+
+<h2 id="runtimes">3. 支持哪些运行时</h2>
+<p>目前有 <strong>13 个</strong>运行时各自的接入指南：antigravity、Claude Code、Codex、Copilot、Gemini、GJC、goose、Grok、Hermes、Kiro、OpenCode、Pi、Zcode。</p>
+<p>这个数字不是营销口径，是 <code>docs/runtime-guides/</code> 里去掉翻译重复之后的实际文档数。你用的工具在不在里面，直接去那个目录看就知道。</p>
+
+<h2 id="why">4. 它到底解决什么</h2>
+<p>AI 编码最常见的失败不在输出端，在输入端：需求还没想清楚就开始写。Ouroboros 的做法是<strong>把「没想清楚」变成一个可以被拦下来的数字</strong>——访谈把模糊度打成分数，分数高的时候挡住规约生成。</p>
+<p>第二件事是<strong>不让 agent 靠糊弄判分过关</strong>：当一条验收标准定义了自己的验证命令或期望输出时，那些值不会进执行 agent 的契约块。这一条有明确的边界，<a href="../seed/">规约那一章</a>写了它覆盖不到的地方。</p>
+
+<h2 id="next">5. 接下来看哪</h2>
+<ul>
+<li>想直接上手：<a href="../install/">安装</a> → <a href="../interview/">访谈</a> → <a href="../seed/">规约</a></li>
+<li>想先看它怎么判分：<a href="../evaluate/">评估</a> → <a href="../evolve/">演化</a></li>
+<li>装不上或者起不来：<a href="../troubleshooting/">故障排查</a>（包括 <code>-32000</code> 那个启动失败）</li>
+</ul>
+
+<p class="note">这一页对着当前仓库核过：13 这个数字来自 <code>docs/runtime-guides/</code> 的实际文件数（18 个文件减去 4 个韩文翻译重复、再减去 1 个不是运行时的文档）。英文版那页标着 0.50.4。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>© 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/README.zh-CN.md">中文 README</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
