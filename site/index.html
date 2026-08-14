@@ -18,15 +18,40 @@
 <link rel="stylesheet" href="/learn/learn.css?v=3">
 <link rel="icon" href="/assets/logo-snake.png">
 <style>
-.home{max-width:760px;margin:auto;padding:64px 24px 96px}
-.home h1{font-size:clamp(30px,4.5vw,42px);line-height:1.25;letter-spacing:-.02em;margin:18px 0 14px}
-.home .sub{font-size:18px;color:var(--muted);max-width:640px}
-.home h2{font-size:15px;font-weight:600;letter-spacing:.08em;color:var(--accent);margin:56px 0 14px;text-transform:uppercase}
-.home .foot-note{font-size:14px;color:var(--muted);margin-top:-10px}
+.home{max-width:880px;margin:auto;padding:40px 24px 96px}
+.home h2{font-size:15px;font-weight:600;letter-spacing:.08em;color:var(--accent);margin:64px 0 14px;text-transform:uppercase}
+.home .foot-note{font-size:14px;color:var(--muted);margin-top:14px}
+.hero{background:linear-gradient(140deg,#0c1d16,#123326 58%,#1b4c39);border-radius:22px;padding:56px 48px 48px;box-shadow:var(--shadow)}
+.hero .eyebrow{color:#9fd4bb}
+.hero h1{font-size:clamp(30px,4.5vw,46px);line-height:1.2;letter-spacing:-.02em;margin:16px 0 14px;color:#f2f7f3}
+.hero h1 em{font-style:normal;color:#8fd7b4}
+.hero .sub{font-size:18px;color:#c3d5ca;max-width:640px;margin:0 0 26px}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+.hero .cta a{display:inline-block;padding:11px 20px;border-radius:999px;text-decoration:none;font-weight:600}
+.hero .cta .primary{background:#eaf4ee;color:#13201b}
+.hero .cta .ghost{border:1px solid rgba(234,244,238,.4);color:#eaf4ee}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{border:1px solid rgba(234,244,238,.22);border-radius:999px;padding:3px 12px;font-size:13px;color:#c3d5ca;white-space:nowrap}
+.demo-lead{font-size:15px;color:var(--muted);margin:18px 0 14px}
+.demos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.demos figure{margin:0;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:var(--shadow)}
+.demos img{width:100%;height:auto;border-radius:10px;display:block}
+.demos figcaption{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.55}
+.demos figcaption b{color:var(--ink)}
+.term{border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);max-width:760px}
+.term-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--soft)}
+.term-bar i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.term-bar i:nth-child(1){background:#e0655a}
+.term-bar i:nth-child(2){background:#e5b95c}
+.term-bar i:nth-child(3){background:#67b877}
+.term-bar span{margin-left:8px;font-size:12px;color:var(--muted);font-family:ui-monospace,monospace}
+.term pre{margin:0;border-radius:0;border:0;box-shadow:none}
+.sect{max-width:760px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .cards a{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--paper)}
 .cards a strong{display:block;margin-bottom:6px}
 .cards a span{font-size:14px;color:var(--muted)}
+@media(max-width:720px){.demos{grid-template-columns:1fr}.hero{padding:40px 26px 36px}}
 @media(max-width:640px){.cards{grid-template-columns:1fr}}
 </style>
 </head>
@@ -46,14 +71,35 @@
 </div>
 </header>
 <main id="content" class="home">
-<div class="eyebrow">OPEN SOURCE</div>
-<h1>Ouroboros manages the requirements, execution, evaluation, and records of AI coding work.</h1>
-<p class="sub">Your coding agent (Claude Code, Codex) writes the code. Ouroboros pins the spec before the run and verifies the result after it.</p>
+<section class="hero">
+<div class="eyebrow">OPEN SOURCE · MIT</div>
+<h1>Your coding agent writes the code.<br>Ouroboros <em>verifies</em> the result.</h1>
+<p class="sub">Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. It pins the spec before the run and verifies the result after it.</p>
+<div class="cta">
+<a class="primary" href="#install">Install</a>
+<a class="ghost" href="/learn/en/">Read the guide</a>
+</div>
+<div class="chips" aria-label="Supported runtimes">
+<span>Claude Code</span><span>Codex CLI</span><span>GitHub Copilot CLI</span><span>OpenCode</span><span>Hermes</span><span>Gemini</span><span>Kiro CLI</span><span>Pi CLI</span><span>Zcode</span><span>Goose</span><span>GJC</span><span>Antigravity CLI</span><span>Grok Build CLI</span>
+</div>
+</section>
 
+<p class="demo-lead"><b>Four separate runs, four hosts.</b> Different tasks on purpose — the engine is what is shared, not the prompt.</p>
+<div class="demos">
+<figure><img src="/assets/learn/ooo-interview.gif" alt="Terminal recording of the ouroboros CLI interview reporting an ambiguity score" loading="lazy" width="918" height="651"><figcaption><b>Terminal CLI</b> — a task-management CLI: <code>ouroboros init start</code> asking about ordering and scope, then reporting an ambiguity score</figcaption></figure>
+<figure><img src="/assets/learn/host-codex.gif" alt="Screen recording of the ChatGPT app calling Ouroboros as an integration" loading="lazy" width="460" height="297"><figcaption><b>ChatGPT (Codex)</b> — called as an integration, on a video-publishing harness: the interview, its advisory lanes, and the ambiguity ledger</figcaption></figure>
+<figure><img src="/assets/learn/host-claude.gif" alt="Screen recording of Claude Code running six Ouroboros interview advisory lanes in parallel" loading="lazy" width="460" height="265"><figcaption><b>Claude Code</b> — a YouTube automation task, with the six advisory lanes running in parallel before the interview submits</figcaption></figure>
+<figure><img src="/assets/learn/host-hermes.gif" alt="Screen recording of a Discord bot running the Ouroboros interview and reporting a final ambiguity of 0.15" loading="lazy" width="460" height="286"><figcaption><b>Hermes (Discord)</b> — a kart-racing game, run as a chat bot, ending at <code>Final ambiguity: 0.15</code></figcaption></figure>
+</div>
+
+<div class="sect">
 <h2 id="install">Install</h2>
 <p>Run in your terminal:</p>
+<div class="term">
+<div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div>
 <pre><code>claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros</code></pre>
+</div>
 <p class="foot-note">Requires Claude Code. No Python needed. Prefer a standalone CLI? <code>pip install ouroboros-ai</code> — see the <a href="/learn/en/install/">install guide</a>.</p>
 
 <h2 id="how">How it works</h2>
@@ -66,6 +112,7 @@ claude plugin install ouroboros@ouroboros</code></pre>
 <a href="/learn/zh/"><strong>中文指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
 <a href="/roadmap/"><strong>GTM Roadmap</strong><span>Evidence gates, proposed joint validation, and conditional enterprise horizons.</span></a>
 <a href="https://github.com/Q00/ouroboros"><strong>GitHub</strong><span>Source, official docs, CLI Reference, issues.</span></a>
+</div>
 </div>
 </main>
 <footer class="footer">
