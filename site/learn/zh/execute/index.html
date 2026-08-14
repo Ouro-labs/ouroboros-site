@@ -57,6 +57,9 @@
 <p>在 Claude Code 会话里：</p>
 <pre><code>ooo run</code></pre>
 <p><strong>预期结果：</strong>执行开始，并打印出几个用来查状态的 ID。<strong>它在后台继续跑，所以命令返回不代表活干完了。</strong>装了 Codex CLI 或 OpenCode 插件（<a href="../install/#plugin">装插件</a>）的话，同一条命令在那边的会话里一样能用。</p>
+<p>全新的执行在开跑前会问你一次用哪种方式。<strong>效率优先</strong>是先用较低的成本铺开并行和拆解的活，只有需要恢复时才加强路径；<strong>质量优先</strong>是把子任务保持在跟父任务同一档。不想每次都被问，就在普通终端里把默认值定一次：</p>
+<pre><code>ouroboros config set execution.default_policy quality_first</code></pre>
+<p><strong>预期结果：</strong>输出 <code>execution.default_policy: ask → quality_first</code>，写进 <code>~/.ouroboros/config.yaml</code>。只收 <code>ask</code>（默认）、<code>efficient</code>、<code>quality_first</code> 三个值，别的会被拒。留 <code>ask</code> 就还是每次问。这个设置对 resume 不生效——续跑用的是第一次执行定下的那套。</p>
 
 <h2 id="phases">2. 四个阶段（Double Diamond）</h2>
 <table>
