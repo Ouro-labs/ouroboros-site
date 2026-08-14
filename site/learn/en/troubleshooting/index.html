@@ -34,7 +34,7 @@
 <div class="eyebrow">11</div>
 <h1>11. Troubleshooting</h1>
 <p class="lead">Find the symptom first, then follow the order: what to check, the command, the expected result.</p>
-<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>verified 2026-08-14 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/troubleshoot-flow.png" alt="Diagram of the troubleshooting order: symptom, check, command, normal result" width="1536" height="1024" loading="lazy"><figcaption>Each section follows the order symptom, check, command, expected result.</figcaption></figure>
+<div class="meta"><span>Ouroboros 0.51.5</span><span>upstream d103058fe</span><span>verified 2026-08-14 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/troubleshoot-flow.png" alt="Diagram of the troubleshooting order: symptom, check, command, normal result" width="1536" height="1024" loading="lazy"><figcaption>Each section follows the order symptom, check, command, expected result.</figcaption></figure>
 <h2 id="s0">The plugin fails to start with <code>-32000</code></h2>
 <p><strong>Symptom:</strong> <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code></p>
 <p><strong>Check the version first.</strong> This startup failure was fixed in <strong>0.51.1</strong>, and it is the first entry under Highlights in that release. Before it, an existing environment could shadow the <code>[mcp]</code> profile's <code>mcp==2.0.0</code>. The fix makes the shipped launchers run <code>uvx --isolated</code>.</p>
