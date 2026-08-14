@@ -59,7 +59,7 @@
 <li>主机上要有 <strong>uv</strong>。插件的 MCP 描述符用 <code>uvx</code> 拉起服务，技能那边也拿它当 Python ≥ 3.12 的兜底。用 <code>pipx install uv</code>、<code>pip install --user uv</code> 或者 <code>brew install uv</code> 都行。</li>
 <li>Windows 上请在 <strong>WSL 2</strong> 里按 Linux 的步骤走。Git Bash 不是 WSL 2，在里面装容易失败，WSL 装不上的话看<a href="https://github.com/Q00/ouroboros/blob/main/docs/guides/windows-wsl-troubleshooting.md">故障排查指南</a>。</li>
 </ul>
-<p>你不需要单独准备一个全局 Python 环境，但 <code>uv</code> 是要的——这一点英文版那页没写清楚，这里补上。</p>
+<p>你不需要单独准备一个全局 Python 环境，但 <code>uv</code> 是要的。</p>
 
 <h2 id="login">2. 登录 Claude Code</h2>
 <p>在终端开一个 Claude Code 会话：</p>
@@ -76,8 +76,8 @@
 <h2 id="setup">4. <code>ooo setup</code> — 把 Core 通过 MCP 接上</h2>
 <p>在你要干活的项目目录里开一个 Claude Code 会话，输入：</p>
 <pre><code>ooo setup</code></pre>
-<p><code>ooo setup</code> 会把 Ouroboros Core 的 MCP 服务注册到全局，只需要做一次。它还可以顺手往项目的 <code>CLAUDE.md</code> 里加一段命令摘要。</p>
-<p><strong>预期结果：</strong>出现确认 MCP 服务已注册的提示。注册完请把 Claude Code 完全关掉再重开。</p>
+<p><code>ooo setup</code> 是挑一个 runtime 配置，把选择写进 <code>~/.ouroboros/config.yaml</code>，顺带可以往项目的 <code>CLAUDE.md</code> 里加一段命令摘要。MCP 服务的注册归第 3 步装的插件管，所以 <code>ooo setup</code> 不会动 <code>~/.claude/mcp.json</code>。</p>
+<p><strong>预期结果：</strong>列出检测到的 runtime，显示 <code>Setup complete!</code> 和配置保存位置（<code>~/.ouroboros/config.yaml</code>）。MCP 连没连上，看第 5 步的 <code>/mcp</code>。setup 完请把 Claude Code 完全关掉再重开。</p>
 
 <h2 id="verify">5. 验证</h2>
 <p>在 Claude Code 会话里跑：</p>
@@ -106,7 +106,7 @@ ouroboros setup</code></pre>
 <h2 id="trouble">装不上的时候</h2>
 <p>如果插件起不来、报 <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code>，先确认版本。0.51.1 修了这个启动失败：在那之前，已有环境里的 <code>mcp</code> 可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。用 <code>ooo update</code> 升到最新版再试。</p>
 
-<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。英文版那页标着 0.50.4，有些地方已经落后。发现对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。发现对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../architecture/">← 上一章<br><strong>03 架构</strong></a><a href="../interview/">下一章 →<br><strong>05 访谈</strong></a></nav>
 </article>
