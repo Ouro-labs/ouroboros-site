@@ -1,7 +1,20 @@
 {
   "schema_version": 1,
-  "verified_ouroboros_version": "0.50.4",
-  "upstream_sha": "456a1347195038ad0eea2bcfee21efee495d6cb9",
+  "verified_ouroboros_version": "0.51.4",
+  "upstream_sha": "fc774f7b962964f8ed7e559e1c4618f4699a65f7",
+  "verified_at": "2026-08-14",
+  "verification": {
+    "scope": "12 chapters, ko/en/zh — prose, commands, flags, paths, and numeric thresholds",
+    "method": "clean venv (uv, Python 3.12) with ouroboros-ai==0.51.4 installed from PyPI; every documented command resolved against the installed CLI; ooo setup, ouroboros mcp doctor, and ouroboros uninstall --dry-run executed against a sandboxed HOME; numeric thresholds read from the installed package source",
+    "host": "macOS 15 (Darwin 25.5.0, arm64)",
+    "previous": {
+      "verified_ouroboros_version": "0.50.4",
+      "upstream_sha": "456a1347195038ad0eea2bcfee21efee495d6cb9",
+      "verified_at": "2026-07-16"
+    },
+    "screenshots_recaptured": false,
+    "screenshots_note": "The two captures below are still the 2026-07-16 / 0.50.4 originals. The 0.51.4 pass re-verified the commands and prose they illustrate, but did not re-record the images."
+  },
   "captures": [
     {
       "source": "http://127.0.0.1:4173/learn/start/",

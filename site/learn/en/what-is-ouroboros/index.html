@@ -34,7 +34,7 @@
 <div class="eyebrow">01</div>
 <h1>1. What is Ouroboros</h1>
 <p class="lead">Ouroboros is an open-source tool that manages the requirements, execution, evaluation, and records of AI coding work.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div>
+<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>verified 2026-08-14 against docs and code</span></div>
 <h2 id="define">1.1 Definition</h2>
 <p>Ouroboros does not write code itself. Code is written by an AI coding tool such as Claude Code or Codex. Ouroboros works before and after that tool: it pins down requirements, hands off execution, verifies results, and records the process.</p>
 <figure class="diagram"><img src="../../../assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024" loading="lazy"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
@@ -68,7 +68,7 @@
 <tr><td>Seed</td><td>The work spec used for this run</td><td><code>~/.ouroboros/seeds/</code></td></tr>
 <tr><td>Test results</td><td>Whether lint, build, and tests passed</td><td>Evaluation output</td></tr>
 <tr><td>Evaluation results</td><td>Verdict on the completion criteria</td><td>Evaluation output</td></tr>
-<tr><td>Execution records</td><td>Every execution event</td><td><code>~/.ouroboros/ouroboros.db</code></td></tr>
+<tr><td>Execution records</td><td>Every execution event</td><td><code>~/.ouroboros/data/ouroboros.db</code></td></tr>
 </tbody>
 </table></div>
 <p>Because execution records persist, you can find interrupted work again and check later what was run and why.</p>

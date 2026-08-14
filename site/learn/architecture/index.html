@@ -34,7 +34,7 @@
 <div class="eyebrow">03</div>
 <h1>3. 구성요소</h1>
 <p class="lead">Ouroboros는 명령 입구, 관리 엔진, 작업 기준, 실행 계층, 기록 저장소, 평가기로 나뉩니다.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>2026-07-16 문서·코드 확인</span></div><figure class="diagram"><img src="../../assets/learn/diagrams/architecture.png" alt="사용자가 ooo 명령으로 Core에 접근하고, Core가 Seed를 만들어 runtime에 전달하며, EventStore와 Ledger에 기록이 쌓이는 구조 도해" width="1536" height="1024" loading="lazy"><figcaption>사용자 → ooo 명령 → Core → runtime 순서로 작업이 흐르고, 기록은 EventStore와 Ledger에 남습니다.</figcaption></figure>
+<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>2026-08-14 문서·코드 확인</span></div><figure class="diagram"><img src="../../assets/learn/diagrams/architecture.png" alt="사용자가 ooo 명령으로 Core에 접근하고, Core가 Seed를 만들어 runtime에 전달하며, EventStore와 Ledger에 기록이 쌓이는 구조 도해" width="1536" height="1024" loading="lazy"><figcaption>사용자 → ooo 명령 → Core → runtime 순서로 작업이 흐르고, 기록은 EventStore와 Ledger에 남습니다.</figcaption></figure>
 <h2 id="parts">3.1 구성요소별 역할</h2>
 <div class="table-wrap"><table>
 <thead><tr><th>구성요소</th><th>역할</th></tr></thead>
@@ -65,9 +65,9 @@
 <tbody>
 <tr><td><code>config.yaml</code></td><td>runtime 선택 등 주 설정</td></tr>
 <tr><td><code>seeds/</code></td><td>생성된 Seed YAML 파일</td></tr>
-<tr><td><code>ouroboros.db</code></td><td>EventStore(SQLite)</td></tr>
+<tr><td><code>data/ouroboros.db</code></td><td>EventStore(SQLite)</td></tr>
 <tr><td><code>logs/ouroboros.log</code></td><td>로그</td></tr>
-<tr><td><code>data/</code>, <code>worktrees/</code></td><td>auto 세션 상태와 격리 작업 폴더</td></tr>
+<tr><td><code>data/</code>, <code>worktrees/</code></td><td>EventStore, auto 세션 상태, 격리 작업 폴더</td></tr>
 </tbody>
 </table></div>
 <p>프로젝트 폴더에는 선택에 따라 <code>CLAUDE.md</code> 명령 요약과 <code>.ouroboros/</code> 설정이 생길 수 있습니다.</p>

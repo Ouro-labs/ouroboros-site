@@ -70,10 +70,10 @@
 
 <h2 id="mcp">3. 访谈能用，但 run 或 status 挂了</h2>
 <p><strong>先查：</strong>插件加载了，但 Core 的 MCP 服务可能没连上。在 Claude Code 里用 <code>/mcp</code> 看 ouroboros 服务的状态。</p>
-<p>在会话里按顺序跑：</p>
-<pre><code>ooo setup
-ooo update</code></pre>
-<p><strong>期望结果：</strong>MCP 服务重新注册。之后把 Claude Code 完全关掉再开。独立命令行安装的话，在普通终端里查 <code>ouroboros mcp info</code> 和 <code>ouroboros status health</code>。</p>
+<p>MCP 服务的注册归插件管，不归 <code>ooo setup</code>。先在普通终端里把插件重装一遍：</p>
+<pre><code>claude plugin install ouroboros@ouroboros --force</code></pre>
+<p><strong>期望结果：</strong>插件重装的同时 MCP 服务的注册也回来了。把 Claude Code 完全关掉再开，然后再看一次 <code>/mcp</code>。</p>
+<p>还是连不上，就用 <code>uvx --version</code> 确认 uv 装没装。插件的 MCP 服务是用 <code>uvx</code> 拉起来的，uv 不在，注册在也连不上。独立命令行安装的话，在普通终端里用 <code>ouroboros mcp doctor</code>、<code>ouroboros mcp info</code> 和 <code>ouroboros status health</code> 缩小范围。</p>
 
 <h2 id="stuck">4. 看着像卡住了</h2>
 <p><strong>先查：</strong>后台跑的活本来就可能很久。<strong>先问状态，别先取消。</strong></p>

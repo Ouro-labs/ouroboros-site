@@ -34,11 +34,11 @@
 <div class="eyebrow">04</div>
 <h1>4. Install</h1>
 <p class="lead">This guide uses the Claude Code plugin as the default path. The order is login, plugin install, <code>ooo setup</code>, then verification.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/install-steps.png" alt="Diagram of the four install steps: login, plugin, setup, verify" width="1536" height="1024" loading="lazy"><figcaption>Installation is four steps: login, plugin, setup, verify.</figcaption></figure>
+<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>verified 2026-08-14 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/install-steps.png" alt="Diagram of the four install steps: login, plugin, setup, verify" width="1536" height="1024" loading="lazy"><figcaption>Installation is four steps: login, plugin, setup, verify.</figcaption></figure>
 <h2 id="prereq">4.1 Prerequisites</h2>
 <ul>
 <li>Claude Code with plugin support must be installed.</li>
-<li>Python is not required. The Claude Code plugin path works without a Python install.</li>
+<li>You do not need to set up a global Python environment, but you do need <code>uv</code>: the plugin launches its MCP server through <code>uvx</code>. Any of <code>pipx install uv</code>, <code>pip install --user uv</code>, or <code>brew install uv</code> works.</li>
 <li>On Windows, follow the Linux steps inside WSL 2. Git Bash is not WSL 2, and running the install commands there can fail; if WSL itself will not install, see the <a href="https://github.com/Q00/ouroboros/blob/main/docs/guides/windows-wsl-troubleshooting.md">troubleshooting guide</a>.</li>
 </ul>
 <h2 id="login">4.2 Claude Code login</h2>
@@ -51,13 +51,13 @@
 <p>Run the next two commands in a normal terminal, outside Claude Code.</p>
 <pre><code>claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros</code></pre>
-<figure class="diagram"><img src="../../../assets/learn/ch02-plugin-install-original.png" alt="Terminal output showing the Ouroboros 0.50.4 plugin installed in Claude Code" loading="lazy"><figcaption>Install output captured on 2026-07-16 on Ubuntu 24.04 with Claude Code 2.1.210.</figcaption></figure>
+<figure class="diagram"><img src="../../../assets/learn/ch02-plugin-install-original.png" alt="Terminal output showing the Ouroboros 0.50.4 plugin installed in Claude Code" loading="lazy"><figcaption>Install output captured on 2026-07-16 on Ubuntu 24.04 with Claude Code 2.1.210 and Ouroboros 0.50.4. This screenshot alone is from 0.50.4; the two commands above are unchanged in 0.51.4.</figcaption></figure>
 <p class="result-note">Expected result: <code>claude plugin list</code> shows <code>ouroboros@ouroboros</code> as enabled.</p>
 <h2 id="setup">4.4 ooo setup — connect Core over MCP</h2>
 <p>Open a Claude Code session in the project folder you will work in, and type:</p>
 <pre><code>ooo setup</code></pre>
-<p><code>ooo setup</code> registers the Ouroboros Core MCP server globally. Registration is needed only once. Optionally it adds a command summary to the project's <code>CLAUDE.md</code>.</p>
-<p class="result-note">Expected result: a message confirms the MCP server registration. Per the official docs, the registration is written to <code>~/.claude/mcp.json</code>. Close Claude Code completely and reopen it after registering.</p>
+<p><code>ooo setup</code> selects a runtime profile and saves that choice to <code>~/.ouroboros/config.yaml</code>. Optionally it adds a command summary to the project's <code>CLAUDE.md</code>. MCP server registration belongs to the plugin you installed in 4.3, so <code>ooo setup</code> leaves <code>~/.claude/mcp.json</code> untouched.</p>
+<p class="result-note">Expected result: the detected runtimes, <code>Setup complete!</code>, and the config path (<code>~/.ouroboros/config.yaml</code>). Check the MCP connection itself with <code>/mcp</code> in step 4.7. Close Claude Code completely and reopen it after setup.</p>
 <h2 id="verify">4.5 Verify</h2>
 <p>Run this inside the Claude Code session.</p>
 <pre><code>ooo help</code></pre>

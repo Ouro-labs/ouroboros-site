@@ -34,7 +34,7 @@
 <div class="eyebrow">03</div>
 <h1>3. Components</h1>
 <p class="lead">Ouroboros splits into a command entry point, a management engine, a work spec, an execution layer, a record store, and an evaluator.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/architecture.png" alt="Diagram: the user reaches Core through the ooo command; Core produces a Seed and hands it to the runtime; records accumulate in EventStore and Ledger" width="1536" height="1024" loading="lazy"><figcaption>Work flows user → ooo command → Core → runtime. Records land in the EventStore and the Ledger.</figcaption></figure>
+<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>verified 2026-08-14 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/architecture.png" alt="Diagram: the user reaches Core through the ooo command; Core produces a Seed and hands it to the runtime; records accumulate in EventStore and Ledger" width="1536" height="1024" loading="lazy"><figcaption>Work flows user → ooo command → Core → runtime. Records land in the EventStore and the Ledger.</figcaption></figure>
 <h2 id="parts">3.1 What each component does</h2>
 <div class="table-wrap"><table>
 <thead><tr><th>Component</th><th>Role</th></tr></thead>
@@ -65,9 +65,9 @@
 <tbody>
 <tr><td><code>config.yaml</code></td><td>Main configuration, including the runtime choice</td></tr>
 <tr><td><code>seeds/</code></td><td>Generated Seed YAML files</td></tr>
-<tr><td><code>ouroboros.db</code></td><td>EventStore (SQLite)</td></tr>
+<tr><td><code>data/ouroboros.db</code></td><td>EventStore (SQLite)</td></tr>
 <tr><td><code>logs/ouroboros.log</code></td><td>Logs</td></tr>
-<tr><td><code>data/</code>, <code>worktrees/</code></td><td>Auto-session state and isolated work folders</td></tr>
+<tr><td><code>data/</code>, <code>worktrees/</code></td><td>EventStore, auto-session state, and isolated work folders</td></tr>
 </tbody>
 </table></div>
 <p>Depending on your choices, the project folder may gain a <code>CLAUDE.md</code> command summary and a <code>.ouroboros/</code> configuration.</p>

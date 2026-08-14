@@ -34,7 +34,7 @@
 <div class="eyebrow">11</div>
 <h1>11. Troubleshooting</h1>
 <p class="lead">Find the symptom first, then follow the order: what to check, the command, the expected result.</p>
-<div class="meta"><span>Ouroboros 0.50.4</span><span>upstream 456a134</span><span>verified 2026-07-16 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/troubleshoot-flow.png" alt="Diagram of the troubleshooting order: symptom, check, command, normal result" width="1536" height="1024" loading="lazy"><figcaption>Each section follows the order symptom, check, command, expected result.</figcaption></figure>
+<div class="meta"><span>Ouroboros 0.51.4</span><span>upstream fc774f7</span><span>verified 2026-08-14 against docs and code</span></div><figure class="diagram"><img src="../../../assets/learn/diagrams/troubleshoot-flow.png" alt="Diagram of the troubleshooting order: symptom, check, command, normal result" width="1536" height="1024" loading="lazy"><figcaption>Each section follows the order symptom, check, command, expected result.</figcaption></figure>
 <h2 id="s0">The plugin fails to start with <code>-32000</code></h2>
 <p><strong>Symptom:</strong> <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code></p>
 <p><strong>Check the version first.</strong> This startup failure was fixed in <strong>0.51.1</strong>, and it is the first entry under Highlights in that release. Before it, an existing environment could shadow the <code>[mcp]</code> profile's <code>mcp==2.0.0</code>. The fix makes the shipped launchers run <code>uvx --isolated</code>.</p>
@@ -50,10 +50,10 @@
 <p class="result-note">Expected result: after installing, reopen the Claude Code session and <code>ooo help</code> works.</p>
 <h2 id="s2">11.2 Interview works but run or status fails</h2>
 <p><strong>Check:</strong> the plugin loaded but Core's MCP server may not be connected. Check the ouroboros server state with <code>/mcp</code> in Claude Code.</p>
-<p>Run these in order inside the Claude Code session. Codex CLI and OpenCode sessions work the same way.</p>
-<pre><code>ooo setup
-ooo update</code></pre>
-<p class="result-note">Expected result: the MCP server is registered again. Close Claude Code completely and reopen it. For a standalone install, check <code>ouroboros mcp info</code> and <code>ouroboros status health</code> in a normal terminal.</p>
+<p>The MCP server registration belongs to the plugin, not to <code>ooo setup</code>. Reinstall the plugin from a normal terminal first.</p>
+<pre><code>claude plugin install ouroboros@ouroboros --force</code></pre>
+<p class="result-note">Expected result: reinstalling the plugin restores the MCP server registration. Close Claude Code completely, reopen it, and check <code>/mcp</code> again.</p>
+<p>If it still will not connect, check that uv is installed with <code>uvx --version</code>. The plugin launches its MCP server through <code>uvx</code>, so without uv the connection fails even when the registration is present. For a standalone install, narrow it down with <code>ouroboros mcp doctor</code>, <code>ouroboros mcp info</code>, and <code>ouroboros status health</code> in a normal terminal.</p>
 <h2 id="s3">11.3 The run seems stuck</h2>
 <p><strong>Check:</strong> runs can take a long time in the background. Query the state first.</p>
 <pre><code>ooo status &lt;session_id&gt;</code></pre>
