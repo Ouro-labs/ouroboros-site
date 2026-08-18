@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loop engineering: gate the spec, withhold the grader, label the jury · Ouroboros</title>
+<meta name="description" content="Loop engineering is a practice for building agent loops with a boundary: gate the spec before code, withhold the grader from the worker, and label reviewer independence instead of assuming it.">
+<link rel="canonical" href="https://ouroboros.page/learn/en/loop-engineering/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ouroboros.page/learn/en/loop-engineering/">
+<meta property="og:title" content="Loop engineering: gate the spec, withhold the grader, label the jury">
+<meta property="og:description" content="A practice description with the code to check: how Ouroboros gates the spec, withholds the grader, and labels reviewer independence.">
+<meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Loop engineering: gate the spec, withhold the grader, label the jury">
+<meta name="twitter:description" content="A practice description with the code to check: how Ouroboros gates the spec, withholds the grader, and labels reviewer independence.">
+<meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
+<link rel="stylesheet" href="../../learn.css?v=3">
+<link rel="icon" href="../../../assets/logo-snake.png">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<header class="top">
+<div class="top-inner">
+<a class="brand" href="../../../"><img src="../../../assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+<nav aria-label="Main menu">
+<a href="../../en/">Guide</a>
+<a href="../../en/install/">Install</a>
+<a href="../../en/glossary/">Glossary</a>
+<a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
+<button class="theme" data-theme-toggle type="button">Theme</button>
+</nav>
+</div>
+</header>
+<main id="content" class="layout layout-single">
+<article>
+
+<div class="eyebrow">Practice</div>
+<h1>Loop engineering: gate the spec, withhold the grader, label the jury</h1>
+<p class="lead">Skip the prompt engineering. The agent runs, fails, and gets smarter every generation. Loop engineering is our name for the discipline of building that loop so the growth has a boundary: the grading command and expected result never make it into the success contract we hand it.</p>
+<div class="meta"><span>Ouroboros 0.51.7</span><span>Practice description, not a market-wide definition</span></div>
+
+<p>This page documents how Ouroboros does it, with the code to check. It is a practice description; we are not claiming a market-wide definition.</p>
+
+<h2 id="principles">Three principles, each greppable</h2>
+<ol>
+<li><strong>The loop starts gated.</strong> An interview scores how vague the request is, and a score above 0.2 blocks spec generation until you pass force explicitly. The gate makes vagueness a decision instead of an accident.</li>
+<li><strong>The grader stays outside the loop.</strong> When an acceptance criterion defines a verify command or an expected-output assertion, those values are omitted from the worker's contract block, with no flag to put them back. Redaction elsewhere is literal over five encodings, so a reshaped copy can still get through; that gap is tracked in a public issue.</li>
+<li><strong>The jury is labeled, not assumed.</strong> Evaluation runs carry an independence state; same-vendor voters are filtered, and if that would leave fewer than two, the original roster is rolled back rather than pretending a one-voter jury is a jury.</li>
+</ol>
+
+<h2 id="anthology">The anthology</h2>
+<p>Pieces we have published on the practice, in the language they were written in:</p>
+<ul>
+<li><strong>English</strong>: <a href="https://dev.to/q00/your-agent-loop-is-teaching-the-model-to-cheat-48oa">Your agent loop is teaching the model to cheat</a> (dev.to), <a href="https://dev.to/q00/an-ambiguity-gate-for-ai-coding-agents-measure-the-request-before-writing-code-4n75">An ambiguity gate for AI coding agents</a> (dev.to)</li>
+<li><strong>한국어</strong>: <a href="https://dev.to/q00/dangsinyi-eijeonteu-rupeuneun-modelege-keoningeul-gareucigo-issda-2ep2">당신의 에이전트 루프는 모델에게 커닝을 가르치고 있다</a> (dev.to)</li>
+<li><strong>日本語</strong>: <a href="https://qiita.com/Q00/items/0c160f7df3ff6c383fe4">Qiita edition</a></li>
+<li><strong>中文</strong>: <a href="https://x.com/JqOnly/status/2086264530733289733">X thread, 4 posts</a></li>
+<li><strong>Hands-on</strong>: the learn guides (<a href="../">en</a> / <a href="https://ouroboros.page/learn/">ko</a> / <a href="https://ouroboros.page/learn/zh/">zh</a>) walk from install to a first interview.</li>
+</ul>
+
+<h2 id="why-a-page">Why a page instead of more posts</h2>
+<p>The term is empty where we checked: marketplace exact-match came back zero when we measured (2026-08-11). A single page that defines, shows the code, and collects the pieces is what search engines, citers, and agents can actually land on. Posts age; this page is maintained.</p>
+<p>If your loop uses a different spec gate, grader boundary, or jury rule, send one public implementation and name the boundary it addresses. We will add verified examples to this anthology, including designs that disagree with ours.</p>
+
+</article>
+</main>
+<footer class="footer">
+<div class="footer-inner"><span>&copy; 2026 Ouro Labs</span><a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">Official docs</a><a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md">CLI Reference</a><a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a></div>
+</footer>
+<script src="../../learn.js?v=3"></script>
+</body>
+</html>
