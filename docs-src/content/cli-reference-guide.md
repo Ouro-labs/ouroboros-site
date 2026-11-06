@@ -4,6 +4,20 @@
 
 모든 옵션의 상세와 예외는 [고정 제품 CLI 참조](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/cli-reference.md)와 [CLI 등록 코드](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/main.py)에서 찾습니다. 이 페이지는 전체 옵션을 전수 설명하거나 모든 명령을 실행 검증한 목록이 아닙니다.
 
+## 목적별 상세 위치
+
+아래 링크는 888줄 상세 색인의 해당 명령으로 바로 이동합니다. 실행 전에 각 명령의 입력, 선택 조건, 부작용과 설치판 도움말을 확인하세요. 상세 색인은 **722판** 기준이며, 이 요약의 main `592c667` 설명 및 실제 설치 버전과 다른 점이 있을 수 있습니다.
+
+| 하려는 일 | 상세 위치 |
+| --- | --- |
+| 목표를 인터뷰로 정리하거나 Seed를 만들기 | [`init start`](/docs/cli-reference-detail/#ouroboros-init-start), [`interview start`](/docs/cli-reference-detail/#ouroboros-interview-start), [`seed`](/docs/cli-reference-detail/#ouroboros-seed) |
+| 기존 Seed 실행 또는 자동 실행 | [`run workflow`](/docs/cli-reference-detail/#ouroboros-run-workflow), [`auto`](/docs/cli-reference-detail/#ouroboros-auto) |
+| job·실행 상태와 결과 확인 | [`job status`](/docs/cli-reference-detail/#ouroboros-job-status), [`job result`](/docs/cli-reference-detail/#ouroboros-job-result), [`status execution`](/docs/cli-reference-detail/#ouroboros-status-execution) |
+| 재개 후보·취소·복구 확인 | [`resume`](/docs/cli-reference-detail/#ouroboros-resume), [`cancel execution`](/docs/cli-reference-detail/#ouroboros-cancel-execution) |
+| 설정·backend·호스트 연결 진단 | [`config`](/docs/cli-reference-detail/#ouroboros-config), [`mcp doctor`](/docs/cli-reference-detail/#ouroboros-mcp-doctor), [`setup`](/docs/cli-reference-detail/#ouroboros-setup) |
+| 산출물·실행 기록 조사 | [`artifacts`](/docs/cli-reference-detail/#ouroboros-artifacts), [`harness`](/docs/cli-reference-detail/#ouroboros-harness), [`workflow-ir`](/docs/cli-reference-detail/#ouroboros-workflow-ir) |
+| 플러그인·업데이트·제거 | [`plugin`](/docs/cli-reference-detail/#ouroboros-plugin), [`update`](/docs/cli-reference-detail/#ouroboros-update), [`uninstall`](/docs/cli-reference-detail/#ouroboros-uninstall) |
+
 | 목적 | 명령·입력 | 출력과 다음 행동 | 영향·실패 시 |
 | --- | --- | --- | --- |
 | 준비 상태 확인 | `ouroboros status health` | 설정·DB·런타임·자격증명 관련 행을 확인 | `ok`는 실제 인증이나 모델 호출 성공이 아님. 오류 행과 설치 환경을 확인 |

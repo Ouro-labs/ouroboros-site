@@ -84,8 +84,8 @@
     },
     "cli-reference-guide.md": {
       "source": "content/cli-reference-guide.md",
-      "source_sha256": "2ad3ee85805dd2569f376bdd20a39213c3a00a7784020c7cd6ed2d5aea34392f",
-      "page_sha256": "222ae73984baca46ab822a4113eb2065d831d97ec52c948c58f0565899ed441e"
+      "source_sha256": "340b444de480debb6db0225bad0d1f2636eb2e45aa850dd821fd34e9ce25964c",
+      "page_sha256": "830bc122051ef589356d02f54622ab636a0ce2c922e17c8a7b425a239ee05dc4"
     },
     "mcp-reference-guide.md": {
       "source": "content/mcp-reference-guide.md",
