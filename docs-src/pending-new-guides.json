@@ -1,0 +1,38 @@
+{
+  "status": "pending",
+  "prior_manifest_sha256": "ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2",
+  "manifest_sha256": "5c254452da0a2cd1b8b34d816cca09296eda13e6d92daf58f7a19d06cd57db9f",
+  "summary_sha256": "12fbcb786ce34d17b2f8b7e7f43402efa14cdb6ccf0ec4f14283ef1f98fb43d1",
+  "pages": {
+    "megacode-guide.md": {
+      "source": "content/megacode-guide.md",
+      "source_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258",
+      "page_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258"
+    },
+    "settings-gui-guide.md": {
+      "source": "content/settings-gui-guide-ko.md",
+      "source_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5",
+      "page_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5"
+    },
+    "en/settings-gui-guide.md": {
+      "source": "content/settings-gui-guide.md",
+      "source_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7",
+      "page_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7"
+    },
+    "model-routing-guide.md": {
+      "source": "content/model-routing-guide.md",
+      "source_sha256": "2f5812dfac1b87b14b6589674658ced8cc73b444d54a052286cff77ce14aa674",
+      "page_sha256": "ccb0b4a778616a287fdeed32a3b9161be2757202b438a105db5b2ccc154a7952"
+    },
+    "harness-traces-guide.md": {
+      "source": "content/harness-traces-guide.md",
+      "source_sha256": "8d736bfcb4db564b5791a16a014e87ecf687ae7aefbfe688affa8ce4a17d1ec4",
+      "page_sha256": "1d374c9e9c302fe6b331241a3fea74256d930696bf081074df9a1a1515659004"
+    },
+    "dashboard-guide.md": {
+      "source": "content/dashboard-guide.md",
+      "source_sha256": "94f7022ebbc8aceb1c992428ab984a0f32155a0ab100cea337afa4b7a15a849a",
+      "page_sha256": "8a551ffd52295abb7f2ba75c3c688231d6520a6d19ceec51676c32f82cd39535"
+    }
+  }
+}
