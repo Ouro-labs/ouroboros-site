@@ -7,6 +7,11 @@
 {% else %}<title>{{ site_title }}</title>{% endif %}
 {% endblock %}
 {% block extrahead %}
+{% if page and page.file.src_uri in ['quickstart.md', 'en/quickstart.md', 'zh/quickstart.md'] %}
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/docs/quickstart/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/docs/en/quickstart/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/docs/zh/quickstart/">
+{% endif %}
 <script>try{if(localStorage.getItem('learn-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 {% endblock %}
 {% block header %}

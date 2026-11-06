@@ -19,6 +19,7 @@ class PendingGuidesTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)/'docs-src'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
+        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt')
     def rejected(self, message):
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
@@ -34,12 +35,26 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search snapshot chain mismatch')
     def test_changed_search_prior_js(self):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['prior_js_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search prior JS mismatch')
+    def test_changed_evaluation_summary(self):
+        (self.root/'pending-evaluation-review.md').write_text('altered');self.rejected('Evaluation summary changed')
+    def test_changed_evaluation_chain(self):
+        p=self.root/'pending-evaluation.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Evaluation snapshot chain mismatch')
+    def test_changed_discovery_summary(self):
+        (self.root/'pending-discovery-review.md').write_text('altered');self.rejected('Discovery summary changed')
+    def test_changed_discovery_main(self):
+        (self.root/'overrides/main.html').write_text('altered');self.rejected('Discovery file changed')
+    def test_changed_discovery_llms(self):
+        (self.root.parent/'site/llms.txt').write_text('altered');self.rejected('Discovery file changed')
+    def test_discovery_llms_symlink(self):
+        p=self.root.parent/'site/llms.txt';p.unlink();p.symlink_to(self.root/'overrides/main.html');self.rejected('Discovery file changed')
+    def test_changed_discovery_prior_main(self):
+        p=self.root/'pending-discovery.json';e=json.loads(p.read_text());e['prior_main_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Discovery prior main mismatch')
     def test_changed_locale_summary(self):
         (self.root/'pending-locale-review.md').write_text('altered');self.rejected('Locale summary changed')
     def test_changed_locale_file(self):
-        (self.root/'overrides/main.html').write_text('altered');self.rejected('Locale file changed')
+        (self.root/'overrides/partials/language.html').write_text('altered');self.rejected('Locale file changed')
     def test_locale_file_symlink(self):
-        p=self.root/'overrides/main.html';p.unlink();p.symlink_to(self.root/'overrides/partials/nav.html');self.rejected('Locale file changed')
+        p=self.root/'overrides/partials/language.html';p.unlink();p.symlink_to(self.root/'overrides/partials/nav.html');self.rejected('Locale file changed')
     def test_changed_locale_prior_js(self):
         p=self.root/'pending-locale.json';e=json.loads(p.read_text());e['prior_js_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Locale prior JS does not match old evidence')
     def test_changed_install_summary(self):
@@ -47,19 +62,19 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_install_chain(self):
         p=self.root/'pending-install.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Installation snapshot chain mismatch: mid')
     def test_forged_install_source_hash(self):
-        mpath=self.root/'content-manifest.json';wpath=self.root/'pending-worktree.json'
-        m=json.loads(mpath.read_text());w=json.loads(wpath.read_text());name='quickstart.md'
-        m['pages'][name]['source_sha256']='a'*64;w['pages'][name]['current']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
-        self.rejected('Worktree current metadata mismatch')
+        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
+        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());name='quickstart.md'
+        m['pages'][name]['source_sha256']='a'*64;e['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        self.rejected('Evaluation current metadata mismatch')
 
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
     def test_forged_latest_source_hash(self):
-        mpath=self.root/'content-manifest.json';wpath=self.root/'pending-worktree.json'
-        m=json.loads(mpath.read_text());w=json.loads(wpath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
-        self.rejected('Worktree snapshot chain mismatch')
+        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
+        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        self.rejected('Evaluation snapshot chain mismatch')
 
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
@@ -70,7 +85,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -78,14 +93,14 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_prior_evidence(self):
         (self.root/'review-evidence/groups-before.md').write_text('altered'); self.rejected('Prior public evidence changed')
     def test_forged_source_hash_in_both_records(self):
-        mpath=self.root/'content-manifest.json';wpath=self.root/'pending-worktree.json'
-        m=json.loads(mpath.read_text());w=json.loads(wpath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
-        self.rejected('Worktree snapshot chain mismatch')
+        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
+        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        self.rejected('Evaluation snapshot chain mismatch')
 
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Worktree manifest or pending status changed')
+        self.rejected('Evaluation manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):
