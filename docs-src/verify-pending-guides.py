@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,8 +22,27 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    details = json.loads((root/'pending-details.json').read_text())
+    if details.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != details['manifest_sha256']:
+        raise ValueError('Details manifest or pending status changed')
+    if details['prior_manifest_sha256'] != '723c433f14ddf86540074b9ecaf4dfb4fbaac8773e396bf8409e1569719cc7ce': raise ValueError('Details prior manifest changed')
+    if not re.fullmatch(r'[0-9a-f]{64}',str(details.get('generator_sha256',''))): raise ValueError('Details generator hash missing')
+    details_summary=(root/'pending-details-review.md').read_bytes()
+    if sha(details_summary) != details['summary_sha256']: raise ValueError('Details summary changed')
+    details_names={'quickstart.md','en/quickstart.md','zh/quickstart.md','recovery-detail.md'}
+    if set(details['pages']) != details_names: raise ValueError('Details page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',details_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(details_names) or {x[0] for x in rows}!=details_names: raise ValueError('Details summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=details['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Details current metadata mismatch: '+name)
+    details_restored=copy.deepcopy(manifest)
+    for name in details_names: details_restored['pages'][name]=details['pages'][name]['prior']
+    if sha((json.dumps(details_restored,ensure_ascii=False,indent=2)+'\n').encode())!=details['prior_manifest_sha256']:
+        raise ValueError('Details snapshot chain mismatch')
     access = json.loads((root/'pending-accessibility.json').read_text())
-    if access.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != access['manifest_sha256']:
+    if access.get('status') != 'pending' or details['prior_manifest_sha256'] != access['manifest_sha256']:
         raise ValueError('Accessibility manifest or pending status changed')
     access_files={'docs-src/content/assets/site.css','docs-src/overrides/main.html','docs-src/tests/test_accessibility_styles.py'}
     if set(access.get('files', {})) != access_files: raise ValueError('Accessibility file set changed')
@@ -35,7 +54,7 @@ def verify(root=ROOT):
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
     evaluation = json.loads((root/'pending-evaluation.json').read_text())
-    if evaluation.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != evaluation['manifest_sha256']:
+    if evaluation.get('status') != 'pending' or details['prior_manifest_sha256'] != evaluation['manifest_sha256']:
         raise ValueError('Evaluation manifest or pending status changed')
     if evaluation['prior_manifest_sha256'] != '8d5f3f543953f78406099e1ec0b70e3d783e4c53860ec4a14f5cb791db76f50e': raise ValueError('Evaluation prior manifest changed')
     evaluation_summary=(root/'pending-evaluation-review.md').read_bytes()
@@ -46,9 +65,9 @@ def verify(root=ROOT):
     if len(rows)!=len(evaluation_names) or {x[0] for x in rows}!=evaluation_names: raise ValueError('Evaluation summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=evaluation['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or details_restored['pages'].get(name)!=page:
             raise ValueError('Evaluation current metadata mismatch: '+name)
-    evaluation_restored=copy.deepcopy(manifest)
+    evaluation_restored=copy.deepcopy(details_restored)
     for name in evaluation_names: evaluation_restored['pages'][name]=evaluation['pages'][name]['prior']
     if sha((json.dumps(evaluation_restored,ensure_ascii=False,indent=2)+'\n').encode())!=evaluation['prior_manifest_sha256']:
         raise ValueError('Evaluation snapshot chain mismatch')

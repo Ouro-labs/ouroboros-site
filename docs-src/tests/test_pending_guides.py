@@ -35,6 +35,12 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search snapshot chain mismatch')
     def test_changed_search_prior_js(self):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['prior_js_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search prior JS mismatch')
+    def test_changed_details_summary(self):
+        (self.root/'pending-details-review.md').write_text('altered');self.rejected('Details summary changed')
+    def test_changed_details_chain(self):
+        p=self.root/'pending-details.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Details snapshot chain mismatch')
+    def test_missing_details_generator_hash(self):
+        p=self.root/'pending-details.json';e=json.loads(p.read_text());e['generator_sha256']='bad';p.write_text(json.dumps(e));self.rejected('Details generator hash missing')
     def test_changed_accessibility_summary(self):
         (self.root/'pending-accessibility-review.md').write_text('altered');self.rejected('Accessibility summary changed')
     def test_changed_accessibility_css(self):
@@ -70,21 +76,19 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_install_chain(self):
         p=self.root/'pending-install.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Installation snapshot chain mismatch: mid')
     def test_forged_install_source_hash(self):
-        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
-        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());name='quickstart.md'
-        m['pages'][name]['source_sha256']='a'*64;e['pages'][name]['current']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
-        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
-        self.rejected('Evaluation current metadata mismatch')
+        mpath=self.root/'content-manifest.json';dpath=self.root/'pending-details.json'
+        m=json.loads(mpath.read_text());d=json.loads(dpath.read_text());name='quickstart.md'
+        m['pages'][name]['source_sha256']='a'*64;d['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');d['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();dpath.write_text(json.dumps(d))
+        self.rejected('Details current metadata mismatch')
 
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
     def test_forged_latest_source_hash(self):
-        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
-        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
-        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
-        self.rejected('Evaluation snapshot chain mismatch')
+        mpath=self.root/'content-manifest.json';dpath=self.root/'pending-details.json'
+        m=json.loads(mpath.read_text());d=json.loads(dpath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');d['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();dpath.write_text(json.dumps(d))
+        self.rejected('Details snapshot chain mismatch')
 
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
@@ -95,7 +99,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -103,15 +107,14 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_prior_evidence(self):
         (self.root/'review-evidence/groups-before.md').write_text('altered'); self.rejected('Prior public evidence changed')
     def test_forged_source_hash_in_both_records(self):
-        mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
-        m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
-        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
-        self.rejected('Evaluation snapshot chain mismatch')
+        mpath=self.root/'content-manifest.json';dpath=self.root/'pending-details.json'
+        m=json.loads(mpath.read_text());d=json.loads(dpath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');d['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();dpath.write_text(json.dumps(d))
+        self.rejected('Details snapshot chain mismatch')
 
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Accessibility manifest or pending status changed')
+        self.rejected('Details manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):

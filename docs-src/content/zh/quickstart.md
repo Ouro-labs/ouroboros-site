@@ -20,6 +20,9 @@
 | Codex 插件 | 需要已登录的 Codex CLI 和 `uvx`。请在**终端**中输入下方安装命令。 | 新 Codex 会话的对话 |
 | 独立 CLI | 需要 Python 3.12 或更高版本，以及计划使用的运行时和认证方式。请在单独的虚拟环境中安装。 | **终端** |
 
+**请选择一种使用路径。**使用 Claude Code 或 Codex 插件时，只执行计划使用的那个宿主对应的安装命令，然后在宿主对话中输入第一个任务。独立 CLI 是另一条路径；展开下方内容查看设置细节，并在终端中输入命令。
+
+
 ### Claude Code
 
 在终端中运行：
@@ -40,54 +43,50 @@ codex plugin add ouroboros@ouroboros
 
 ### 独立 CLI
 
-首次安装时，请先创建并激活新的虚拟环境。[独立 CLI 虚拟环境指南](/docs/first-run-detail/#cli-venv)提供了创建新目录、安装、激活和检查环境的命令。该链接页面为韩语，依据产品源码 `722172ef` 编写；其版本可能与本快速入门依据的 `592c667f` 以及当前公开软件包不同，请检查已安装版本的帮助信息。
+<details>
+<summary>独立 CLI 用户：展开查看安装、运行时和 Codex MCP 设置</summary>
 
-在已激活虚拟环境的终端中运行：
+<p>首次安装时，请先创建并激活新的虚拟环境。<a href="/docs/first-run-detail/#cli-venv">独立 CLI 虚拟环境指南</a>提供了创建新目录、安装、激活和检查环境的命令。该链接页面为韩语，依据产品源码 <code>722172ef</code> 编写；其版本可能与本快速入门依据的 <code>592c667f</code> 以及当前公开软件包不同，请检查已安装版本的帮助信息。</p>
 
-```bash
-python -m pip install ouroboros-ai
-ouroboros --version
-```
+<p>在已激活虚拟环境的终端中运行：</p>
 
-请根据已安装并完成认证、准备使用的 CLI 明确选择运行时。如果已经安装 Claude Code CLI 并完成认证，请运行：
+<pre><code class="language-bash">python -m pip install ouroboros-ai
+ouroboros --version</code></pre>
 
-```bash
-ouroboros setup --runtime claude-cli
-```
+<p>请根据已安装并完成认证、准备使用的 CLI 明确选择运行时。如果已经安装 Claude Code CLI 并完成认证，请运行：</p>
 
-如果已经安装 Codex CLI 并完成认证，请运行：
+<pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
 
-```bash
-ouroboros setup --runtime codex
-```
+<p>如果已经安装 Codex CLI 并完成认证，请运行：</p>
 
+<pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
 
-**Codex CLI 服务器（macOS/Linux/WSL2 独立 CLI 路径）：**这与安装 Codex 插件是两回事。以下本地 stdio 步骤不适用于原生 Windows PowerShell。在同一 shell 中使用官方 `0.59.9` CLI 且 PATH 中有 `uvx` 时，`ouroboros setup --runtime codex` 会注册隔离启动器 `uvx --from ouroboros-ai[mcp]==0.59.9 ...`；当前 CLI 环境无需安装 `[mcp]` extra。请在运行 setup 的同一 shell 中检查 `command -v ouroboros`、`ouroboros --version` 和 `command -v uvx`，确认使用的 CLI 与启动器。其他已安装发行版会将启动器固定到各自的安装版本。
+<p><strong>Codex CLI 服务器（macOS/Linux/WSL2 独立 CLI 路径）：</strong>这与安装 Codex 插件是两回事。以下本地 stdio 步骤不适用于原生 Windows PowerShell。在同一 shell 中使用官方 <code>0.59.9</code> CLI 且 PATH 中有 <code>uvx</code> 时，<code>ouroboros setup --runtime codex</code> 会注册隔离启动器 <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>；当前 CLI 环境无需安装 <code>[mcp]</code> extra。请在运行 setup 的同一 shell 中检查 <code>command -v ouroboros</code>、<code>ouroboros --version</code> 和 <code>command -v uvx</code>，确认使用的 CLI 与启动器。其他已安装发行版会将启动器固定到各自的安装版本。</p>
 
-如果没有 `uvx`，请在一个尚不存在的路径创建单独的 MCP 2 环境。以下 macOS/Linux/WSL2 命令使用时间戳生成路径，并在路径已存在时停止。每一步成功后再继续；若失败，请换一个新路径，不要复用未完整安装的环境。
+<p>如果没有 <code>uvx</code>，请在一个尚不存在的路径创建单独的 MCP 2 环境。以下 macOS/Linux/WSL2 命令使用时间戳生成路径，并在路径已存在时停止。每一步成功后再继续；若失败，请换一个新路径，不要复用未完整安装的环境。</p>
 
-```bash
-MCP_VENV="$HOME/.venvs/ouroboros-codex-mcp2-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$HOME/.venvs" &&
-test ! -e "$MCP_VENV" &&
-python -m venv "$MCP_VENV" &&
-source "$MCP_VENV/bin/activate" &&
-test "$(command -v python)" = "$MCP_VENV/bin/python" &&
-python -m pip install 'ouroboros-ai[mcp]==0.59.9' &&
-test "$(command -v ouroboros)" = "$MCP_VENV/bin/ouroboros" &&
-python -m pip show ouroboros-ai mcp &&
-! command -v uvx &&
-command -v codex &&
-ouroboros setup --runtime codex
-```
+<pre><code class="language-bash">MCP_VENV="$HOME/.venvs/ouroboros-codex-mcp2-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$HOME/.venvs" &amp;&amp;
+test ! -e "$MCP_VENV" &amp;&amp;
+python -m venv "$MCP_VENV" &amp;&amp;
+source "$MCP_VENV/bin/activate" &amp;&amp;
+test "$(command -v python)" = "$MCP_VENV/bin/python" &amp;&amp;
+python -m pip install 'ouroboros-ai[mcp]==0.59.9' &amp;&amp;
+test "$(command -v ouroboros)" = "$MCP_VENV/bin/ouroboros" &amp;&amp;
+python -m pip show ouroboros-ai mcp &amp;&amp;
+! command -v uvx &amp;&amp;
+command -v codex &amp;&amp;
+ouroboros setup --runtime codex</code></pre>
 
-若使用 Git/dev 源码检出，请在仓库根目录向该源码的 Python 环境安装 `python -m pip install -e '.[mcp]'`，然后在 `command -v codex` 成功的 shell 中运行 `python -m ouroboros setup --runtime codex`。setup 成功只表示服务器入口已注册，并不验证 Codex 的实时连接或工具发现；请另行确认 Codex 中实际出现了 Ouroboros 工具。MCP 2 `[mcp]` 不要与包含 MCP 1 依赖的 `[claude]` 或 `[claude-sdk]` 安装在同一环境中。
+<p>若使用 Git/dev 源码检出，请在仓库根目录向该源码的 Python 环境安装 <code>python -m pip install -e '.[mcp]'</code>，然后在 <code>command -v codex</code> 成功的 shell 中运行 <code>python -m ouroboros setup --runtime codex</code>。setup 成功只表示服务器入口已注册，并不验证 Codex 的实时连接或工具发现；请另行确认 Codex 中实际出现了 Ouroboros 工具。MCP 2 <code>[mcp]</code> 不要与包含 MCP 1 依赖的 <code>[claude]</code> 或 <code>[claude-sdk]</code> 安装在同一环境中。</p>
 
-**原生 Windows Codex Desktop：**`auto` 模式可能跳过新的 MCP 注册却报告成功；不要把成功提示当作已注册的证明。请使用 WSL2 执行以上 stdio 步骤，或查看独立的 loopback HTTP 流程：`ouroboros setup --runtime codex --mcp-mode http`。该流程要求先单独启动 setup 打印的服务器命令，再打开 Codex，并使用 `127.0.0.1:8765/mcp`。[Windows 行为（main）](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py) · [Windows 行为（0.59.9）](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py) · [Codex 启动器](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py) · [setup 分支](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720) · [软件包配置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89)
+<p><strong>原生 Windows Codex Desktop：</strong><code>auto</code> 模式可能跳过新的 MCP 注册却报告成功；不要把成功提示当作已注册的证明。请使用 WSL2 执行以上 stdio 步骤，或查看独立的 loopback HTTP 流程：<code>ouroboros setup --runtime codex --mcp-mode http</code>。该流程要求先单独启动 setup 打印的服务器命令，再打开 Codex，并使用 <code>127.0.0.1:8765/mcp</code>。<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py">Windows 行为（main）</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py">Windows 行为（0.59.9）</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py">Codex 启动器</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720">setup 分支</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89">软件包配置</a></p>
 
-如果计划使用的 CLI 尚未安装或尚未完成认证，请先按照该运行时的提供方说明完成安装和认证，再选择相应选项。若两者都已安装，请选择实际计划使用的一种。如果只检测到一个运行时，不带运行时参数执行 `ouroboros setup` 会自动选择它；若该运行时是 Claude Code CLI，则会选择 `claude` SDK 路径。检测到多个运行时时，交互模式会提示你选择。非交互模式下，如果现有配置对应的运行时仍可用，程序会保留该配置；否则，若检测到 `claude`，会优先选择 SDK 路径，再不然选择第一个可用运行时。基础 `ouroboros-ai` 软件包不包含 Claude Agent SDK，因此 worker 预检可能会在执行前停止。如果你需要 Python SDK 路径，请先检查已安装版本对应的 SDK extra 和前置条件：[setup 运行时选择](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861)、[Claude 运行时设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64)、[SDK 预检](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215)，以及 [`claude` 与 `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82)。此处行为依据源码版本 `592c667f`；也请查看你所安装版本的帮助和说明。
+<p>如果计划使用的 CLI 尚未安装或尚未完成认证，请先按照该运行时的提供方说明完成安装和认证，再选择相应选项。若两者都已安装，请选择实际计划使用的一种。如果只检测到一个运行时，不带运行时参数执行 <code>ouroboros setup</code> 会自动选择它；若该运行时是 Claude Code CLI，则会选择 <code>claude</code> SDK 路径。检测到多个运行时时，交互模式会提示你选择。非交互模式下，如果现有配置对应的运行时仍可用，程序会保留该配置；否则，若检测到 <code>claude</code>，会优先选择 SDK 路径，再不然选择第一个可用运行时。基础 <code>ouroboros-ai</code> 软件包不包含 Claude Agent SDK，因此 worker 预检可能会在执行前停止。如果你需要 Python SDK 路径，请先检查已安装版本对应的 SDK extra 和前置条件：<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861">setup 运行时选择</a>、<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64">Claude 运行时设置</a>、<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215">SDK 预检</a>，以及 <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82"><code>claude</code> 与 <code>claude-sdk</code> extras</a>。此处行为依据源码版本 <code>592c667f</code>；也请查看你所安装版本的帮助和说明。</p>
 
-`pip install` 不会固定本文所依据的 Git commit。`ouroboros --version` 显示的是该终端中的 CLI 软件包版本；它不会检查宿主可能单独运行的服务器版本。请检查设置结果和计划使用的运行时。其他安装方式和详细前提条件请参阅[产品安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。
+<p><code>pip install</code> 不会固定本文所依据的 Git commit。<code>ouroboros --version</code> 显示的是该终端中的 CLI 软件包版本；它不会检查宿主可能单独运行的服务器版本。请检查设置结果和计划使用的运行时。其他安装方式和详细前提条件请参阅<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md">产品安装指南</a>。</p>
+
+</details>
 
 ## 2. 描述目标并检查 Seed
 
@@ -95,16 +94,16 @@ ouroboros setup --runtime codex
 
 ```text
 ooo setup
-ooo interview "一个可以添加今天的待办并将其标记为完成的简单网页应用"
+ooo interview "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
 **独立 CLI：**在任务目录的**终端**中输入：
 
 ```bash
-ouroboros init start "一个可以添加今天的待办并将其标记为完成的简单网页应用"
+ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
-Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。
+Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。运行前请检查完整 Seed YAML，确认其中的验收标准要求项目 README 说明该项目的依赖安装、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。如果项目没有测试套件，标准可以要求 README 明确说明这一点。如果缺少标准或与目标不符，请先修改并重新检查 Seed。这里描述的是所要求的结果，不表示 README 已生成、内容准确或测试已通过。
 
 Seed 是整理目标、约束和完成条件的规格说明。不同使用路径检查实际 Seed 的方式有所不同。
 
@@ -112,13 +111,13 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 
 上述源码中的 Interview skill 会在提问和检查完成后再次确认目标，然后提出创建 Seed。**不要因为 Interview 已结束就认定 Seed 已经创建。**确认目标后，请在同一对话中请求 `ooo seed`。如果你收到了 interview session ID，需要指定目标时可以使用 `ooo seed <实际 session ID>`。
 
-成功生成后，请检查**完整的 Seed YAML**，而不只是完成提示。阅读目标、项目/目标路径、约束和可验证的完成条件，并与对话中达成一致的内容核对。skill 还会提供 QA 意见，但仅凭分数无法证明内容正确。如果看不到 YAML 或实际保存路径，或者生成失败、被中断，请勿运行它；请在同一会话中再次请求生成，或查看恢复指南。如果没有显示路径，不要猜测文件已经保存；请让宿主确认 Seed 内容及其是否已保存。
+成功生成后，请检查**完整的 Seed YAML**，而不只是完成提示。阅读目标、项目/目标路径、约束和可验证的完成条件，并与对话中达成一致的内容核对。尤其要确认 README 验收标准涵盖依赖安装、应用启动、实际地址和端口、停止方法以及测试命令和范围。缺少任何要求时，请先修改或重新生成并检查 Seed，再执行。skill 还会提供 QA 意见，但仅凭分数无法证明内容正确。如果看不到 YAML 或实际保存路径，或者生成失败、被中断，请勿运行它；请在同一会话中再次请求生成，或查看恢复指南。如果没有显示路径，不要猜测文件已经保存；请让宿主确认 Seed 内容及其是否已保存。
 
 如果 MCP 服务器不可用，skill 会使用备用路径，根据对话中已确认的需求创建 Seed，并可能说明如何配置服务器连接。即使如此，也要检查实际显示的 YAML，并区分它与已确认保存的文件。上面的产品指南分别介绍了 Claude Code 和 Codex 的插件安装方式，但实际界面和 skill 调用方式仍需根据已安装的宿主和版本确认。[Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
 
 ### 在独立 CLI 中检查 Seed
 
-终端中的交互式 Interview 会询问是否创建 Seed。批准创建后，请检查实际显示的 Seed 文件路径及文件内容。如果出现 `Start workflow now?`，默认答案是“是”。如需先检查再执行，请选择 `n`。如果创建失败或被中断，不要假设文件已经存在。此行为依据上述源码；请以已安装版本的实际界面为准。
+终端中的交互式 Interview 会询问是否创建 Seed。批准创建后，请检查实际显示的 Seed 文件路径及文件内容。如果出现 `Start workflow now?`，默认答案是“是”。如需先检查再执行，请选择 `n`。确认 README 验收标准涵盖安装、启动、实际地址和端口、停止方法及测试；若有遗漏，请先修改或重新生成并检查 Seed，再运行。如果创建失败或被中断，不要假设文件已经存在。此行为依据上述源码；请以已安装版本的实际界面为准。
 
 ## 3. 运行任务并检查结果
 
@@ -130,7 +129,8 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 
 1. 在运行结果报告的实际工作目录或 worktree 中检查创建或修改的文件。
 2. 阅读测试和评估结果，并检查失败或未经验证的项目。
-3. 如果还没有应用启动信息，请在实际工作路径下使用下面的请求，先询问如何启动应用。检查命令、来源、端口和费用，选择自己信任的方案后，再打开应用、添加待办并标记为完成。如果 Seed 规定了持久化条件，请在刷新页面后亲自确认该条件仍然满足。
+3. 阅读实际工作路径中的 README，确认其中说明了依赖安装、应用启动、实际 URL 和端口、停止方法及测试方式。先检查命令和来源，再决定是否运行；然后打开应用、添加待办并标记为完成。如果 Seed 规定了持久化条件，请在刷新页面后亲自确认该条件仍然满足。
+4. 将 README 的运行和测试说明与实际结果对照。如果文件不存在、内容不完整或与观察到的行为不一致，该验收标准仍未验证。不要推断未观察到的产物或成功运行结果。
 
 **独立 CLI 用户：**请在实际生成的工作路径中查看 `README` 和项目软件包配置文件，查找依赖安装说明、启动脚本、URL 和端口以及停止方法。如果这些文件没有提供相关信息，或你无法判断如何运行，请勿猜测；请改用 Claude Code 或 Codex 等受支持的插件宿主，并使用下面的请求进行确认。
 

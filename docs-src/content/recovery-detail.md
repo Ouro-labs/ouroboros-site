@@ -30,6 +30,7 @@
 | 응답이 없거나 연결이 끊겼다 | 받은 ID의 종류와 같은 작업의 기록·소유 프로세스를 확인한다. 응답 유실만으로 종료나 재시작 가능을 단정하지 않는다. | [진행상태와 ID](/docs/progress-detail/), 이 페이지의 호스트·독립 CLI 복구 |
 | 완료 표시가 있는데 원하는 기능이나 테스트 결과를 찾지 못한다 | 실제 작업 경로·branch, Seed의 기준과 **실행된** 검사 결과를 확인한다. 작업자 완료와 수용 판정은 별개다. | [기존 프로젝트의 작업 공간](/docs/existing-project-detail/), [평가와 실행 근거](/docs/evaluation-evolution-detail/) |
 | 수용 기준(AC)이 실패하거나 재시도 중이다 | 해당 AC·attempt와 오류, 검증 결과 및 작업 공간을 확인한다. 재시도 가능 횟수는 안전이나 성공을 보장하지 않는다. | [AC 실패를 읽는 순서](/docs/ac-recovery-detail/) |
+| 화면에 `worker_blocked` 또는 “worker blocked”가 표시된다 | main `592c667f`와 release `v0.59.9` 모두 워커 판정 `BLOCKED`를 `worker_blocked` 분류로 기록한다. 이 분류만으로 근본원인을 확정할 수 없으며, dependency cascade의 `BLOCKED`는 다른 AC의 실패에 따른 결과일 수 있다. 기존 작업을 보존하고 같은 `job_id`의 terminal 상태를 확인한 뒤 같은 ID의 결과, 연결된 session/execution ID와 관련 오류를 살핀다. ([main 분류](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/run_failure_cause.py#L34), [v0.59.9 분류](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator/run_failure_cause.py#L34)) | [같은 job의 terminal 결과와 오류 확인](/docs/ai-troubleshooting/#recovery), [이 페이지의 ID별 조회 순서](#first-status-by-id) |
 | 파일이나 산출물 본문이 보이지 않는다 | 응답의 실제 경로와 artifact ID를 확인하고 작업 파일·EventStore 기록·artifact 본문 저장소를 구분한다. 삭제나 재실행 전에 기존 결과를 보존한다. | [산출물 조회와 복구 경계](/docs/artifacts-detail/), [이벤트 조회](/docs/query-projections-detail/) |
 | 설치·인증·설정에서 막힌다 | 설치 경로와 현재 환경의 실제 오류를 확인한다. 진단 통과가 모델 실행과 모든 설정의 유효성을 보장하지는 않는다. | [설치와 설정 오류](#setup-errors), [진단 명령](/docs/diagnostics-detail/) |
 
