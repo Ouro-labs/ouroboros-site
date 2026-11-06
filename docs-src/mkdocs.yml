@@ -39,6 +39,7 @@ nav:
   - AI 문제 해결: ai-troubleshooting.md
   - 판본과 확인: version-guide.md
   - 상태와 ID: status-guide.md
+  - 대시보드와 TUI (592판): dashboard-guide.md
   - Auto trace 조회 (592판): harness-traces-guide.md
   - 모델 라우팅 (592판): model-routing-guide.md
   - Megacode 사용 (592판): megacode-guide.md

@@ -2,6 +2,11 @@
   "format": 1,
   "semantic_links_reviewed": false,
   "pages": {
+    "dashboard-guide.md": {
+      "source": "content/dashboard-guide.md",
+      "source_sha256": "94f7022ebbc8aceb1c992428ab984a0f32155a0ab100cea337afa4b7a15a849a",
+      "page_sha256": "8a551ffd52295abb7f2ba75c3c688231d6520a6d19ceec51676c32f82cd39535"
+    },
     "harness-traces-guide.md": {
       "source": "content/harness-traces-guide.md",
       "source_sha256": "8d736bfcb4db564b5791a16a014e87ecf687ae7aefbfe688affa8ce4a17d1ec4",
