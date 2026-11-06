@@ -18,9 +18,9 @@
 {% set uri = page.file.src_uri if page and page.file else '' %}
 {% set loc = 'en' if uri.startswith('en/') else ('zh' if uri.startswith('zh/') else 'ko') %}
 {% set labels = {
-  'ko': {'menu':'주 메뉴','open':'문서 목차 열기','close':'문서 목차 닫기','home':'Ouroboros 홈','guide':'가이드','install':'설치','glossary':'용어사전','theme':'테마','theme_label':'밝은 화면 또는 어두운 화면 전환','search':'검색 열기'},
-  'en': {'menu':'Main navigation','open':'Open documentation navigation','close':'Close documentation navigation','home':'Ouroboros home','guide':'Guide','install':'Install','glossary':'Glossary','theme':'Theme','theme_label':'Toggle light or dark theme','search':'Open search'},
-  'zh': {'menu':'主导航','open':'打开文档目录','close':'关闭文档目录','home':'Ouroboros 首页','guide':'指南','install':'安装','glossary':'术语表','theme':'主题','theme_label':'切换浅色或深色主题','search':'打开搜索'}
+  'ko': {'menu':'주 메뉴','open':'문서 목차 열기','close':'문서 목차 닫기','home':'Ouroboros 홈','guide':'가이드','install':'설치','glossary':'용어사전','theme':'테마','theme_label':'테마: 밝은 화면 또는 어두운 화면 전환','search':'검색 열기'},
+  'en': {'menu':'Main navigation','open':'Open documentation navigation','close':'Close documentation navigation','home':'Ouroboros home','guide':'Guide','install':'Install','glossary':'Glossary','theme':'Theme','theme_label':'Theme: toggle light or dark theme','search':'Open search'},
+  'zh': {'menu':'主导航','open':'打开文档目录','close':'关闭文档目录','home':'Ouroboros 首页','guide':'指南','install':'安装','glossary':'术语表','theme':'主题','theme_label':'主题：切换浅色或深色主题','search':'打开搜索'}
 } %}
 {% set l = labels[loc] %}
 {% set learn = '/learn/en/' if loc == 'en' else ('/learn/zh/' if loc == 'zh' else '/learn/') %}

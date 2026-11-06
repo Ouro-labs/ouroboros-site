@@ -1,0 +1,12 @@
+{
+  "status": "pending",
+  "manifest_sha256": "723c433f14ddf86540074b9ecaf4dfb4fbaac8773e396bf8409e1569719cc7ce",
+  "prior_css_sha256": "589a0be4dba9ff2cf5e9bd522e11c9077a09376313e5adf95e034327b2b39192",
+  "prior_main_sha256": "d81c38af74cda7bab50a3f8a9991c06ba27a9510831f80ebb32e46c85b6459dd",
+  "summary_sha256": "e01a8ece232c2ff1301631787866ac6b51276d2e6d5671179a4a2cb9209621c7",
+  "files": {
+    "docs-src/content/assets/site.css": "adc2a5b37c191960e4b53aa6ce1ccd820fc0ad6528619a77e4e11e08e1cd60fe",
+    "docs-src/overrides/main.html": "70880cfbaec0ae37136ae2276a60552489e1cedbbb93dc576cd0d37892d99ca3",
+    "docs-src/tests/test_accessibility_styles.py": "b80084728b0db4e7877978bf636827cfa3890998d5a661ed779f8ec9ad29f520"
+  }
+}

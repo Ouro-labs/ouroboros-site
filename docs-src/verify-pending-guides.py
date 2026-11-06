@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,6 +22,18 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    access = json.loads((root/'pending-accessibility.json').read_text())
+    if access.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != access['manifest_sha256']:
+        raise ValueError('Accessibility manifest or pending status changed')
+    access_files={'docs-src/content/assets/site.css','docs-src/overrides/main.html','docs-src/tests/test_accessibility_styles.py'}
+    if set(access.get('files', {})) != access_files: raise ValueError('Accessibility file set changed')
+    access_summary=(root/'pending-accessibility-review.md').read_bytes()
+    if sha(access_summary) != access['summary_sha256']: raise ValueError('Accessibility summary changed')
+    access_rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',access_summary.decode('utf-8'),re.MULTILINE)
+    if len(access_rows)!=len(access_files) or dict(access_rows)!=access['files']: raise ValueError('Accessibility summary rows mismatch')
+    for name, expected in access['files'].items():
+        path=root.parent/name
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
     evaluation = json.loads((root/'pending-evaluation.json').read_text())
     if evaluation.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != evaluation['manifest_sha256']:
         raise ValueError('Evaluation manifest or pending status changed')
@@ -53,7 +65,9 @@ def verify(root=ROOT):
     if len(discovery_rows)!=len(discovery_files) or dict(discovery_rows)!=discovery['files']: raise ValueError('Discovery summary rows mismatch')
     for name, expected in discovery['files'].items():
         path=root.parent/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Discovery file changed: '+name)
+        if name == 'docs-src/overrides/main.html':
+            if expected != access['prior_main_sha256']: raise ValueError('Accessibility prior main mismatch')
+        elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Discovery file changed: '+name)
     worktree = json.loads((root/'pending-worktree.json').read_text())
     if worktree.get('status') != 'pending' or evaluation['prior_manifest_sha256'] != worktree['manifest_sha256']:
         raise ValueError('Worktree manifest or pending status changed')
@@ -91,7 +105,9 @@ def verify(root=ROOT):
             raise ValueError('Search current metadata mismatch: '+name)
     for name, expected in search['files'].items():
         path=root/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Search file changed: '+name)
+        if name == 'content/assets/site.css':
+            if expected != access['prior_css_sha256']: raise ValueError('Accessibility prior CSS mismatch')
+        elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Search file changed: '+name)
     search_restored=copy.deepcopy(worktree_restored)
     for name in search_names: search_restored['pages'][name]=search['pages'][name]['prior']
     if sha((json.dumps(search_restored,ensure_ascii=False,indent=2)+'\n').encode())!=search['prior_manifest_sha256']:
@@ -215,7 +231,7 @@ def verify(root=ROOT):
             raise ValueError('Prior verifier changed: '+name)
     locale_evidence = copy.deepcopy(evidence)
     locale_evidence['static_content_sha256']['assets/ouro-theme.js'] = search['files']['content/assets/ouro-theme.js']
-    locale_evidence['static_content_sha256']['assets/site.css'] = search['files']['content/assets/site.css']
+    locale_evidence['static_content_sha256']['assets/site.css'] = access['files']['docs-src/content/assets/site.css']
     verify_content_tree(root/'content', manifest, locale_evidence)
     print('Pending summary, manifest and generated bytes match; canonical source is not checked here. Gate remains closed.')
 

@@ -35,6 +35,14 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search snapshot chain mismatch')
     def test_changed_search_prior_js(self):
         p=self.root/'pending-search.json';e=json.loads(p.read_text());e['prior_js_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Search prior JS mismatch')
+    def test_changed_accessibility_summary(self):
+        (self.root/'pending-accessibility-review.md').write_text('altered');self.rejected('Accessibility summary changed')
+    def test_changed_accessibility_css(self):
+        (self.root/'content/assets/site.css').write_text('altered');self.rejected('Accessibility file changed')
+    def test_accessibility_css_symlink(self):
+        p=self.root/'content/assets/site.css';p.unlink();p.symlink_to(self.root/'content/assets/ouro-theme.js');self.rejected('Accessibility file changed')
+    def test_changed_accessibility_prior_css(self):
+        p=self.root/'pending-accessibility.json';e=json.loads(p.read_text());e['prior_css_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Accessibility prior CSS mismatch')
     def test_changed_evaluation_summary(self):
         (self.root/'pending-evaluation-review.md').write_text('altered');self.rejected('Evaluation summary changed')
     def test_changed_evaluation_chain(self):
@@ -42,7 +50,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_discovery_summary(self):
         (self.root/'pending-discovery-review.md').write_text('altered');self.rejected('Discovery summary changed')
     def test_changed_discovery_main(self):
-        (self.root/'overrides/main.html').write_text('altered');self.rejected('Discovery file changed')
+        (self.root/'overrides/main.html').write_text('altered');self.rejected('Accessibility file changed')
     def test_changed_discovery_llms(self):
         (self.root.parent/'site/llms.txt').write_text('altered');self.rejected('Discovery file changed')
     def test_discovery_llms_symlink(self):
@@ -66,6 +74,7 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());e=json.loads(epath.read_text());name='quickstart.md'
         m['pages'][name]['source_sha256']='a'*64;e['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
         self.rejected('Evaluation current metadata mismatch')
 
     def test_changed_latest_summary(self):
@@ -74,6 +83,7 @@ class PendingGuidesTest(unittest.TestCase):
         mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
         m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
         self.rejected('Evaluation snapshot chain mismatch')
 
     def test_changed_latest_chain(self):
@@ -85,7 +95,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -96,11 +106,12 @@ class PendingGuidesTest(unittest.TestCase):
         mpath=self.root/'content-manifest.json';epath=self.root/'pending-evaluation.json'
         m=json.loads(mpath.read_text());e=json.loads(epath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');e['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();epath.write_text(json.dumps(e))
+        apath=self.root/'pending-accessibility.json';a=json.loads(apath.read_text());a['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();apath.write_text(json.dumps(a))
         self.rejected('Evaluation snapshot chain mismatch')
 
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Evaluation manifest or pending status changed')
+        self.rejected('Accessibility manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):

@@ -44,3 +44,59 @@ html[data-theme=dark] .md-nav__link{color:var(--ouro-ink)!important}html[data-th
 .ouro-related p{margin:.4rem 0 0}
 [data-ouro-search-open]:focus-visible{outline:3px solid var(--ouro-accent);outline-offset:3px}
 [data-ouro-result-language]{display:inline-block;margin-inline-start:.5em;padding:.1em .4em;border:1px solid currentColor;border-radius:.4em;font-size:.7em;font-weight:600;vertical-align:middle}
+
+/* The code block has a dark background in both themes; set every Material
+   syntax-token color against that background instead of inheriting the light palette. */
+.md-typeset pre > code {
+  --md-code-fg-color: #eaf4ee;
+  --md-code-hl-name-color: #eaf4ee;
+  --md-code-hl-variable-color: #eaf4ee;
+  --md-code-hl-operator-color: #eaf4ee;
+  --md-code-hl-punctuation-color: #eaf4ee;
+  --md-code-hl-generic-color: #eaf4ee;
+  --md-code-hl-comment-color: #b4c8bd;
+  --md-code-hl-string-color: #b7e4c7;
+  --md-code-hl-number-color: #ffd7a8;
+  --md-code-hl-constant-color: #ffd7a8;
+  --md-code-hl-function-color: #d8c7ff;
+  --md-code-hl-keyword-color: #a8d6ff;
+  --md-code-hl-special-color: #f7bcc8;
+}
+/* Links within prose must remain recognizable without relying on color alone. */
+.md-typeset :is(p, li, td, th, blockquote) a:not(.headerlink) {
+  text-decoration: underline;
+  text-underline-offset: .14em;
+  text-decoration-thickness: .08em;
+}
+/* Dark-theme inline code links and footer must retain contrast on their own backgrounds. */
+html[data-theme=dark] .md-typeset a code { background-color: #17251e; color: #7fbea1; }
+html[data-theme=dark] .md-footer-meta.md-typeset { color: #b4c8bd; }
+html[data-theme=dark] .md-footer-meta.md-typeset a { color: #b4c8bd !important; }
+html[data-theme=dark] .md-footer-meta .md-copyright,
+html[data-theme=dark] .md-footer-meta .md-copyright__highlight { color: #b4c8bd; }
+/* Give navigation links and disclosure labels a usable target without changing their URLs. */
+.md-nav--primary .md-nav__link[href],
+.md-nav--primary .md-nav__link[for],
+.md-nav--secondary .md-nav__link[href] {
+  min-height: 24px;
+  box-sizing: border-box;
+  align-items: center;
+  scroll-margin-block-start: 8px;
+}
+/* A sticky drawer title can cover the first focused or scrolled link. */
+.md-nav--primary .md-nav__title {
+  position: static;
+  box-shadow: none;
+}
+/* On narrow screens the page TOC is a nested panel in the primary drawer.
+   An unchecked, translated-offscreen panel must not intercept pointer or focus. */
+@media screen and (max-width: 59.984375em) {
+  .md-nav--primary #__toc:not(:checked) ~ .md-nav--secondary {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .md-nav--primary #__toc:checked ~ .md-nav--secondary {
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
