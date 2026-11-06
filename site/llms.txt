@@ -22,6 +22,24 @@ The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe a
 - Product AI index: https://github.com/Q00/ouroboros/blob/main/llms.txt
 - Full product AI context: https://github.com/Q00/ouroboros/blob/main/llms-full.txt
 
+## Korean task documentation
+
+- Documentation home: https://ouroboros.page/docs/
+- Quickstart: https://ouroboros.page/docs/quickstart/
+- Interview: https://ouroboros.page/docs/interview-guide/
+- Seed: https://ouroboros.page/docs/seed-guide/
+- Troubleshooting: https://ouroboros.page/docs/ai-troubleshooting/
+
+Markdown source for these pages is available at:
+
+- https://ouroboros.page/docs/markdown/index.md
+- https://ouroboros.page/docs/markdown/quickstart.md
+- https://ouroboros.page/docs/markdown/interview-guide.md
+- https://ouroboros.page/docs/markdown/seed-guide.md
+- https://ouroboros.page/docs/markdown/ai-troubleshooting.md
+
+These pages describe their source revision and verification limits.
+
 ## Guides by language
 
 - English: https://ouroboros.page/learn/en/

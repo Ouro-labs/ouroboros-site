@@ -1,0 +1,9 @@
+{# Preserve Material translations while declaring each translated page's language. #}
+{% import "partials/languages/" ~ config.theme.language ~ ".html" as lang %}
+{% import "partials/languages/en.html" as fallback %}
+{% macro t(key) %}
+  {%- if key == 'language' and page and page.file.src_uri in ['en/quickstart.md', 'en/troubleshooting.md', 'en/ai-troubleshooting.md'] -%}en
+  {%- elif key == 'language' and page and page.file.src_uri in ['zh/quickstart.md', 'zh/troubleshooting.md'] -%}zh-Hans
+  {%- else -%}{{ lang.t(key) or fallback.t(key) or key }}
+  {%- endif -%}
+{% endmacro %}

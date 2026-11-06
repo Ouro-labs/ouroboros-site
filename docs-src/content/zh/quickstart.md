@@ -1,0 +1,100 @@
+# 开始第一个任务
+
+> **部分翻译：** 本快速入门为草稿。状态、评估与恢复的简要指南提供中文；更广泛的详细指南目前为韩语。
+
+选择一种安装方式，然后从 Interview 一直走到结果检查，完成一个**可以添加待办并标记完成的简单网页应用**。这个目标延续了[贯穿韩语指南的示例](https://ouroboros.page/learn/interview/)。
+
+本指南草稿对照的是产品源码 [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0) 中的[安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。请勿假设公开发行版 `0.59.9`、现有指南标注的 `0.51.5`，以及你安装的插件和 MCP 服务器与此源码版本相同。本文的完整流程尚未在所有真实模型和宿主环境中运行验证。界面和问题会因版本、环境和你的回答而异。
+
+## 开始前
+
+- 检查网络连接、所选宿主或 Python 环境，以及计划使用的模型所需的认证和费用条件。模型调用可能需要时间，也可能产生费用。
+- 执行过程可能创建或修改文件并运行命令。首次练习请使用一个与现有工作隔离的新目录，并在宿主中打开该目录。
+- 安装和设置可能会更改软件包或配置文件。请先阅读每个提示再继续。查看[设置指南](/docs/config-reference-detail/)，确认使用统计设置是否适用于你安装的版本和服务器进程。
+
+## 1. 选择安装方式
+
+| 使用环境 | 准备事项与安装命令的输入位置 | 第一个任务的输入位置 |
+| --- | --- | --- |
+| Claude Code 插件 | 需要 Claude Code 和 `uv`。请在**终端**中输入下方安装命令。 | 新 Claude Code 会话的对话 |
+| Codex 插件 | 需要已登录的 Codex CLI 和 `uvx`。请在**终端**中输入下方安装命令。 | 新 Codex 会话的对话 |
+| 独立 CLI | 需要 Python 3.12 或更高版本，以及计划使用的运行时和认证方式。请在单独的虚拟环境中安装。 | **终端** |
+
+### Claude Code
+
+在终端中运行：
+
+```bash
+claude plugin marketplace add Q00/ouroboros
+claude plugin install ouroboros@ouroboros
+```
+
+### Codex
+
+在终端中运行：
+
+```bash
+codex plugin marketplace add Q00/ouroboros
+codex plugin add ouroboros@ouroboros
+```
+
+### 独立 CLI
+
+在已激活新 Python 虚拟环境的终端中运行：
+
+```bash
+python -m pip install ouroboros-ai
+ouroboros --version
+ouroboros setup
+```
+
+`pip install` 不会固定本文所依据的 Git commit。`ouroboros --version` 显示的是该终端中的 CLI 软件包版本；它不会检查宿主可能单独运行的服务器版本。请检查设置结果和计划使用的运行时。其他安装方式和详细前提条件请参阅[产品安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。
+
+## 2. 描述目标并检查 Seed
+
+**插件：**在新的 Claude Code 或 Codex 会话中打开任务目录，然后在宿主的**对话中**输入以下命令。
+
+```text
+ooo setup
+ooo interview "一个可以添加今天的待办并将其标记为完成的简单网页应用"
+```
+
+**独立 CLI：**在任务目录的**终端**中输入：
+
+```bash
+ouroboros init start "一个可以添加今天的待办并将其标记为完成的简单网页应用"
+```
+
+Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。
+
+Seed 是整理目标、约束和完成条件的规格说明。不同使用路径检查实际 Seed 的方式有所不同。
+
+### 在插件对话中创建 Seed
+
+上述源码中的 Interview skill 会在提问和检查完成后再次确认目标，然后提出创建 Seed。**不要因为 Interview 已结束就认定 Seed 已经创建。**确认目标后，请在同一对话中请求 `ooo seed`。如果你收到了 interview session ID，需要指定目标时可以使用 `ooo seed <实际 session ID>`。
+
+成功生成后，请检查**完整的 Seed YAML**，而不只是完成提示。阅读目标、项目/目标路径、约束和可验证的完成条件，并与对话中达成一致的内容核对。skill 还会提供 QA 意见，但仅凭分数无法证明内容正确。如果看不到 YAML 或实际保存路径，或者生成失败、被中断，请勿运行它；请在同一会话中再次请求生成，或查看恢复指南。如果没有显示路径，不要猜测文件已经保存；请让宿主确认 Seed 内容及其是否已保存。
+
+如果 MCP 服务器不可用，skill 会使用备用路径，根据对话中已确认的需求创建 Seed，并可能说明如何配置服务器连接。即使如此，也要检查实际显示的 YAML，并区分它与已确认保存的文件。上面的产品指南分别介绍了 Claude Code 和 Codex 的插件安装方式，但实际界面和 skill 调用方式仍需根据已安装的宿主和版本确认。[Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
+
+### 在独立 CLI 中检查 Seed
+
+终端中的交互式 Interview 会询问是否创建 Seed。批准创建后，请检查实际显示的 Seed 文件路径及文件内容。如果出现 `Start workflow now?`，默认答案是“是”。如需先检查再执行，请选择 `n`。如果创建失败或被中断，不要假设文件已经存在。此行为依据上述源码；请以已安装版本的实际界面为准。
+
+## 3. 运行任务并检查结果
+
+在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。执行过程可能会更改代码和文件，并启动命令及模型调用。
+
+插件后台运行默认使用独立 worktree，但要通过返回的 `worktree_path` 和 `worktree_branch` 确认实际隔离情况；其他执行方式可能不同。运行完成后通常会启动正式评估，评估未通过时可能进入有次数限制的 Ralph 循环，并产生额外时间和模型费用。请检查状态和最终结果。
+
+运行过程中，请记录实际返回的 ID 和状态。仅凭完成提示或 ID 不能证明需求已满足。请检查以下内容：
+
+1. 在运行结果报告的实际工作目录或 worktree 中检查创建或修改的文件。
+2. 阅读测试和评估结果，并检查失败或未经验证的项目。
+3. 在应用中添加一个待办并标记为完成。如果 Seed 规定了持久化条件，请在刷新页面后亲自确认该条件仍然满足。
+
+如果评估尚未启动、失败，或结果为 `unverified`，先核对实际 `session_id`、原始 Seed、产物以及返回的工作目录或 `worktree_path`。启动新评估前，先检查现有评估 job 和关联 Ralph job 的状态及结果；不要重复启动仍在运行的链。确需重新评估时，在宿主中请求 `ooo evaluate <实际 session ID> [产物]`，并提供实际项目的绝对路径。`auto_evolve: false`只阻止本次评估安排新的 Ralph 后续任务，不会取消已经启动的评估或链。`unverified`不代表通过：补充或确认可执行检查，再按[评估详细指南](/docs/zh/troubleshooting/#evaluation)中的结果对应步骤处理。
+
+状态查询方式取决于 ID 的类型。请在[进度与状态](/docs/zh/troubleshooting/#status)中查找对应路径。如果连接失败或任务中断，请保留现有记录，并先阅读[恢复指南](/docs/zh/troubleshooting/#recovery)。任务可能仍在运行，因此不要立即重新启动。
+
+接下来可以阅读 [Interview 指南](/docs/interview-guide/)、[Seed 格式](/docs/seed-guide/)和[在现有项目中使用 Ouroboros](/docs/existing-project-detail/)。

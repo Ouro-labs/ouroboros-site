@@ -24,6 +24,17 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build documentation
+        run: |
+          python -m pip install -r docs-src/requirements.txt
+          python docs-src/verify-content.py
+          python -m mkdocs build --strict --config-file docs-src/mkdocs.yml
+          python docs-src/augment-search.py
+          python docs-src/check-sitemaps.py
+          python docs-src/export-markdown.py
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:

@@ -48,6 +48,7 @@
 
 <div class="eyebrow">现有项目</div>
 <h1>现有项目（brownfield）</h1>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围。</p>
 <p class="lead">前面几章的例子都是从零开始。真实情况多半不是——你手上已经有一个仓库。把它接进来之后，访谈会照着现有代码和约束提问，而不是像新项目那样凭空猜。</p>
 
 <h2 id="diff">1. 接进来之后有什么不一样</h2>
@@ -84,7 +85,7 @@ ouroboros setup default</code></pre>
 <pre><code>ooo publish &lt;seed_path&gt;</code></pre>
 <p><strong>预期结果：</strong>先把将要创建的 issue 结构给你看，确认之后才在目标仓库里真的创建。</p>
 
-<p class="note">这一页对着当前源码核过：四个权重（0.35 / 0.25 / 0.25 / 0.15）和上下文下限 0.60 都在 <code>bigbang/ambiguity.py</code>；命令行子命令来自 <code>docs/cli-reference.md</code>，MCP 动作名来自 <code>mcp/tools/brownfield_handler.py</code>。<strong>英文版那页原先写的 <code>ooo brownfield defaults</code> 和 <code>ooo brownfield set</code> 在这两处都查不到</strong>，现在三个语言版本都换成了能查到的那两组名字。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照源码（确认日期与 commit 未记录）：四个权重（0.35 / 0.25 / 0.25 / 0.15）和上下文下限 0.60 都在 <code>bigbang/ambiguity.py</code>；命令行子命令来自 <code>docs/cli-reference.md</code>，MCP 动作名来自 <code>mcp/tools/brownfield_handler.py</code>。<strong>英文版那页原先写的 <code>ooo brownfield defaults</code> 和 <code>ooo brownfield set</code> 在这两处都查不到</strong>，文档当时记录三个语言版本换成了能查到的那两组名字。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../evolve/">← 上一章<br><strong>09 演化</strong></a><a href="../troubleshooting/">下一章 →<br><strong>11 故障排查</strong></a></nav>
 </article>

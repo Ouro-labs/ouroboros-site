@@ -51,6 +51,7 @@
 
 <div class="eyebrow">故障排查</div>
 <h1>故障排查</h1>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围。</p>
 <p class="lead">先按症状找到对应的一节，然后照顺序走：先查什么、跑什么命令、期望看到什么。</p>
 
 <h2 id="e32000">1. 插件报 <code>-32000</code>，MCP 服务起不来</h2>
@@ -58,7 +59,7 @@
 <p><strong>先查版本。</strong>这个启动失败在 <strong>0.51.1</strong> 修了，而且是那个版本发布说明里的头一条。在那之前，机器上已有的环境可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。</p>
 <pre><code>ooo update</code></pre>
 <p><strong>期望结果：</strong>升到 0.51.1 或更新的版本。升完把 Claude Code 完全关掉再开。</p>
-<p>这一节英文版和韩文版目前没有。如果你是从 AUR 之类的第三方源装的，先确认那边的版本号——第三方打包可能落后好几个版本。</p>
+<p>编写时观察到英文版和韩文版没有这一节。如果你是从 AUR 之类的第三方源装的，先确认那边的版本号——第三方打包可能落后好几个版本。</p>
 
 <h2 id="notfound">2. <code>ooo</code> 命令不认识</h2>
 <p><strong>先查两件事：</strong><code>ooo</code> 在 Claude Code 会话里能用（Codex CLI、OpenCode 装好插件后也一样，见<a href="../install/#plugin">装插件</a>——下面的排查命令是 Claude Code plugin 专属的），别在普通终端里敲；没登录也会失败，先在会话里 <code>/login</code>。</p>
@@ -90,7 +91,7 @@
 <pre><code>ooo resume-session</code></pre>
 <p><strong>期望结果：</strong>列出正在跑或暂停的会话，挑一个重新接上。</p>
 
-<p class="note">这一页对着当前源码和发布说明核过：<code>-32000</code> 那一节的依据是 v0.51.1 的发布说明（「shipped launchers now run <code>uvx --isolated</code>」）；<code>resume-session</code>、<code>mcp info</code>、<code>status health</code> 在 CLI 文档里；<code>--resume</code> 在 CLI 文档里查不到，但源码里实际存在（<code>auto/resume_render.py</code> 会直接打印这条命令）。<strong>文档里没有，不等于不存在。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照源码和发布说明（确认日期与 commit 未记录）：<code>-32000</code> 那一节的依据是 v0.51.1 的发布说明（「shipped launchers now run <code>uvx --isolated</code>」）；<code>resume-session</code>、<code>mcp info</code>、<code>status health</code> 在 CLI 文档里；<code>--resume</code> 在 CLI 文档里查不到，但当时所查源码中存在（<code>auto/resume_render.py</code> 会直接打印这条命令）。<strong>文档里没有，不等于不存在。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../existing-project/">← 上一章<br><strong>10 现有项目</strong></a><a href="../glossary/">下一章 →<br><strong>12 术语表</strong></a></nav>
 </article>

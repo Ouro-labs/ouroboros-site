@@ -1,0 +1,96 @@
+site_name: Ouroboros 문서
+site_url: https://ouroboros.page/docs/
+docs_dir: content
+site_dir: ../site/docs
+strict: true
+theme:
+  name: material
+  custom_dir: overrides
+  language: ko
+  font: false
+  features:
+    - navigation.sections
+    - navigation.path
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+plugins:
+  - search:
+      lang:
+        - ko
+        - en
+        - zh
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - toc:
+      permalink: true
+nav:
+  - 문서 홈: index.md
+  - 빠른 시작: quickstart.md
+  - Interview: interview-guide.md
+  - Seed: seed-guide.md
+  - AI 문제 해결: ai-troubleshooting.md
+  - 판본과 확인: version-guide.md
+  - 상태와 ID: status-guide.md
+  - 참조:
+      - CLI 안내: cli-reference-guide.md
+      - CLI 상세 (722판): cli-reference-detail.md
+      - MCP 안내: mcp-reference-guide.md
+      - MCP 상세 (722판): mcp-reference-detail.md
+      - 설정 안내: config-reference-guide.md
+      - 설정 상세 (722판): config-reference-detail.md
+  - 주제별 상세 (722판):
+      - Auto: auto-detail.md
+      - 평가와 진화: evaluation-evolution-detail.md
+      - QA: qa-detail.md
+      - Workflow IR: workflow-ir-detail.md
+      - 복구: recovery-detail.md
+      - 호스트 설정: setup-host-detail.md
+      - 갱신: update-detail.md
+      - 진단: diagnostics-detail.md
+      - 첫 실행 상세: first-run-detail.md
+      - Interview 상세: interview-detail.md
+      - Seed 형식: seed-format-detail.md
+      - 기존 프로젝트: existing-project-detail.md
+      - 진행 상태 상세: progress-detail.md
+      - 이벤트와 상태 조회: query-projections-detail.md
+      - 구조와 실행 흐름: architecture-detail.md
+      - 코드 영역 지도 (722판): architecture-map-public.md
+      - Seed 개념: concepts-detail.md
+      - 설정과 진단: operations-detail.md
+      - 런타임별 지원: runtime-support-detail.md
+      - OpenCode 브리지: opencode-bridge-detail.md
+      - 생명주기와 저장: lifecycle-detail.md
+      - 산출물 조회: artifacts-detail.md
+      - 검사 패키지: check-package-detail.md
+      - 세션 정리: cleanup-detail.md
+      - 호스트와 MCP 연결: integration-detail.md
+      - AC 복구: ac-recovery-detail.md
+      - Windows와 WSL: windows-wsl-detail.md
+      - 작업 관리 예제: example-detail.md
+      - 호스트 fan-out: fanout-detail.md
+      - 워크플로: workflows-detail.md
+      - 플러그인: plugins-detail.md
+      - 정책과 라우팅: routing-detail.md
+      - 목표 이탈: drift-detail.md
+      - 이벤트 계약: event-contract-detail.md
+      - Python API: python-api-detail.md
+      - MCP 입력 스키마 캡처: mcp-schema-snapshot-detail.md
+      - Synapse 제어: synapse-detail.md
+      - Python 심벌 색인: python-api-inventory-detail.md
+  - English quickstart (draft): en/quickstart.md
+  - English troubleshooting (draft): en/troubleshooting.md
+  - English AI diagnostics (draft): en/ai-troubleshooting.md
+  - 中文快速入门（草稿）: zh/quickstart.md
+  - 中文问题排查（草稿）: zh/troubleshooting.md
+extra_css:
+  - assets/site.css
+extra_javascript:
+  - assets/ouro-theme.js

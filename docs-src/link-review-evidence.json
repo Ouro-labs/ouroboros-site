@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "scope": "changed-link-groups-92-only",
+  "group_count": 92,
+  "manifest_sha256": "62c59a0ef4c1ae060265ca5016b5942bbd4315bca39098fa258d5e6dc7aa7083",
+  "generator_sha256": "6e2bfc0d0629894a9e3b93fd171d0810e5b7b2f67cf63cecee2d69badd4ec14e",
+  "evidence_sha256": {
+    "classification": "7589135bfee09ce4f42c8d78c7d48128c115c5122a240d4b5db9201966587345",
+    "review_a": "455b73303f9a2c4a345ef4f463ee198cb217d9ac02ae7f7a57024d6ff4058871",
+    "review_b": "eb7694c698b636b2bb157fa99744fb43001d2eac9eb8e8cd6e2cc4fd91ef3c8b",
+    "map_delta": "2c852ee2a0cee2a6b6cbf94f693d6138fbd44737bb9e70e80379290aff6ee7a0",
+    "routing_delta": "6f4d3390d7c18f028d37566f4f11d77974be56229639b99cccfb79b4bdc8d3ff",
+    "first_run_delta": "880bcc226e96a2f9969c34eed751c037d8a24e6e3a1758496436d6558777ff1d",
+    "english_delta": "b7d2e30b9dc533f814bbe5694e92dec961eaf0ba3f1674425b68e6a669a4d473"
+  },
+  "implementation_review": {
+    "status": "pending",
+    "reviewer": null,
+    "reviewed_at_utc": null,
+    "evidence_sha256": null
+  },
+  "limitations": "Changed link transformations only. Unchanged links, external availability, site facts, privacy, translations, accessibility and host execution are not certified.",
+  "reviewed_generator_sha256": "e6f0030f4d7d9871ef34ea27bb17ac70492cefa52acb49a5652a625d4906e79e",
+  "site_dependencies": {
+    "site/assets/learn/ooo-interview.gif": "cd7cb79baf796f1bef54d90d59c3404388ab37a4aa68a780ebacbad8bfe0e834"
+  },
+  "delta_reversions": [
+    {
+      "page": "en/troubleshooting.md",
+      "current_source_sha256": "040563dd5f21c11aaa7531e1ac57c805a0fc5e19d6f32ab1864b7e04f8631693",
+      "current_page_sha256": "4e04d2a5b6abc3bb105e70c01c900ff9cb93fac115a4ed871df0218a163eaa46",
+      "previous_source_sha256": "85ea31763a5e5e02200a9d5659c7912dccb50a5f36103b96303397da249b5916",
+      "previous_page_sha256": "f3465a6f9e439cdfbc6db645d0d2b4a4c7426de3fce491d411a059192eb26ee5",
+      "previous_manifest_sha256": "13ba8b98ba23f1e5a3a0aabe73b5f220747167aa4919f8922cb2af8d22756276"
+    },
+    {
+      "page": "first-run-detail.md",
+      "current_source_sha256": "4cae8caa7148e2e798671485db4c9d87d223b8344aa2c08d7984da568979f1d7",
+      "current_page_sha256": "49a976b54342977e435db2979b33b719f94bae54a3138236eeec9f9a0849d8cf",
+      "previous_source_sha256": "4eb0a2c6b00ba4cb9bd887a456f32a1c02e2cc56daf5370aed02d59e21b904ba",
+      "previous_page_sha256": "9e999240f0546d3c6725638c2a124be31e40d657f1642dc58f96106b92fedfba",
+      "previous_manifest_sha256": "b94013ad6ac8c08271335f5b1f58352b9cef87b81f81a55764c54e1a49508159"
+    },
+    {
+      "page": "routing-detail.md",
+      "current_source_sha256": "5a509f5f8f3f225019ab8d0cd18e2f8465e75d43b403a9aae41960981d08af09",
+      "current_page_sha256": "85abfa784f868d06e28b19e76e12eb5da65b3de7118d3dc0e787c070ec0decdd",
+      "previous_source_sha256": "5532be040f3e9b7b5b5001dad1a6e2ed1badfc018e7e40b312906b8fc9f1052f",
+      "previous_page_sha256": "b7284f29ea678665f879127ddead4bc78d000dd1b95c3b644ad35a1cd9ea8349",
+      "previous_manifest_sha256": "a3d0627f32f62c104267e3000e672e147e84d9fed94f50ffaf1e25d93abe508f"
+    },
+    {
+      "page": "architecture-map-public.md",
+      "current_source_sha256": "98e6ebd8c19f26a5d18bfa9e6929f838bf80391ccefd8dff1a46ee7a70ad4554",
+      "current_page_sha256": "ee0273aa65e04a87968de8487c3d9eec91aa015c5633918f5c6c5f27341f5129",
+      "previous_source_sha256": "924e3aff1b8595b63e0abe409db2315892ee3fa09892621ba129616c65e26394",
+      "previous_page_sha256": "144df865b08ad5d7a5226ce94bf6664787f019e6bdba635ba1d20e3cf84270b1",
+      "previous_manifest_sha256": "0824700de75291c13d3c0796487922a1e95675323c589ca589ec8ec9f2e2ec1f"
+    }
+  ],
+  "reviewed_base_manifest_sha256": "0824700de75291c13d3c0796487922a1e95675323c589ca589ec8ec9f2e2ec1f",
+  "verification_sha256": {
+    "link_evidence.py": "a2d1bd04f952e8eb320472b189b6913df36454320e1f816a200fe9e99eef7b43",
+    "verify-content.py": "08f550d8e90f8a5260e07b3e0f7227339a9b067b39c61cfd10b95258c806da0e",
+    "workspace-verifier": "b934ac30458289260e928bf8ff8f1453b5b20cf1e2d3be3ad710092c8042b599"
+  },
+  "static_content_sha256": {
+    "assets/site.css": "71303fa95d50d515e7fbddbb8d1c94521e04423878f2c22d3dd45ca7b70ec3a6",
+    "assets/ouro-theme.js": "1ea6858361a4d13a60f1ae3483e16abf75c67bc8f0ee0b46b7de0609b5e9f683",
+    "assets/ouro-mermaid.js": "93063edf9f1da239152574039f9b18c187322554c975d5befb86eb52990294db",
+    "assets/vendor/mermaid/LICENSE": "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80",
+    "assets/vendor/mermaid/README.txt": "c270cb29b5de4d8ef0b8eee364556a5a8223f3dd6b96ce39265298d25b9b0bda",
+    "assets/vendor/mermaid/mermaid-11.4.1.min.js": "a43bc1afd446f9c4cc66ac5dd45d02e8d65e26fc5344ec0ef787f88d6ddb6f9e"
+  },
+  "public_review_sha256": {
+    "delta-chain.md": "803613af43e70d8f63e95b0bcbd569577db637e259b4a12b185262ef1de0e27d",
+    "groups-before.md": "f94fef2801534a752f8d13d103fe09112658067558bedfe23904366818f61b89",
+    "groups-current.md": "0d5cc591e2e823b3b15622b6455e819783d48037c38bc188d6345d91fd73c40c",
+    "outbound-delta.md": "33be8e460b4718117524b092ae64dffa494e355b60eb478f82c88a16f52c129b",
+    "review-a-summary.md": "d3c0994e5a92d359b8873b9fca38d7c35773a3a24c63bd73c423353fd7327823",
+    "review-b-summary.md": "2ada34a8a6a8d40d3d00b26d46164032763fe8327f1e5f9e9d21aaa38f9cafca"
+  },
+  "outbound_delta_review": {
+    "status": "pending",
+    "reviewer": null,
+    "reviewed_at_utc": null,
+    "evidence_sha256": null
+  }
+}

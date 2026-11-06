@@ -51,6 +51,7 @@
 
 <div class="eyebrow">评估</div>
 <h1>评估</h1>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围。</p>
 <p class="lead">上一章运行时把东西做出来了。评估回答一个问题：这个结果满足 Seed 里写的验收标准吗？便宜的检查先跑，贵的后跑，前面挂了就不往后送。</p>
 
 <h2 id="run">1. 跑起来</h2>
@@ -90,9 +91,9 @@
 <p>限制要说在前面：<strong>判定是按 vendor 家族做的</strong>。如果你只配了一家 vendor 的后端，这个机制就是空转——这时候标签会写 <code>same_vendor</code>，而不是假装独立。<strong>把限制记成标签，比把它藏起来有用。</strong></p>
 
 <h2 id="next">6. 没过怎么办</h2>
-<p>被评估拒绝的结果会进入有预算上限的演化循环，而且只有没通过的验收标准会进下一代，已经通过的直接冻结。演化那一章目前在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里。</p>
+<p>被评估拒绝的结果会进入有预算上限的演化循环，而且只有没通过的验收标准会进下一代，已经通过的直接冻结。编写时演化章节在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里。</p>
 
-<p class="note">这一页的每个数字都对着当前源码核过：覆盖率 0.7（<code>evaluation/languages.py</code>）、语义分 0.8（<code>evaluation/models.py</code>）、2/3 多数与至少 3 个模型（<code>evaluation/consensus.py</code>）、drift 与不确定度阈值 0.3（<code>evaluation/trigger.py</code>）、四个独立性标签（<code>evaluation/reviewer_independence.py</code>）。第 3 节那条路径差异，英文版和韩文版目前都没写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页的每个数字都编写时曾对照源码（确认日期与 commit 未记录）：覆盖率 0.7（<code>evaluation/languages.py</code>）、语义分 0.8（<code>evaluation/models.py</code>）、2/3 多数与至少 3 个模型（<code>evaluation/consensus.py</code>）、drift 与不确定度阈值 0.3（<code>evaluation/trigger.py</code>）、四个独立性标签（<code>evaluation/reviewer_independence.py</code>）。第 3 节那条路径差异，当时观察到英文版和韩文版没有写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../execute/">← 上一章<br><strong>07 执行</strong></a><a href="../evolve/">下一章 →<br><strong>09 演化</strong></a></nav>
 </article>

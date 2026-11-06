@@ -48,6 +48,7 @@
 
 <div class="eyebrow">架构</div>
 <h1>架构</h1>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围。</p>
 <p class="lead">工作的流向是：你 → <code>ooo</code> 命令 → Core → 运行时。记录落到 EventStore 和 Ledger。</p>
 
 <h2 id="parts">1. 六块分别干什么</h2>
@@ -86,7 +87,7 @@
 <h2 id="mcp">4. Core 和运行时之间：MCP</h2>
 <p>Core 不直接改文件，运行时不管流程。中间的协议是 MCP（Model Context Protocol）——运行时通过它调用 Core 的功能。这也是为什么<a href="../install/">安装那一章</a>里 <code>ooo setup</code> 要注册一次 MCP 服务，以及 <code>-32000</code> 那个启动失败发生在这一层。</p>
 
-<p class="note">这一页对着当前源码核过：EventStore 强制 SQLite 后端在 <code>persistence/backend_contract.py</code>；Ledger 在 <code>core/seed.py</code> 等处；评估三层的路径差异在 <code>config/models.py</code> 与 <code>mcp/server/adapter.py</code>。第 1 节最后一行的那句限定，英文版和韩文版目前没写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照源码（确认日期与 commit 未记录）：EventStore 强制 SQLite 后端在 <code>persistence/backend_contract.py</code>；Ledger 在 <code>core/seed.py</code> 等处；评估三层的路径差异在 <code>config/models.py</code> 与 <code>mcp/server/adapter.py</code>。第 1 节最后一行的那句限定，当时观察到英文版和韩文版没有写。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../why-ouroboros/">← 上一章<br><strong>02 为什么用它</strong></a><a href="../install/">下一章 →<br><strong>04 安装</strong></a></nav>
 </article>

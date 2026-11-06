@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://ouroboros.page/sitemap.xml
+Sitemap: https://ouroboros.page/docs/sitemap.xml

@@ -1,0 +1,66 @@
+# 기존 프로젝트에서 시작하기
+
+!!! warning "판본과 검증 범위"
+    이 안내의 상세 동작은 별도 표시가 없으면 2026-11-04 조사한 제품 소스 [`722172ef`](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2) 기준입니다. 제품 main [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0), 공개 패키지 `0.59.9`, 설치된 플러그인과 호스트 MCP 서버는 별도 판본입니다. 아래 합성·대역 시험은 표시된 조건에 한정되며 실제 모델·인증·모든 호스트의 동작을 증명하지 않습니다. 설치한 버전의 도움말과 [제품 시작 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)를 대조하세요. 구판 동작이 현재 설치에도 같다고 가정하지 않습니다.
+
+
+## 현재 상황
+
+이미 코드와 변경 이력이 있는 Git 저장소에 기능을 추가하거나 오류를 고치려는 단계입니다. 기존 파일, 브랜치, 검증 명령을 확인하고 현재 변경을 보존할 작업 branch 또는 별도 checkout을 준비하세요.
+
+## 입력
+
+대상 저장소의 절대경로, 변경 목표와 바꾸면 안 되는 동작, 실제 lint·build·test 명령을 준비합니다. 예를 들어 “이 저장소의 로그인 오류를 고치고 기존 테스트를 유지하며 회귀 테스트를 추가한다”는 목표에 저장소의 정확한 검증 명령을 붙입니다. CLI의 `/path/to/project`와 `/path/to/scan-root`는 실제 경로로 바꿉니다.
+
+### 호스트 플러그인에서 시작
+
+Codex 또는 Claude Code에서 대상 프로젝트 폴더를 열고 현재 변경을 보존할 branch 또는 별도 checkout을 준비합니다. 기존 작업과 실행 중인 작업을 덮어쓰지 않습니다. 호스트에 저장소의 문서와 실제 검증 명령을 먼저 읽도록 요청한 뒤 `ooo interview`로 변경 목표와 제약을 정합니다. 이어 `ooo seed`로 YAML을 생성·검토하고 `ooo run`으로 실행합니다. [진행 확인](/docs/progress-detail/#host-status)과 [호스트 복구](/docs/recovery-detail/#host-recovery)를 사용합니다.
+
+### 독립 CLI에서 시작
+
+아래 등록·탐지 명령은 [독립 CLI가 설치된 경우](/docs/first-run-detail/#install-check)에 사용합니다.
+
+1. 대상 Git 저장소 경로를 확인하고 작업 branch를 만듭니다. 원본 작업을 보존해야 한다면 별도 checkout에서 진행합니다.
+2. `ouroboros setup scan /path/to/scan-root`로 범위를 좁혀 저장소를 등록하고 `ouroboros setup list`로 확인합니다. 인수를 생략하면 홈 디렉터리를 검색하므로 의도한 경로를 명시하는 편이 분명합니다.
+   `setup scan`은 선택한 root 아래 최대 두 단계만 탐색하고 숨김·일부 잡음 디렉터리를 건너뜁니다. 발견된 저장소 내부는 더 내려가지 않으며 다른 위치의 worktree를 자동으로 확장하지 않습니다. 예를 들어 저장소가 `~/work/repos/OWNER/REPO`라면 기본 홈 검색에서 깊이 제한으로 빠질 수 있으므로 `ouroboros setup scan ~/work/repos`처럼 적절한 root를 지정하고 `setup list`에서 실제 경로를 확인합니다. 검색 결과가 없다는 사실은 저장소 부재의 증거가 아닙니다. 이 명령은 이번에 발견한 결과를 레지스트리에 추가·갱신하며 기존 등록은 보존합니다. scan 출력은 이번 검색 결과이고 전체 등록 목록은 `setup list`로 확인합니다. [고정 소스의 검색 규칙](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/bigbang/brownfield.py), [brownfield 흐름](/docs/workflows-detail/).
+
+   `ouroboros setup default`는 등록된 저장소 목록을 표시하고 **한 번에 번호 하나**를 받아 해당 저장소의 기본 선택 상태를 반전합니다. 이미 기본이면 해제하고 아니면 추가하며 여러 기본 저장소를 둘 수 있습니다. 기본 입력 `skip`이나 잘못된 번호는 변경 없이 끝납니다. 등록 목록이 비어 있으면 먼저 적절한 범위를 scan하라는 안내가 나옵니다. 이 명령은 레지스트리를 변경하므로 선택 전에 `setup list`의 경로를 확인하세요. 기본 지정은 PM 인터뷰용 레지스트리 선택이며 이후 모든 실행의 작업 디렉터리를 확정한다는 뜻이 아닙니다. [구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/setup.py).
+
+3. 저장소에서 `ouroboros detect /path/to/project`를 실행합니다. 프로젝트에 따라 모델 호출이 발생할 수 있습니다. 생성된 `.ouroboros/mechanical.toml`의 lint·build·test·static 명령을 읽고, 프로젝트가 실제 제공하는 명령인지 확인합니다. 기존 파일은 `--force` 없이는 보존됩니다.
+4. 변경 목표와 기존 제약을 인터뷰에 넣습니다. 예: `ouroboros init start "이 저장소의 로그인 오류를 고친다. 기존 테스트를 유지하고 새 회귀 테스트를 추가한다"`.
+5. `init start`의 `Start workflow now?`는 기본 Yes입니다. Seed를 먼저 확인하려면 `n`을 선택하고, 생성된 Seed의 작업 경로와 완료 조건이 해당 저장소를 가리키는지 검토한 뒤 `ouroboros run /path/to/seed.yaml`을 실행합니다. 이미 Yes를 선택했다면 실행을 시도한 것이므로 시작 전 오류와 기존 작업의 상태를 먼저 확인하고 중복 실행하지 않습니다. [상태 확인](/docs/progress-detail/)과 [실패 복구](/docs/recovery-detail/)를 이어서 사용합니다.
+
+### Seed 경로가 거부되거나 예상과 다를 때
+
+고정 버전의 독립 CLI 경로 해석기는 명시적 `--project-dir`과 원본 metadata 경로를 먼저 처리하고 유효한 brownfield target을 안정 기준 선택에 반영한다. 이후 Seed 모델의 후보 경로를 평가하는 분기에서 후보가 모두 안정 기준 디렉터리 밖으로 벗어나 거부되면, 조용히 다른 위치에서 실행하지 않고 오류와 종료 코드 1을 반환한다. 이 조건을 모든 명시 경로와 모든 거부 상황에 일반화하지 않는다. 반면 MCP 실행·진화 핸들러의 **실행 후 검증 작업 디렉터리 해석 경로**는 해당 거부를 경고로 기록한 뒤 각각 dispatch 또는 stable base로 돌아갈 수 있다. 이것을 MCP의 모든 실행이 경로 오류를 무조건 중단한다거나, fallback 디렉터리가 원래 의도한 프로젝트라는 보장으로 해석하지 않는다. 명시된 작업 디렉터리나 위임된 부모 경로가 있는 경우에는 그 호출 경로의 우선순위가 따로 적용된다. 시작 전 대상 경로를 확인하고 반환된 실제 작업 위치와 검증 결과를 대조한다. 독립 CLI의 `--project-dir`은 명시적 대상 선택지지만 설정 전에 대상과 기존 변경을 확인한다. [CLI 경로 해석](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/run.py), [MCP 실행 검증 경로](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/tools/execution_handlers.py), [진화 검증 경로](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/tools/evolution_handlers.py).
+
+고정 소스의 관련 호출자 대역 테스트 14개에서 거부·미지정·포함된 경로와 CLI의 명시 경로·상대 파일 참조·brownfield fallback을 확인했다. 이는 해석기 단위의 합성 시험이며 실제 모델 실행, 모든 MCP 호출 경로, OS 수준 격리나 운영 작업공간을 검증한 것은 아니다.
+
+!!! warning "검증 파일과 미커밋 변경은 작업 공간마다 확인하세요"
+    새 task worktree는 원본 저장소의 `HEAD`를 기준으로 생성됩니다. 원본의 미커밋 코드와 `detect`로 새로 만든 미추적·무시된 `.ouroboros/mechanical.toml`은 자동으로 포함되지 않을 수 있습니다. 기존 task branch를 재사용하는 경우에는 그 branch의 내용이 기준입니다. 실행 결과의 `Task worktree`·`Task branch` 또는 호스트 응답의 `worktree_path`·`worktree_branch`를 확인하고, **실제 작업 경로**에서 필요한 변경과 검증 설정이 존재하는지 확인하세요. 별도 worktree가 없는 경우에는 응답과 실행 경로를 확인합니다. 상태를 맞추기 위해 기존 변경을 자동으로 stash·reset하거나 임의로 커밋하지 마세요. 원하는 변경과 설정을 어떻게 보존·전달할지는 저장소 상태와 허용된 작업 범위에 맞게 결정해야 합니다. [작업 공간 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/core/worktree.py), [평가 경로](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/run.py).
+
+    빈 임시 Git 저장소에서 원본의 미커밋 파일과 미추적 `mechanical.toml`을 둔 뒤 새 task worktree를 준비한 격리 시험에서는 작업 공간에 커밋된 파일 내용만 있었고 해당 설정 파일은 없었습니다. 이 관찰은 해당 경로 한 사례이며 모든 호스트·설정에서 같은 결과를 보장하지 않습니다.
+
+별도 임시 Git 저장소에서 실제 CLI를 별도 프로세스로 시작하고 런타임 생성·preflight만 대역한 합성 실패 사례에서는 관리 worktree가 Git 목록에 등록되고 검증 명령 표식과 실패 상태가 확인됐다. 별도 상태 CLI의 종료 0은 조회 성공이다. 실제 모델·작업 성공이나 병합·재시작은 검증하지 않았다.
+
+별도의 합성 성공 명령 사례에서도 임시 관리 worktree 등록, CLI 종료 0 및 상태 `complete`를 확인했다. 출력에는 checkpoint를 찾지 못했다는 경고와 충분하지 않은 frugality 근거가 있었고, mock adapter는 의미 있는 작업 결과물을 만들지 않았다. 따라서 이는 실제 작업 완료·정식 평가·병합의 증거가 아니다.
+
+!!! warning "작업 worktree 준비 경로의 기존 파일을 먼저 확인하세요"
+    고정 구현의 `prepare_task_workspace`는 관리 경로 `<worktree_root>/<저장소 이름>/<durable_id>`를 준비할 때, 그 경로가 이미 존재하지만 대상 저장소의 `git worktree list --porcelain`에 등록되어 있지 않으면 복구 대상으로 간주해 해당 경로에 재귀 삭제를 시도합니다. 일반 파일·심볼릭 링크 등 모든 경로가 삭제에 성공한다는 뜻은 아니며, 이 준비 경로는 worktree 활성화 등 조건을 만족하는 실행에 한정됩니다. `worktree_root`의 기본값은 `~/.ouroboros/worktrees`입니다. 이 삭제는 작업 lock을 획득하기 전에 일어나며, 해당 디렉터리의 파일이 다른 작업자나 사용자에게 필요한지 확인하지 않습니다. 유효한 다른 저장소의 디렉터리라도 대상 저장소의 목록에 없다면 안전하다고 가정하지 마세요. 시작·재개 전에 실제 관리 root, 예상 durable ID 경로와 Git 등록 상태, 진행 중 작업 및 보존 자료를 확인하고, 불확실한 경로를 임의로 삭제하거나 덮어쓰지 않습니다. 이 경계는 `cleanup` 명령의 `--dry-run`과 별개인 **작업 공간 준비** 경로입니다. [고정 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/core/worktree.py). 별도 임시 Git 저장소의 합성 일반 디렉터리 한 사례에서 marker가 삭제되고 새 worktree가 등록됨을 확인했습니다. 운영 데이터·심볼릭 링크·동시 경합은 시험하지 않았습니다.
+
+!!! warning "검증 명령을 보지 않고 실행하지 마세요"
+    `detect`는 제안된 명령의 형식과 프로젝트 안의 실행 진입점·선언 등을 검사해 파일로 남기지만, 그 검사를 해당 명령을 실행해 **통과했다는 증거**로 해석하지 마세요. 명령을 실제로 실행할 수 있는지, 테스트가 필요한 동작을 다루는지는 작업 경로에서 별도로 확인해야 합니다. 허용 목록이나 경로 검사는 프로젝트의 모든 의도와 테스트 범위를 보장하지 않습니다. `mechanical.toml`이 비거나 생성되지 않았다면 Stage 1 검증이 비어 있을 수 있습니다. [제안 검증 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/evaluation/detector.py). 이 설명은 고정 소스의 제안 검증 경로를 대조한 것이며, 실제 모델 탐지나 사용자 프로젝트 테스트를 실행한 것은 아닙니다.
+
+기존 저장소 등록·검증 탐지의 상세 동작은 [CLI 원본](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/docs/cli-reference.md)에 연결했습니다.
+
+## 예상
+
+호스트에서는 인터뷰 뒤 Seed에 변경 목표와 대상 저장소가 나타나야 합니다. 독립 CLI에서는 `setup list`로 등록된 저장소를 보고, `detect` 뒤 `.ouroboros/mechanical.toml`에서 제안된 검증 명령을 볼 수 있습니다. Seed 생성과 실행 결과는 별도로 확인해야 합니다.
+
+## 확인
+
+Seed의 작업 경로가 의도한 저장소인지, 완료 조건에 유지할 동작과 새 회귀 테스트가 있는지 읽으세요. `mechanical.toml`의 각 명령이 이 프로젝트에서 실제로 실행 가능한지 확인하고, 실행 뒤에는 변경 파일·테스트 결과·기존 변경 보존 여부를 대조하세요. 설정 파일이 비었거나 생성되지 않았다면 검증 범위가 빠졌는지 점검합니다.
+
+## 다음 행동
+
+대상과 검증 명령이 맞으면 [진행상태 확인](/docs/progress-detail/)에서 같은 실행을 추적합니다. 테스트나 실행이 실패하면 [실패 복구](/docs/recovery-detail/)로 이동하세요. 작업 범위가 잘못됐다면 실행 전에 Seed와 검증 명령을 수정합니다.
