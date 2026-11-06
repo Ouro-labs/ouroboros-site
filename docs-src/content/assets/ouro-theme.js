@@ -56,3 +56,45 @@
     if(event.key==='Enter' || event.key===' '){event.preventDefault();opener.click();}
   });
 })();
+
+// Annotate only reviewed result URLs. Unknown URLs or a failed map load are left alone.
+(function(){
+  var list=document.querySelector('[data-md-component="search-result"]');
+  if(!list || !window.MutationObserver) return;
+  var names={
+    'ko':{'ko':'한국어','en':'영어','zh-Hans':'중국어'},
+    'en':{'ko':'Korean','en':'English','zh-Hans':'Chinese'},
+    'zh-Hans':{'ko':'韩语','en':'英语','zh-Hans':'中文'}
+  };
+  var ui=document.documentElement.lang;
+  if(!Object.prototype.hasOwnProperty.call(names,ui)) return;
+  var routes=null;
+  function update(){
+    if(!routes) return;
+    list.querySelectorAll('a.md-search-result__link').forEach(function(link){
+      var url; try{url=new URL(link.getAttribute('href'),location.href);}catch(e){return;}
+      var language=url.origin===location.origin ? routes[url.pathname] : null;
+      var article=link.querySelector('.md-search-result__article');
+      var heading=article && article.querySelector('h1,h2');
+      var terms=article && article.querySelector('.md-search-result__terms');
+      if(!heading) return;
+      var badge=heading.querySelector('[data-ouro-result-language]');
+      if(!Object.prototype.hasOwnProperty.call(names[ui],language)){
+        if(badge) badge.remove();
+        if(article.hasAttribute('data-ouro-result-language-applied')){article.removeAttribute('lang');article.removeAttribute('data-ouro-result-language-applied');}
+        if(terms && terms.hasAttribute('data-ouro-ui-language-applied')){terms.removeAttribute('lang');terms.removeAttribute('data-ouro-ui-language-applied');}
+        return;
+      }
+      article.setAttribute('lang',language);
+      article.setAttribute('data-ouro-result-language-applied','');
+      // Material 9.7.1 inserts the translated missing-term message inside the article.
+      if(terms){terms.setAttribute('lang',ui);terms.setAttribute('data-ouro-ui-language-applied','');}
+      if(!badge){badge=document.createElement('span');badge.setAttribute('data-ouro-result-language','');heading.appendChild(badge);}
+      if(badge.getAttribute('lang')!==ui) badge.setAttribute('lang',ui);
+      var label=' · '+names[ui][language];
+      if(badge.textContent!==label) badge.textContent=label;
+    });
+  }
+  new MutationObserver(update).observe(list,{childList:true,subtree:true,attributes:true,attributeFilter:['href']});
+  fetch('/docs/search/languages.json').then(function(response){if(!response.ok) throw Error('language map');return response.json();}).then(function(data){routes=data;update();}).catch(function(){});
+})();

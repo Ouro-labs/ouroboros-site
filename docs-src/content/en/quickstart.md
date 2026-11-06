@@ -61,6 +61,30 @@ If Codex CLI is already installed and ready to use with your authentication, run
 ouroboros setup --runtime codex
 ```
 
+
+**Codex CLI server (macOS/Linux/WSL2 standalone path):** This is separate from installing the Codex plugin. The local stdio steps below do not apply to native Windows PowerShell. With the official `0.59.9` CLI and `uvx` on PATH in the same shell, `ouroboros setup --runtime codex` registers an isolated launcher, `uvx --from ouroboros-ai[mcp]==0.59.9 ...`; the current CLI environment does not need the `[mcp]` extra. In the same shell, check `command -v ouroboros`, `ouroboros --version`, and `command -v uvx` so you know which CLI and launcher setup will use. Other installed releases pin the launcher to their own installed version.
+
+Without `uvx`, create a separate MCP 2 environment at a path that does not exist. These macOS/Linux/WSL2 commands use a timestamped path and stop if that path already exists. Continue only after each step succeeds; after a failure, choose a new path instead of reusing the partial environment.
+
+```bash
+MCP_VENV="$HOME/.venvs/ouroboros-codex-mcp2-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$HOME/.venvs" &&
+test ! -e "$MCP_VENV" &&
+python -m venv "$MCP_VENV" &&
+source "$MCP_VENV/bin/activate" &&
+test "$(command -v python)" = "$MCP_VENV/bin/python" &&
+python -m pip install 'ouroboros-ai[mcp]==0.59.9' &&
+test "$(command -v ouroboros)" = "$MCP_VENV/bin/ouroboros" &&
+python -m pip show ouroboros-ai mcp &&
+! command -v uvx &&
+command -v codex &&
+ouroboros setup --runtime codex
+```
+
+For a Git/dev checkout, from the repository root install `python -m pip install -e '.[mcp]'` into that source's Python environment, then run `python -m ouroboros setup --runtime codex` in a shell where `command -v codex` succeeds. Setup success means the server entry was registered; it does not verify the live Codex connection or tool discovery. Confirm that Ouroboros tools actually appear in Codex. Keep MCP 2 `[mcp]` separate from `[claude]` or `[claude-sdk]`, which include MCP 1 dependencies.
+
+**Native Windows Codex Desktop:** `auto` mode may skip a new MCP registration while reporting success; do not treat setup success as proof of registration. Use WSL2 for the stdio steps above, or review the separate loopback HTTP flow with `ouroboros setup --runtime codex --mcp-mode http`. That flow requires starting the server command printed by setup before opening Codex and uses `127.0.0.1:8765/mcp`. [Windows behavior (main)](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py) · [Windows behavior (0.59.9)](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py) · [Codex launcher](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py) · [setup branch](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720) · [package profiles](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89)
+
 If you have not installed or authenticated the CLI you plan to use, complete that provider's setup first, then choose the matching option. If both are installed, select the one you intend to use. If only one runtime is detected, `ouroboros setup` without a runtime argument selects it automatically; if that runtime is Claude Code CLI, it selects the `claude` SDK path. With multiple detected runtimes, interactive setup prompts you to choose. In non-interactive mode, setup keeps an existing configuration if its runtime is available; otherwise it prefers the `claude` SDK path when Claude is detected, then falls back to the first available runtime. The base `ouroboros-ai` package does not include the Claude Agent SDK, so worker preflight can stop before execution. If you intend to use the Python SDK, first check the SDK extra and prerequisites for your installed version: [setup runtime selection](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861), [Claude runtime setup](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64), [SDK preflight](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215), and the [`claude` and `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82). This behavior describes source revision `592c667f`; check the help and guidance for your installed version too.
 
 `pip install` does not pin the Git commit used by this document. `ouroboros --version` reports the CLI package in that terminal; it does not check the version of a server that the host may run separately. Review the setup result and the runtime you intend to use. For other installation paths and detailed prerequisites, see the [product installation guide](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md).

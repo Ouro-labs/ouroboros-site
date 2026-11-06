@@ -59,6 +59,30 @@ Codex CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:
 ouroboros setup --runtime codex
 ```
 
+
+**Codex CLI 서버 (macOS/Linux/WSL2 독립 CLI 경로):** Codex 플러그인 설치와 별도 절차입니다. 아래 로컬 stdio 안내는 native Windows PowerShell에는 적용하지 않습니다. 공식 `0.59.9` CLI를 사용하고 같은 셸에서 `uvx`가 PATH에 있으면 `ouroboros setup --runtime codex`가 격리 런처 `uvx --from ouroboros-ai[mcp]==0.59.9 ...`를 Codex 설정에 등록합니다. 이때 현재 CLI 환경에 `[mcp]` extra는 필요하지 않습니다. 사용 중인 CLI 경로·판본과 런처를 확인하려면 `command -v ouroboros`, `ouroboros --version`, `command -v uvx`를 setup과 같은 셸에서 확인하세요. 설치 버전이 다르면 런처는 현재 설치판의 버전에 맞춰 고정됩니다.
+
+`uvx`가 없다면 MCP 2 서버용으로 아직 없는 별도 가상환경을 만드세요. 아래 macOS/Linux/WSL2 명령은 타임스탬프로 경로를 새로 만들고, 이미 존재하는 경로면 설치를 멈춥니다. 각 단계가 성공한 뒤 다음으로 진행하며, 실패했다면 같은 경로를 재사용하지 말고 새 이름을 고르세요.
+
+```bash
+MCP_VENV="$HOME/.venvs/ouroboros-codex-mcp2-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$HOME/.venvs" &&
+test ! -e "$MCP_VENV" &&
+python -m venv "$MCP_VENV" &&
+source "$MCP_VENV/bin/activate" &&
+test "$(command -v python)" = "$MCP_VENV/bin/python" &&
+python -m pip install 'ouroboros-ai[mcp]==0.59.9' &&
+test "$(command -v ouroboros)" = "$MCP_VENV/bin/ouroboros" &&
+python -m pip show ouroboros-ai mcp &&
+! command -v uvx &&
+command -v codex &&
+ouroboros setup --runtime codex
+```
+
+Git/dev 체크아웃은 저장소 루트에서 그 소스와 같은 Python 환경에 `python -m pip install -e '.[mcp]'`를 설치하고, `command -v codex`가 성공하는 셸에서 `python -m ouroboros setup --runtime codex`를 실행하세요. setup 성공은 서버 항목 등록이지 Codex 연결이나 도구 발견의 검증이 아닙니다. Codex 호스트에서 실제 Ouroboros 도구가 보이는지 별도로 확인하세요. MCP 2 `[mcp]`를 MCP 1 의존성이 있는 `[claude]` 또는 `[claude-sdk]`와 같은 환경에 설치하지 마세요.
+
+**Native Windows Codex Desktop:** `auto` 모드는 새 MCP 등록을 건너뛰고 성공을 보고할 수 있으므로 setup 성공을 등록 증거로 보지 마세요. 이 흐름 대신 WSL2를 사용하거나 `ouroboros setup --runtime codex --mcp-mode http`의 별도 loopback HTTP 경로를 검토하세요. HTTP 경로는 setup 출력에 제시되는 서버 명령을 별도로 실행한 뒤 Codex를 열어야 하며, `127.0.0.1:8765/mcp`를 사용합니다. [Windows 동작 (main)](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py) · [Windows 동작 (0.59.9)](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py) · [Codex 런처](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py) · [setup 분기](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720) · [패키지 프로필](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89)
+
 아직 사용할 CLI가 없거나 인증하지 않았다면 먼저 해당 런타임을 설치하고 인증한 뒤 맞는 선택지를 사용하세요. 둘 다 설치되어 있다면 실제로 사용할 런타임을 고릅니다. 감지된 런타임이 하나뿐이면 인자 없는 `ouroboros setup`은 그것을 자동 선택합니다. 그 하나가 Claude Code CLI라면 `claude` SDK 경로를 선택합니다. 여러 런타임이 감지되면 대화형 setup은 선택을 묻습니다. 무인 모드에서는 감지된 후보 중 기존 설정이 있으면 유지하고, 그렇지 않으면 `claude`가 감지될 때 SDK 경로를 우선하며 그 외에는 첫 후보를 선택합니다. 기본 `ouroboros-ai` 패키지에는 Claude Agent SDK가 포함되지 않아 worker 사전 확인 단계에서 막힐 수 있습니다. Python SDK 경로가 목적이라면 설치한 버전의 SDK extra와 전제 조건을 먼저 확인하세요: [setup 런타임 선택](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861), [Claude 런타임 설정](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64), [SDK 사전 확인](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215), [`claude` 및 `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82). 이 동작은 인용한 `592c667f` 소스 기준이므로 설치 버전의 도움말과 안내도 확인하세요.
 
 `pip install`은 이 문서의 Git 커밋을 고정하지 않습니다. `ouroboros --version`은 해당 터미널의 CLI 패키지를 나타내며 호스트가 별도로 실행하는 서버의 버전은 확인하지 않습니다. 설정 결과와 사용할 런타임을 확인하세요. 다른 설치 경로와 세부 전제는 [제품 설치 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)를 참고하세요.

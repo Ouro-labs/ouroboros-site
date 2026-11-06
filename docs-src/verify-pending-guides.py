@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,9 +22,33 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    search = json.loads((root/'pending-search.json').read_text())
+    if search.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != search['manifest_sha256']:
+        raise ValueError('Search manifest or pending status changed')
+    if search['prior_manifest_sha256'] != '51ee6cf67ffed9fba8ab8b593b4728b7169452076b9f741730d833b94e82d56c': raise ValueError('Search prior manifest changed')
+    search_summary=(root/'pending-search-review.md').read_bytes()
+    if sha(search_summary) != search['summary_sha256']: raise ValueError('Search summary changed')
+    search_names={'quickstart.md','en/quickstart.md','zh/quickstart.md'}
+    search_files={'augment-search.py','content/assets/ouro-theme.js','content/assets/site.css','tests/test_search_languages.cjs'}
+    if set(search['pages']) != search_names or set(search['files']) != search_files: raise ValueError('Search page or file set changed')
+    page_rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',search_summary.decode('utf-8'),re.MULTILINE)
+    file_rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',search_summary.decode('utf-8'),re.MULTILINE)
+    if len(page_rows)!=len(search_names) or {x[0] for x in page_rows}!=search_names or len(file_rows)!=len(search_files) or dict(file_rows)!=search['files']:
+        raise ValueError('Search summary rows mismatch')
+    for name, source_hash, page_hash in page_rows:
+        page=search['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Search current metadata mismatch: '+name)
+    for name, expected in search['files'].items():
+        path=root/name
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Search file changed: '+name)
+    search_restored=copy.deepcopy(manifest)
+    for name in search_names: search_restored['pages'][name]=search['pages'][name]['prior']
+    if sha((json.dumps(search_restored,ensure_ascii=False,indent=2)+'\n').encode())!=search['prior_manifest_sha256']:
+        raise ValueError('Search snapshot chain mismatch')
     locale = json.loads((root/'pending-locale.json').read_text())
     locale_files = {'content/assets/ouro-theme.js','overrides/main.html','overrides/partials/language.html','overrides/partials/nav.html','overrides/partials/nav-item.html','tests/test_locale_ui.py'}
-    if locale.get('status') != 'pending' or locale.get('manifest_sha256') != sha((root/'content-manifest.json').read_bytes()):
+    if locale.get('status') != 'pending' or locale.get('manifest_sha256') != search['prior_manifest_sha256']:
         raise ValueError('Locale manifest or pending status changed')
     if set(locale.get('files', {})) != locale_files: raise ValueError('Locale file set changed')
     locale_summary = (root/'pending-locale-review.md').read_bytes()
@@ -34,12 +58,15 @@ def verify(root=ROOT):
         raise ValueError('Locale summary file hashes mismatch')
     for name, expected in locale['files'].items():
         path = root/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes()) != expected:
+        if name == 'content/assets/ouro-theme.js':
+            if expected != search['prior_js_sha256']: raise ValueError('Search prior JS mismatch')
+        elif path.is_symlink() or not path.is_file() or sha(path.read_bytes()) != expected:
             raise ValueError('Locale file changed: '+name)
     if locale['prior_js_sha256'] != evidence['static_content_sha256']['assets/ouro-theme.js']:
         raise ValueError('Locale prior JS does not match old evidence')
+    if search['prior_css_sha256'] != evidence['static_content_sha256']['assets/site.css']: raise ValueError('Search prior CSS mismatch')
     install = json.loads((root/'pending-install.json').read_text())
-    if install.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != install['manifest_sha256']:
+    if install.get('status') != 'pending' or search['prior_manifest_sha256'] != install['manifest_sha256']:
         raise ValueError('Installation manifest or pending status changed')
     anchors = {'mid_manifest_sha256':'8d2bd20b236120b5ade616e56b030902870c7bf2744a925ea23cf4b514a055a0','interim_manifest_sha256':'cdff69ea47481b6658506269938a15c57b886544df6007df07552799cf7c8ca1','prior_manifest_sha256':'c82fbdfb3593de50e72fc13d67c53fd8a22444050893b5cd2ea18f6ee947727a'}
     if any(install.get(k) != v for k,v in anchors.items()): raise ValueError('Installation chain anchor changed')
@@ -51,9 +78,9 @@ def verify(root=ROOT):
     if len(install_rows) != len(install_names) or {x[0] for x in install_rows} != install_names: raise ValueError('Installation summary rows incomplete or duplicated')
     for name, source_hash, page_hash in install_rows:
         page = install['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name) != page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or search_restored['pages'].get(name) != page:
             raise ValueError('Installation current metadata mismatch: '+name)
-    install_restored = copy.deepcopy(manifest)
+    install_restored = copy.deepcopy(search_restored)
     for level, expected in (('mid',install['mid_manifest_sha256']),('interim',install['interim_manifest_sha256']),('prior',install['prior_manifest_sha256'])):
         for name in install_names: install_restored['pages'][name] = install['pages'][name][level]
         raw = (json.dumps(install_restored,ensure_ascii=False,indent=2)+'\n').encode()
@@ -135,7 +162,8 @@ def verify(root=ROOT):
         if sha((root/name).read_bytes()) != evidence['verification_sha256'][name]:
             raise ValueError('Prior verifier changed: '+name)
     locale_evidence = copy.deepcopy(evidence)
-    locale_evidence['static_content_sha256']['assets/ouro-theme.js'] = locale['files']['content/assets/ouro-theme.js']
+    locale_evidence['static_content_sha256']['assets/ouro-theme.js'] = search['files']['content/assets/ouro-theme.js']
+    locale_evidence['static_content_sha256']['assets/site.css'] = search['files']['content/assets/site.css']
     verify_content_tree(root/'content', manifest, locale_evidence)
     print('Pending summary, manifest and generated bytes match; canonical source is not checked here. Gate remains closed.')
 

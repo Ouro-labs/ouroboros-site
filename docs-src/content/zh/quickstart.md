@@ -61,6 +61,30 @@ ouroboros setup --runtime claude-cli
 ouroboros setup --runtime codex
 ```
 
+
+**Codex CLI 服务器（macOS/Linux/WSL2 独立 CLI 路径）：**这与安装 Codex 插件是两回事。以下本地 stdio 步骤不适用于原生 Windows PowerShell。在同一 shell 中使用官方 `0.59.9` CLI 且 PATH 中有 `uvx` 时，`ouroboros setup --runtime codex` 会注册隔离启动器 `uvx --from ouroboros-ai[mcp]==0.59.9 ...`；当前 CLI 环境无需安装 `[mcp]` extra。请在运行 setup 的同一 shell 中检查 `command -v ouroboros`、`ouroboros --version` 和 `command -v uvx`，确认使用的 CLI 与启动器。其他已安装发行版会将启动器固定到各自的安装版本。
+
+如果没有 `uvx`，请在一个尚不存在的路径创建单独的 MCP 2 环境。以下 macOS/Linux/WSL2 命令使用时间戳生成路径，并在路径已存在时停止。每一步成功后再继续；若失败，请换一个新路径，不要复用未完整安装的环境。
+
+```bash
+MCP_VENV="$HOME/.venvs/ouroboros-codex-mcp2-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$HOME/.venvs" &&
+test ! -e "$MCP_VENV" &&
+python -m venv "$MCP_VENV" &&
+source "$MCP_VENV/bin/activate" &&
+test "$(command -v python)" = "$MCP_VENV/bin/python" &&
+python -m pip install 'ouroboros-ai[mcp]==0.59.9' &&
+test "$(command -v ouroboros)" = "$MCP_VENV/bin/ouroboros" &&
+python -m pip show ouroboros-ai mcp &&
+! command -v uvx &&
+command -v codex &&
+ouroboros setup --runtime codex
+```
+
+若使用 Git/dev 源码检出，请在仓库根目录向该源码的 Python 环境安装 `python -m pip install -e '.[mcp]'`，然后在 `command -v codex` 成功的 shell 中运行 `python -m ouroboros setup --runtime codex`。setup 成功只表示服务器入口已注册，并不验证 Codex 的实时连接或工具发现；请另行确认 Codex 中实际出现了 Ouroboros 工具。MCP 2 `[mcp]` 不要与包含 MCP 1 依赖的 `[claude]` 或 `[claude-sdk]` 安装在同一环境中。
+
+**原生 Windows Codex Desktop：**`auto` 模式可能跳过新的 MCP 注册却报告成功；不要把成功提示当作已注册的证明。请使用 WSL2 执行以上 stdio 步骤，或查看独立的 loopback HTTP 流程：`ouroboros setup --runtime codex --mcp-mode http`。该流程要求先单独启动 setup 打印的服务器命令，再打开 Codex，并使用 `127.0.0.1:8765/mcp`。[Windows 行为（main）](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py) · [Windows 行为（0.59.9）](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py) · [Codex 启动器](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py) · [setup 分支](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720) · [软件包配置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89)
+
 如果计划使用的 CLI 尚未安装或尚未完成认证，请先按照该运行时的提供方说明完成安装和认证，再选择相应选项。若两者都已安装，请选择实际计划使用的一种。如果只检测到一个运行时，不带运行时参数执行 `ouroboros setup` 会自动选择它；若该运行时是 Claude Code CLI，则会选择 `claude` SDK 路径。检测到多个运行时时，交互模式会提示你选择。非交互模式下，如果现有配置对应的运行时仍可用，程序会保留该配置；否则，若检测到 `claude`，会优先选择 SDK 路径，再不然选择第一个可用运行时。基础 `ouroboros-ai` 软件包不包含 Claude Agent SDK，因此 worker 预检可能会在执行前停止。如果你需要 Python SDK 路径，请先检查已安装版本对应的 SDK extra 和前置条件：[setup 运行时选择](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861)、[Claude 运行时设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64)、[SDK 预检](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215)，以及 [`claude` 与 `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82)。此处行为依据源码版本 `592c667f`；也请查看你所安装版本的帮助和说明。
 
 `pip install` 不会固定本文所依据的 Git commit。`ouroboros --version` 显示的是该终端中的 CLI 软件包版本；它不会检查宿主可能单独运行的服务器版本。请检查设置结果和计划使用的运行时。其他安装方式和详细前提条件请参阅[产品安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。

@@ -43,3 +43,4 @@ html[data-theme=dark] .md-nav__link{color:var(--ouro-ink)!important}html[data-th
 .ouro-related{margin:3rem 0 1rem;padding:1.2rem 1.4rem;border-left:4px solid var(--ouro-accent);border-radius:0 14px 14px 0;background:var(--ouro-soft);color:var(--ouro-ink)}
 .ouro-related p{margin:.4rem 0 0}
 [data-ouro-search-open]:focus-visible{outline:3px solid var(--ouro-accent);outline-offset:3px}
+[data-ouro-result-language]{display:inline-block;margin-inline-start:.5em;padding:.1em .4em;border:1px solid currentColor;border-radius:.4em;font-size:.7em;font-weight:600;vertical-align:middle}
