@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ouroboros — spec, run, verify AI coding work</title>
-<meta name="description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta name="description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <link rel="canonical" href="https://ouroboros.page/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ouroboros.page/">
 <meta property="og:title" content="Ouroboros — spec, run, verify AI coding work">
-<meta property="og:description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta property="og:description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ouroboros — spec, run, verify AI coding work">
-<meta name="twitter:description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta name="twitter:description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
 <link rel="stylesheet" href="/learn/learn.css?v=3">
 <link rel="icon" href="/assets/logo-snake.png">
@@ -73,16 +73,28 @@
 <main id="content" class="home">
 <section class="hero">
 <div class="eyebrow">OPEN SOURCE · MIT</div>
-<h1>Your coding agent writes the code.<br>Ouroboros <em>verifies</em> the result.</h1>
-<p class="sub">Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. It pins the spec before the run and verifies the result after it.</p>
+<h1>Your coding agent writes the code.<br>Ouroboros helps you <em>evaluate</em> the result.</h1>
+<p class="sub">For developers working with AI coding agents: turn a goal into a Seed specification, run the work, and review the evaluation and records.</p>
 <div class="cta">
-<a class="primary" href="#install">Install</a>
+<a class="primary" href="#quickstart">Get started</a>
 <a class="ghost" href="/learn/en/">Read the guide</a>
 </div>
 <div class="chips" aria-label="Supported runtimes">
 <span>Claude Code</span><span>Codex CLI</span><span>GitHub Copilot CLI</span><span>OpenCode</span><span>Hermes</span><span>Gemini</span><span>Kiro CLI</span><span>Pi CLI</span><span>Zcode</span><span>Goose</span><span>GJC</span><span>Antigravity CLI</span><span>Grok Build CLI</span>
 </div>
 </section>
+
+<div class="sect">
+<h2 id="quickstart">Start with a small task</h2>
+<p>Choose the installation path for your coding environment. The example below uses Claude Code; the <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">product getting-started guide</a> also covers Codex and the standalone CLI.</p>
+<ol>
+<li><a href="#install">Install the Claude Code plugin</a> and its prerequisites, then open a Claude Code session.</li>
+<li>Run <code>ooo setup</code> in that session, then start with <code>ooo interview "Build a task management CLI"</code>.</li>
+<li>Answer the questions and review the resulting Seed and its acceptance criteria before execution.</li>
+<li>After execution, inspect the work and evaluation against your goal. A completed run or evaluation is evidence to review, not a substitute for your own judgment.</li>
+</ol>
+<p>Need help? Start with the <a href="/learn/en/troubleshooting/">troubleshooting guide</a> or check the <a href="https://github.com/Q00/ouroboros/issues">product issues</a>. The site guide describes version 0.51.5, so compare it with your installed version and the current product documentation.</p>
+</div>
 
 <p class="demo-lead"><b>Four separate runs, four hosts.</b> Different tasks on purpose — the engine is what is shared, not the prompt.</p>
 <div class="demos">
@@ -100,7 +112,7 @@
 <pre><code>claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros</code></pre>
 </div>
-<p class="foot-note">Requires Claude Code. No Python needed. Prefer a standalone CLI? <code>pip install ouroboros-ai</code> — see the <a href="/learn/en/install/">install guide</a>.</p>
+<p class="foot-note">Requires Claude Code and uv on the host. See the current <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">installation instructions</a> for prerequisites and other environments, including the standalone CLI. The <a href="/learn/en/install/">site install chapter</a> covers the guide’s earlier version.</p>
 
 <h2 id="how">How it works</h2>
 <figure class="diagram"><img src="/assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
@@ -113,6 +125,7 @@ claude plugin install ouroboros@ouroboros</code></pre>
 <a href="/learn/zh/"><strong>中文指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
 <a href="/roadmap/"><strong>GTM Roadmap</strong><span>Evidence gates, proposed joint validation, and conditional enterprise horizons.</span></a>
 <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md"><strong>Getting started</strong><span>Product installation and first workflow.</span></a>
+<a href="/learn/en/troubleshooting/"><strong>Troubleshooting</strong><span>Find recovery guidance for common problems.</span></a>
 <a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md"><strong>CLI reference</strong><span>Commands and options in the product repository.</span></a>
 <a href="/llms.txt"><strong>AI documentation index</strong><span>Guide and product documentation links for AI tools.</span></a>
 <a href="https://github.com/Q00/ouroboros"><strong>GitHub</strong><span>Source, official docs, CLI Reference, issues.</span></a>
