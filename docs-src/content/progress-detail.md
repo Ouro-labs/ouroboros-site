@@ -8,6 +8,33 @@
 
 실행 뒤 ID를 받았거나 작업이 오래 걸려 결과가 궁금한 상태입니다. 실행 출력의 **ID 종류**와 **사용한 실행 경로**를 먼저 찾으세요. 상태 조회는 같은 기록을 읽는 작업입니다. `run`을 다시 시작해 상태를 확인하지 않습니다.
 
+## 빠른 조회 {#quick-status}
+
+시작 응답의 실제 ID 필드와 같은 사용자·host·DB 환경을 확인한 뒤 아래에서 일치하는 행을 고르세요. `exec_...` 같은 handle은 ID 종류를 단정하지 말고, 시작 응답에서 연결된 `job_id`, `session_id`, `execution_id` 또는 `auto_session_id`를 먼저 확인합니다. CLI 명령은 독립 CLI용입니다. 호스트에서는 해당 서버가 실제 제공하는 MCP 도구와 필드명을 사용하세요.
+
+| 실제 반환된 값 | 독립 CLI 조회 | 호스트에서 확인 |
+| --- | --- | --- |
+| `job_...` | `ouroboros job status JOB_ID` | `ouroboros_job_status` 또는 같은 ID의 `ouroboros_job_wait`; 종결 상태 뒤 `ouroboros_job_result` |
+| `auto_...` (`auto_session_id`) | `ouroboros status auto AUTO_SESSION_ID` | 해당 버전에서 제공하는 세션 상태 도구 또는 Auto 시작 응답의 연결 ID |
+| `orch_...` 또는 session ID | `ouroboros status run --session-id SESSION_ID` | 실제 session ID를 받는 세션 상태 도구가 있을 때 사용 |
+| 실행 ID | `ouroboros status execution EXECUTION_ID --events` | 시작 응답의 실제 실행 ID에 맞는 조회 도구 |
+| 실행 집계 ID | `ouroboros status run --execution-id EXECUTION_ID` | 서버가 실제 제공하는 실행 상태 도구 |
+| ID를 잃음 | `ouroboros resume --list` 또는 `ouroboros status executions` | 원래 대화의 시작 응답과 host의 실제 세션·작업 목록 |
+
+상태에 따라 다음 행동도 달라집니다.
+
+| 조회된 상태 | 다음 행동 |
+| --- | --- |
+| `running` 또는 아직 대기 중 | 새 실행을 만들지 말고 같은 ID를 다시 조회하거나 해당 job의 wait를 사용합니다. 대기 시간 종료·변경 없음은 완료가 아닙니다. |
+| `completed` | job이면 같은 ID의 result를 읽고, 실제 작업 경로의 파일·수용 기준·검사 및 평가 결과를 확인합니다. `completed`만으로 요구 충족을 단정하지 않습니다. |
+| `failed` 또는 `cancelled` | 같은 ID의 결과와 오류를 읽고 작업 공간·파일·외부 효과를 살핍니다. 실패/취소가 변경을 되돌렸다고 가정하지 말고 즉시 다시 실행하지 않습니다. |
+| ID 없음, 빈 목록, DB/조회 오류 | ID 필드, host·사용자·DB 경로와 조회 오류를 확인합니다. 이는 작업이 없거나 재시작해도 된다는 증거가 아닙니다. 기록을 보존하고 [복구 순서](/docs/recovery-detail/)를 먼저 봅니다. |
+
+모든 상태 조회가 무기록인 것은 아닙니다. [상태 가이드](/docs/status-guide/)와 아래 저장소 변경 경고를 확인하고, 실제 명령·도구가 맞는지 설치 도움말에서 검토하세요.
+
+!!! warning "조회도 저장소 상태를 바꿀 수 있습니다"
+    모든 상태 조회가 파일 시스템상 읽기 전용인 것은 아닙니다. 고정 버전의 `ouroboros job status`와 `job result`는 기본 쓰기 가능한 EventStore를 초기화하며 DB·스키마·로그를 만들 수 있습니다. 또 소유자 프로세스가 죽고 연결된 실행의 살아 있는 보유자가 없다는 등 고아 조건이 확인되면 조회 과정에서 `interrupted` 이벤트를 기록할 수 있습니다. 새 임시 HOME에서 존재하지 않는 job을 조회했을 때 오류와 함께 SQLite DB·WAL/SHM·로그가 생성되는 것을 확인했습니다. 이는 모든 상태 명령이 같은 부작용을 갖는다는 뜻은 아닙니다. 같은 환경·DB·ID를 확인하고 기록의 보존이 중요하면 조회 전에 접근 및 백업 방침을 확인하세요. [`job` CLI](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/job.py), [job 상태 복구 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/job_manager.py).
+
 ## 입력
 
 실제 출력의 `job_`·`auto_`·`orch_`·`exec_` ID와 플러그인 또는 CLI 중 사용한 경로가 필요합니다. ID를 잃어버렸다면 호스트에서는 기존 대화의 시작 응답을 찾아 달라고 요청하고, CLI에서는 아래 목록 명령으로 찾습니다. 찾지 못하면 호스트에 해당 버전에서 제공하는 세션·실행 목록을 조회해 달라고 요청하세요. 목록도 없거나 해당 작업을 특정할 수 없으면 추측한 ID로 재개하지 말고 기록과 결과 파일을 보존하세요. 인증 값은 공유하지 마세요.
@@ -52,18 +79,18 @@
 
 `status run`은 `--session-id`·`--execution-id`·위치 인수 중 하나가 필요합니다. 조회 오류가 나면 종료 코드뿐 아니라 저장소 경로와 오류를 함께 확인합니다. 고정 소스의 격리 임시 HOME 시험에서는 이벤트 DB를 열 수 없는 상태에서 세션 조회가 종료 1로 실패했고, 별도로 빈 DB·스키마를 준비한 뒤 존재하지 않는 세션을 조회하면 `No events found`와 종료 2가 나왔습니다. 선택자를 생략하면 종료 64였고, 서로 맞지 않는 세션과 실행 ID를 함께 지정한 시험은 종료 1이었습니다. DB 오류를 세션이 없다는 증거로 해석하지 마세요. [상태 명령 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/status.py).
 
-별도 합성 Seed와 mock 런타임의 한 사례에서는 실제 `OrchestratorRunner` 실행 후 임시 SQLite 세션을 재구성하고, 별도 CLI 프로세스의 `status execution ... --events`에서 `complete`와 `execution.terminal` 표시를 관찰했습니다. 해당 Seed는 검증 가능한 기준 명령이 없어 경고가 발생했으므로 이 표시는 수용 기준 충족의 증거가 아닙니다. 실제 CLI 작업 시작·모델·재시작 복구는 시험하지 않았습니다.
+??? info "격리 합성 시험의 세부 관찰과 한계"
 
-두 기준의 합성 runner 사례에서는 `exit 0`과 `exit 3` 검증 명령을 사용해 각각 기준 `completed`와 `failed`, 전체 세션 `failed`를 기록했습니다. 별도 상태 CLI의 종료 0은 조회 성공이며 실행 성공이 아닙니다. 이는 mock worker와 임시 저장소의 사례로 실제 모델·CLI 시작·재시작을 검증하지 않습니다.
+    별도 합성 Seed와 mock 런타임의 한 사례에서는 실제 `OrchestratorRunner` 실행 후 임시 SQLite 세션을 재구성하고, 별도 CLI 프로세스의 `status execution ... --events`에서 `complete`와 `execution.terminal` 표시를 관찰했습니다. 해당 Seed는 검증 가능한 기준 명령이 없어 경고가 발생했으므로 이 표시는 수용 기준 충족의 증거가 아닙니다. 실제 CLI 작업 시작·모델·재시작 복구는 시험하지 않았습니다.
 
-**기준 개수와 실행 경로를 확인하세요.** 고정 runner의 mock 시험에서 특별 경로 조건이 없는 `parallel=True` 단일 기준은 실패 명령의 표식 파일이 만들어지지 않았는데도 `success=True`·`completed`였습니다. 같은 실패 명령을 포함한 두 기준 사례에서는 표식이 만들어지고 `failed`였습니다. 고정 소스는 이 조건의 한 기준을 whole-seed 경로로, 두 기준을 기준별 executor 경로로 분기합니다. fat harness·순차 레벨 강제·investment metadata·acceptance authority와 `parallel` 값 등에 따라 경로는 달라집니다. 고정 독립 CLI의 새 실행은 기본적으로 fat-harness를 켜며 명시적 `orchestrator.execution_mode: legacy`는 이를 끕니다. 같은 단일 실패 명령을 넣은 합성 `CliRunner` 시험에서 기본은 표식이 생기고 종료 1이었으며, legacy는 표식 없이 종료 0이었습니다. 런타임 생성과 preflight는 대역이며 실제 모델·터미널 CLI·재개는 미시험입니다. 모든 단일 기준이나 호스트에서 검증이 생략된다고 일반화하지 말고, **명령이 실제 실행됐는지와 결과**를 별도 증거로 확인하세요.
+    두 기준의 합성 runner 사례에서는 `exit 0`과 `exit 3` 검증 명령을 사용해 각각 기준 `completed`와 `failed`, 전체 세션 `failed`를 기록했습니다. 별도 상태 CLI의 종료 0은 조회 성공이며 실행 성공이 아닙니다. 이는 mock worker와 임시 저장소의 사례로 실제 모델·CLI 시작·재시작을 검증하지 않습니다.
 
-별도의 비-Git 임시 프로젝트 시험에서는 설치된 CLI entrypoint를 별도 프로세스로 시작하고 `sitecustomize`로 런타임 생성·preflight만 대역 처리했다. 합성 실패 검증 명령의 실행 표식과 CLI 종료 1을 확인한 뒤 다른 CLI 프로세스로 상태를 조회해 종료 0 및 `failed`·`execution.terminal`을 확인했다. 실제 모델·Git worktree 성공·재시작·자동 후속은 시험하지 않았다.
+    **기준 개수와 실행 경로를 확인하세요.** 고정 runner의 mock 시험에서 특별 경로 조건이 없는 `parallel=True` 단일 기준은 실패 명령의 표식 파일이 만들어지지 않았는데도 `success=True`·`completed`였습니다. 같은 실패 명령을 포함한 두 기준 사례에서는 표식이 만들어지고 `failed`였습니다. 고정 소스는 이 조건의 한 기준을 whole-seed 경로로, 두 기준을 기준별 executor 경로로 분기합니다. fat harness·순차 레벨 강제·investment metadata·acceptance authority와 `parallel` 값 등에 따라 경로는 달라집니다. 고정 독립 CLI의 새 실행은 기본적으로 fat-harness를 켜며 명시적 `orchestrator.execution_mode: legacy`는 이를 끕니다. 같은 단일 실패 명령을 넣은 합성 `CliRunner` 시험에서 기본은 표식이 생기고 종료 1이었으며, legacy는 표식 없이 종료 0이었습니다. 런타임 생성과 preflight는 대역이며 실제 모델·터미널 CLI·재개는 미시험입니다. 모든 단일 기준이나 호스트에서 검증이 생략된다고 일반화하지 말고, **명령이 실제 실행됐는지와 결과**를 별도 증거로 확인하세요.
 
-이 시험은 합성 ID와 임시 DB에 한정하며 실제 실행이나 모든 오류 조건을 시험하지 않았습니다. 재시험에는 `OUROBOROS_TELEMETRY=0`을 설정했습니다. 최초 빈 DB 경로 시험에서는 해당 opt-out이 빠져 익명 통계 안내가 출력됐으며 실제 외부 전송 여부는 확인하지 못했습니다. OS 수준 네트워크 격리는 사용하지 않았고 사용자 DB나 모델은 사용하지 않았습니다.
+    별도의 비-Git 임시 프로젝트 시험에서는 설치된 CLI entrypoint를 별도 프로세스로 시작하고 `sitecustomize`로 런타임 생성·preflight만 대역 처리했다. 합성 실패 검증 명령의 실행 표식과 CLI 종료 1을 확인한 뒤 다른 CLI 프로세스로 상태를 조회해 종료 0 및 `failed`·`execution.terminal`을 확인했다. 실제 모델·Git worktree 성공·재시작·자동 후속은 시험하지 않았다.
 
-!!! warning "조회도 저장소 상태를 바꿀 수 있습니다"
-    모든 상태 조회가 파일 시스템상 읽기 전용인 것은 아닙니다. 고정 버전의 `ouroboros job status`와 `job result`는 기본 쓰기 가능한 EventStore를 초기화하며 DB·스키마·로그를 만들 수 있습니다. 또 소유자 프로세스가 죽고 연결된 실행의 살아 있는 보유자가 없다는 등 고아 조건이 확인되면 조회 과정에서 `interrupted` 이벤트를 기록할 수 있습니다. 새 임시 HOME에서 존재하지 않는 job을 조회했을 때 오류와 함께 SQLite DB·WAL/SHM·로그가 생성되는 것을 확인했습니다. 이는 모든 상태 명령이 같은 부작용을 갖는다는 뜻은 아닙니다. 같은 환경·DB·ID를 확인하고 기록의 보존이 중요하면 조회 전에 접근 및 백업 방침을 확인하세요. [`job` CLI](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/job.py), [job 상태 복구 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/job_manager.py).
+    이 시험은 합성 ID와 임시 DB에 한정하며 실제 실행이나 모든 오류 조건을 시험하지 않았습니다. 재시험에는 `OUROBOROS_TELEMETRY=0`을 설정했습니다. 최초 빈 DB 경로 시험에서는 해당 opt-out이 빠져 익명 통계 안내가 출력됐으며 실제 외부 전송 여부는 확인하지 못했습니다. OS 수준 네트워크 격리는 사용하지 않았고 사용자 DB나 모델은 사용하지 않았습니다.
+
 
 ### detached 시작 거절의 판본 차이
 

@@ -22,6 +22,7 @@ plugins:
         - zh
 markdown_extensions:
   - admonition
+  - pymdownx.details
   - attr_list
   - tables
   - pymdownx.superfences:

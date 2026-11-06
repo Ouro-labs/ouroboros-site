@@ -4,6 +4,18 @@
 
 **판본 경계:** 이 상세본은 기존 722판의 주요 내용·주의·예시를 보존한다. 정적 비교한 evaluation 파일에서는 main [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0)에서 의미 평가 응답 parser가 boolean·비유한 점수를 거부하도록 달라졌다([main parser](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/semantic.py)). `v0.59.9`와 main의 unittest 자동 탐색도 `load_tests` hook 처리 및 Python 인코딩 선언 처리에서 다르다([main 탐색기](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/stdlib_unittest_discovery.py), [release 탐색기](https://github.com/Q00/ouroboros/blob/v0.59.9/src/ouroboros/evaluation/stdlib_unittest_discovery.py)). 이는 확인한 파일의 차이다. 이 문서 전체의 main·release 기능 동등성, 실제 평가 파이프라인, 모델·호스트 동작은 검증하지 않았다. 설치 버전의 실제 검사 명령·출력과 결과를 우선하며, 상세 상태·재개 절차는 [진행 상태](/docs/progress-detail/), [복구](/docs/recovery-detail/)에 남아 있다.
 
+## 결과를 받았다면 먼저 확인하세요 {#evaluation-next-steps}
+
+평가가 끝났다는 표시만으로 원래 요청이 충족됐다고 판단하지 마세요. 실제 평가 결과에서 원래 Seed의 수용 기준과 실행된 검사, 각 단계의 판정을 확인합니다.
+
+| 결과 | 다음 행동 |
+| --- | --- |
+| `approved` | 원래 요청과 Seed를 실제 산출물·검사 결과에 대조합니다. 승인만으로 요청 범위가 올바르게 구현됐다고 가정하지 않습니다. |
+| `rejected` | 실패하거나 승인을 보류한 단계와 근거를 확인합니다. 기계 검사뿐 아니라 실행된 모델 검토가 보류했을 수도 있습니다. 원인을 수정한 뒤 필요한 실행이나 재평가를 선택합니다. |
+| `unverified` | 실행된 기계 검사 증거가 있는지 확인합니다. 없다면 프로젝트에 맞고 신뢰할 수 있는 검사 명령을 준비한 뒤 다시 평가합니다. 긍정적인 모델 의견만으로 승인할 수는 없습니다. |
+
+평가가 시작되지 않았거나 실패한 경우, 실제 세션 ID·원래 Seed·산출물·작업 경로를 확인하세요. 이미 평가 job이나 후속 Ralph job이 실행 중이면 중복 시작하지 않습니다. 호스트에서 재평가할 때는 `ooo evaluate`에 해당 세션을 지정하고, 자동 후속 작업 없이 평가만 원하면 `auto_evolve: false`를 요청할 수 있습니다. 이는 이미 시작된 작업을 취소하지 않습니다. 평가와 후속 작업은 명령 실행·모델 호출·추가 비용을 수반할 수 있습니다. 자세한 입력과 예외는 아래 [평가의 증거와 세 단계](#evaluation-evidence)를 확인하세요.
+
 ## 먼저 구분할 세 가지
 
 | 질문 | 근거가 되는 기록 | 주의 |
@@ -19,6 +31,8 @@
 따라서 실행의 성공 상태만 보고 정식 평가의 `approved` 또는 각 기준의 검증을 추론하지 않는다. 실제 경로와 기준별 판정, `verification_coverage`, 검사 실행 증거를 확인하고 별도 정식 평가가 필요하다면 해당 결과도 확인한다. 이 설명은 고정 소스에 대한 정적 대조이며 실제 모델 실행은 시험하지 않았다.
 
 [실행·평가 계약](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/docs/guides/execution-vs-evaluation.md), [평가 모델](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/evaluation/models.py), [진화 루프](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/evolution/loop.py)를 기준으로 한다.
+
+<span id="evaluation-evidence"></span>
 
 ## 평가의 증거와 세 단계
 

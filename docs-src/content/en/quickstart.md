@@ -40,7 +40,9 @@ codex plugin add ouroboros@ouroboros
 
 ### Standalone CLI
 
-In a terminal with a new Python virtual environment activated:
+For a first install, create and activate a new virtual environment. The [standalone CLI virtual environment guide](/docs/first-run-detail/#cli-venv) has commands to create a new directory, install, activate, and check it. That linked guide is in Korean and is based on product source `722172ef`. Its version may differ from this quickstart's `592c667f` and from the current public package, so check the help for your installed version.
+
+In a terminal with the virtual environment activated:
 
 ```bash
 python -m pip install ouroboros-ai
@@ -91,9 +93,19 @@ Record the IDs and statuses actually returned while the task runs. A completion 
 
 1. Inspect created or modified files in the actual workspace or worktree reported by the run.
 2. Read test and evaluation results, including any failed or unverified items.
-3. Add a task and mark it complete in the app. If the Seed specified a persistence condition, verify it yourself after refreshing the page.
+3. If you do not yet have app startup details, use the request below from the actual working path to ask how to start it. Review the commands, sources, port, and costs; choose an approach you trust, then open the app, add a task, and mark it complete. If the Seed specified a persistence condition, verify it yourself after refreshing the page.
 
-If evaluation has not started, failed, or returned `unverified`, first confirm the actual `session_id`, original Seed, artifact, and reported working directory or `worktree_path`. Check the status and result of any existing evaluation job and chained Ralph job before starting another; do not duplicate an active chain. When a new evaluation is appropriate, ask the host to run `ooo evaluate <actual session ID> [artifact]` and provide the absolute project path. `auto_evolve: false` prevents this evaluation from scheduling a new Ralph successor; it does not cancel an evaluation or chain already started. `unverified` is not approval: add or confirm executable checks, then follow the outcome-specific next step in the [evaluation guide](/docs/en/troubleshooting/#evaluation).
+**Standalone CLI users:** In the actual generated working path, inspect the `README` and project package configuration files for dependency instructions, start scripts, the URL and port, and how to stop the app. If those files do not provide the information or you cannot determine how to run it, do not guess; use the request below in a supported plugin host such as Claude Code or Codex.
+
+From the working path reported by the run or its `worktree_path`, you can ask the host agent:
+
+```text
+Inspect the project in <actual working path> and tell me the dependency installation commands and their sources, the app start command, the actual URL and port, how to stop it, and any expected costs. I will review the commands and sources, choose an approach I trust, then open the app and check adding a task and marking it complete.
+```
+
+This request example does not verify that the app can actually be run. Check that the answer fits the project and environment, and review the commands, sources, port, and costs before proceeding.
+
+If evaluation has not started, failed, or returned `unverified`, first confirm the actual `session_id`, original Seed, artifact, and reported working directory or `worktree_path`. Check the status and result of any existing evaluation job and chained Ralph job before starting another; do not duplicate an active chain. **In a plugin host conversation with connected MCP**, when a new evaluation is appropriate, ask the host to run `ooo evaluate <actual session ID> [artifact]` and provide the actual project path. `auto_evolve: false` prevents this evaluation from scheduling a new Ralph successor; it does not cancel an evaluation or chain already started. **Do not enter this host command in a standalone CLI terminal.** The fixed source `592c667f` has no separate CLI command for rerunning evaluation. Check `ouroboros --help` and version-specific guidance for your installed version; if you cannot find a supported path, use a host with connected MCP. `unverified` is not approval: add or confirm executable checks, then follow the outcome-specific next step in the [evaluation guide](/docs/en/troubleshooting/#evaluation).
 
 The right way to check status depends on the type of ID. Find the matching path in [Progress and status](/docs/en/troubleshooting/#status). If a connection fails or work is interrupted, preserve the existing records and read the [recovery guide](/docs/en/troubleshooting/#recovery) first. Work may still be running, so do not immediately start it again.
 
