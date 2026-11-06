@@ -1,21 +1,37 @@
 {% extends "base.html" %}
+{% block htmltitle %}
+{% set uri = page.file.src_uri if page and page.file else '' %}
+{% set site_title = 'Ouroboros Docs' if uri.startswith('en/') else ('Ouroboros 文档' if uri.startswith('zh/') else config.site_name) %}
+{% if page and page.meta and page.meta.title %}<title>{{ page.meta.title }} - {{ site_title }}</title>
+{% elif page and page.title and not page.is_homepage %}<title>{{ page.title | striptags }} - {{ site_title }}</title>
+{% else %}<title>{{ site_title }}</title>{% endif %}
+{% endblock %}
 {% block extrahead %}
 <script>try{if(localStorage.getItem('learn-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 {% endblock %}
 {% block header %}
-<header lang="ko" class="md-header ouro-top" data-md-component="header">
-  <nav class="md-header__inner md-grid ouro-top-inner" aria-label="주 메뉴">
-    <button type="button" class="md-header__button md-icon ouro-drawer" aria-label="문서 목차 열기" aria-expanded="false" aria-controls="ouro-navigation">{% include ".icons/material/menu.svg" %}</button>
-    <a class="ouro-brand" href="/" aria-label="Ouroboros 홈"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
+{% set uri = page.file.src_uri if page and page.file else '' %}
+{% set loc = 'en' if uri.startswith('en/') else ('zh' if uri.startswith('zh/') else 'ko') %}
+{% set labels = {
+  'ko': {'menu':'주 메뉴','open':'문서 목차 열기','close':'문서 목차 닫기','home':'Ouroboros 홈','guide':'가이드','install':'설치','glossary':'용어사전','theme':'테마','theme_label':'밝은 화면 또는 어두운 화면 전환','search':'검색 열기'},
+  'en': {'menu':'Main navigation','open':'Open documentation navigation','close':'Close documentation navigation','home':'Ouroboros home','guide':'Guide','install':'Install','glossary':'Glossary','theme':'Theme','theme_label':'Toggle light or dark theme','search':'Open search'},
+  'zh': {'menu':'主导航','open':'打开文档目录','close':'关闭文档目录','home':'Ouroboros 首页','guide':'指南','install':'安装','glossary':'术语表','theme':'主题','theme_label':'切换浅色或深色主题','search':'打开搜索'}
+} %}
+{% set l = labels[loc] %}
+{% set learn = '/learn/en/' if loc == 'en' else ('/learn/zh/' if loc == 'zh' else '/learn/') %}
+<header class="md-header ouro-top" data-md-component="header">
+  <nav class="md-header__inner md-grid ouro-top-inner" aria-label="{{ l.menu }}">
+    <button type="button" class="md-header__button md-icon ouro-drawer" aria-label="{{ l.open }}" data-label-open="{{ l.open }}" data-label-close="{{ l.close }}" aria-expanded="false" aria-controls="ouro-navigation">{% include ".icons/material/menu.svg" %}</button>
+    <a class="ouro-brand" href="/" aria-label="{{ l.home }}{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}</span></a>
     <div class="ouro-nav">
-      <a href="/learn/">가이드</a><a href="/learn/install/">설치</a><a href="/learn/glossary/">용어사전</a>
-      <a class="ouro-github" href="https://github.com/Q00/ouroboros">GitHub</a>
-      <button class="ouro-theme" data-ouro-theme type="button" aria-label="밝은 화면 또는 어두운 화면 전환">테마</button>
+      <a href="{{ learn }}">{{ l.guide }}</a><a href="{{ learn }}install/">{{ l.install }}</a><a href="{{ learn }}glossary/">{{ l.glossary }}</a>
+      <a class="ouro-github" href="https://github.com/Q00/ouroboros">GitHub{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}</a>
+      <button class="ouro-theme" data-ouro-theme type="button" aria-label="{{ l.theme_label }}">{{ l.theme }}</button>
     </div>
     {% if "material/search" in config.plugins %}
       {% set search = config.plugins["material/search"] | attr("config") %}
       {% if search.enabled %}
-        <label class="md-header__button md-icon" for="__search" aria-label="검색 열기" role="button" tabindex="0" data-ouro-search-open>{% include ".icons/material/magnify.svg" %}</label>
+        <label class="md-header__button md-icon" for="__search" aria-label="{{ l.search }}" role="button" tabindex="0" data-ouro-search-open>{% include ".icons/material/magnify.svg" %}</label>
         {% include "partials/search.html" %}
       {% endif %}
     {% endif %}

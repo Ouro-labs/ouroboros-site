@@ -25,7 +25,7 @@
     var open=toggle.checked && mobile.matches;
     sidebar.inert=mobile.matches && !open;
     button.setAttribute('aria-expanded',String(open));
-    button.setAttribute('aria-label',open ? '문서 목차 닫기' : '문서 목차 열기');
+    button.setAttribute('aria-label',open ? button.dataset.labelClose : button.dataset.labelOpen);
   }
   button.addEventListener('click',function(){toggle.click();syncDrawer();});
   toggle.addEventListener('change',syncDrawer);
