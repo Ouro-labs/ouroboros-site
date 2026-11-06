@@ -22,10 +22,14 @@ class PendingGuidesTest(unittest.TestCase):
     def rejected(self):
         with self.assertRaises((ValueError, KeyError, OSError)): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_changed_journey_summary(self):
+        (self.root/'pending-journey-review.md').write_text('altered'); self.rejected()
+    def test_changed_journey_chain(self):
+        p=self.root/'pending-journey.json'; e=json.loads(p.read_text());e['pages']['quickstart.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected()
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected()
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected()
