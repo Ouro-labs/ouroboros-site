@@ -28,7 +28,7 @@
 | --- | --- | --- |
 | Codex 플러그인 | 로그인된 Codex CLI와 `uvx`가 필요합니다. 터미널에서 `codex plugin marketplace add Q00/ouroboros`, `codex plugin add ouroboros@ouroboros`를 실행합니다. | 새 Codex 세션에서 `ooo`로 환영·준비 흐름을 시작합니다. 설정 과정은 환경을 변경할 수 있으므로 제시되는 내용을 확인합니다. |
 | Claude Code 플러그인 | Claude Code와 `uvx`가 필요합니다. 터미널에서 `claude plugin marketplace add Q00/ouroboros`, `claude plugin install ouroboros@ouroboros`를 실행합니다. | 새 Claude Code 세션에서 `ooo setup` 설정 마법사를 시작합니다. 설정·선택한 프로젝트 지침 파일 등이 변경될 수 있습니다. |
-| 독립 터미널 CLI | Python 3.12 이상의 [가상환경에 설치](#cli-venv)하고 `ouroboros setup`을 실행합니다. | 터미널에서 `ouroboros --version`과 `ouroboros status health`를 확인합니다. |
+| 독립 터미널 CLI | Python 3.12 이상의 [가상환경에 설치](#cli-venv)합니다. 런타임을 고르고 필요한 패키지 extra를 확인한 뒤 별도로 설정합니다. | 터미널에서 `ouroboros --version`과 `ouroboros status health`를 확인합니다. |
 
 ### 독립 CLI를 가상환경에 설치하기 {#cli-venv}
 
@@ -43,7 +43,7 @@ python3 -m venv ~/ouroboros-cli-env/.venv &&
 ~/ouroboros-cli-env/.venv/bin/ouroboros --version
 ```
 
-설치가 성공하면 같은 터미널에서 `. ~/ouroboros-cli-env/.venv/bin/activate`를 실행하고 `command -v ouroboros`가 이 가상환경의 실행 파일을 가리키는지 확인합니다. 이제 `ouroboros setup`을 실행해 런타임을 설정하고 `ouroboros status health`의 결과를 읽습니다. 설정은 파일을 변경할 수 있으며 health의 정상 표시는 모델 인증·호출 성공을 보장하지 않습니다. 새 터미널에서는 다시 활성화하거나 위 절대 경로를 사용하세요. `deactivate`는 현재 셸에서 가상환경을 벗어납니다. 가상환경은 로컬에 남고 자동 백업되지 않습니다.
+설치가 성공하면 같은 터미널에서 `. ~/ouroboros-cli-env/.venv/bin/activate`를 실행하고 `command -v ouroboros`가 이 가상환경의 실행 파일을 가리키는지 확인합니다. 이 절의 `pip install ouroboros-ai`는 기본 패키지만 설치합니다. 아직 `ouroboros setup`을 실행하지 말고, 먼저 [런타임별 요구사항](/docs/runtime-support-detail/)을 확인해 실행 파일·인증·필요한 extra를 갖춘 뒤 명시적으로 런타임을 선택하세요. 특히 `claude`는 Claude Agent SDK 경로이며 `[claude]` 또는 `[claude-sdk]` extra가 필요합니다. 설치된 Claude CLI만으로 SDK가 설치되지는 않습니다. `claude-cli`는 별도 MCP 2 프로필 경로이고 `[claude-cli]` extra 자체는 비어 있지만 MCP 서버용 `[mcp]` 프로필이 필요합니다. `ouroboros setup`은 자동으로 하나의 감지된 런타임을 선택할 수도 있고 사용자 설정을 변경할 수 있으므로, 런타임 선택과 기존 설정을 검토한 후 진행하세요. 준비 후 `ouroboros status health` 결과를 읽습니다. 정상 표시는 모델 인증·호출 성공을 보장하지 않습니다. 새 터미널에서는 다시 활성화하거나 위 절대 경로를 사용하세요. `deactivate`는 현재 셸에서 가상환경을 벗어납니다. 가상환경은 로컬에 남고 자동 백업되지 않습니다.
 
 설치 중 오류가 나면 출력의 마지막 오류와 선택한 Python 버전을 확인하세요. 가상환경 생성이나 설치가 중간에 실패했다면 일부 파일이 남을 수 있으므로, 기존 디렉터리를 자동으로 지우지 말고 확인 후 새 이름으로 다시 시도합니다. 이 경로는 공개 배포물을 설치하므로 아래 고정 커밋과 동일하다고 가정하지 않습니다. 공개 `0.59.9`의 신규 가상환경 설치와 초기 진단은 시험했지만, 이 명령으로 설치되는 미래 버전과 실제 모델 인증·첫 작업은 시험하지 않았습니다.
 
@@ -72,7 +72,7 @@ uv pip install --python .venv/bin/python . &&
 . .venv/bin/activate && command -v ouroboros && ouroboros --version
 ```
 
-독립 CLI 설정은 파일을 변경할 수 있습니다. 고정 버전에서 `ouroboros setup`에 런타임을 지정하지 않고 하나만 감지되면 자동 선택합니다. `--non-interactive`는 읽기 전용 미리보기가 아닙니다. 여러 런타임을 감지하면 사용 가능한 기존 설정을 우선하고, 없으면 Claude, 그다음 감지된 첫 항목을 선택해 설정을 진행합니다. 실행 전 대상 런타임과 설정 변경 범위를 확인하세요. 지정 없이 사용 가능한 런타임을 찾지 못하면 `No runtimes found.`와 종료 코드 1이 나옵니다. 일부 런타임은 PATH 외 명시 경로나 기존 설정도 감지에 사용하므로 해당 환경을 함께 확인한 뒤 [런타임 준비 안내](/docs/runtime-support-detail/)를 따라 다시 시도하세요. 종료 코드 1이 변경이 없었다는 보장은 아닙니다. 빈 임시 HOME·제한된 PATH에서 `setup --non-interactive`를 실행한 시험에서는 실패해도 홈에 `.ouroboros` 디렉터리가 생성됐습니다. 이는 해당 합성 실패 사례이며 설치나 실제 인증·모델 호출 성공을 검증한 것은 아닙니다. [고정 setup 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/setup.py).
+독립 CLI 설정은 파일을 변경할 수 있습니다. 고정 버전에서 `ouroboros setup`에 런타임을 지정하지 않고 하나만 감지되면 자동 선택합니다. `--non-interactive`는 읽기 전용 미리보기가 아닙니다. 여러 런타임을 감지했을 때 이번 실행에서 감지된 기존 설정을 우선하고, 그 설정이 감지되지 않았다면 Claude, 그다음 감지된 첫 항목을 선택하는 자동 선택 순서는 **`--non-interactive`일 때만** 적용됩니다. 대화형 실행에서는 런타임 번호 목록과 `Select runtime` 질문이 표시됩니다. 기존 backend가 감지된 목록에 포함되면 현재 항목으로 표시되고 기본 선택이 되며, 포함되지 않으면 첫 감지 항목이 기본값입니다. 실행 전 대상 런타임과 설정 변경 범위를 확인하세요. 지정 없이 사용 가능한 런타임을 찾지 못하면 `No runtimes found.`와 종료 코드 1이 나옵니다. 일부 런타임은 PATH 외 명시 경로나 기존 설정도 감지에 사용하므로 해당 환경을 함께 확인한 뒤 [런타임 준비 안내](/docs/runtime-support-detail/)를 따라 다시 시도하세요. 종료 코드 1이 변경이 없었다는 보장은 아닙니다. 빈 임시 HOME·제한된 PATH에서 `setup --non-interactive`를 실행한 시험에서는 실패해도 홈에 `.ouroboros` 디렉터리가 생성됐습니다. 이는 해당 합성 실패 사례이며 설치나 실제 인증·모델 호출 성공을 검증한 것은 아닙니다. [고정 setup 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/setup.py).
 
 독립 CLI의 기본 패키지만으로 모든 실행 런타임과 선택 기능이 설치되지는 않습니다. 선택한 런타임의 실행 파일·인증과 필요한 추가 패키지를 [런타임 안내](/docs/runtime-support-detail/)에서 확인하세요. 고정 원본은 독립 MCP 2 서버와 TUI를 함께 쓰는 경우 `[mcp,tui]` extras와 호환 런타임 선택을 권합니다. 공개 PyPI 패키지를 사용할 때는 해당 환경에서 `pip install 'ouroboros-ai[mcp,tui]'`를 사용할 수 있지만, 위에서 고정 Git 소스를 설치했다면 이 명령은 공개 배포물로 바꾸거나 버전을 다시 해석할 수 있습니다. 고정 소스의 extras가 필요하면 동일한 SHA를 다시 확인한 `ouroboros-pinned` 디렉터리에서 해당 가상환경에 `uv pip install --python .venv/bin/python '.[mcp,tui]'`를 검토하세요. 별도 새 가상환경의 고정 checkout에서 캐시만으로 이 extras 설치와 MCP 2.3.0·TUI 배포판을 확인했습니다. 이 설치본에서 합성 로컬 stdio 서버의 도구 발견과 호출 한 사례도 확인했다. 같은 설치본의 Python TUI는 빈 세션과 합성 세션 하나의 제한된 PTY 경로를 시험했습니다. 실제 운영 세션·전체 화면·접근성 및 SLT는 미검증입니다. 기존 환경의 충돌이나 실제 외부 서버·호스트 설정도 검증하지 않았으며 일반 설치에서는 의존성 다운로드·변경이 발생할 수 있습니다. [TUI 시험 범위](/docs/progress-detail/)를 확인하세요. 기존 패키지의 제거 또는 충돌 자동 방지나 lock과 같은 의존성 재현을 보장한다고 가정하지 말고 설치 전후 환경을 확인하세요. Claude Agent SDK용 `[claude]`·`[claude-sdk]`와 이를 포함하는 `[all]`은 MCP 1 환경이므로 같은 Python 환경에서 MCP 2용 `[mcp]`와 결합하지 않습니다. 실제 설치 명령의 대상 환경과 버전을 먼저 확인하세요.
 

@@ -45,8 +45,21 @@ codex plugin add ouroboros@ouroboros
 ```bash
 python -m pip install ouroboros-ai
 ouroboros --version
-ouroboros setup
 ```
+
+설치된 CLI와 인증 상태에 맞춰 런타임을 명시적으로 선택하세요. Claude Code CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:
+
+```bash
+ouroboros setup --runtime claude-cli
+```
+
+Codex CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:
+
+```bash
+ouroboros setup --runtime codex
+```
+
+아직 사용할 CLI가 없거나 인증하지 않았다면 먼저 해당 런타임을 설치하고 인증한 뒤 맞는 선택지를 사용하세요. 둘 다 설치되어 있다면 실제로 사용할 런타임을 고릅니다. 감지된 런타임이 하나뿐이면 인자 없는 `ouroboros setup`은 그것을 자동 선택합니다. 그 하나가 Claude Code CLI라면 `claude` SDK 경로를 선택합니다. 여러 런타임이 감지되면 대화형 setup은 선택을 묻습니다. 무인 모드에서는 감지된 후보 중 기존 설정이 있으면 유지하고, 그렇지 않으면 `claude`가 감지될 때 SDK 경로를 우선하며 그 외에는 첫 후보를 선택합니다. 기본 `ouroboros-ai` 패키지에는 Claude Agent SDK가 포함되지 않아 worker 사전 확인 단계에서 막힐 수 있습니다. Python SDK 경로가 목적이라면 설치한 버전의 SDK extra와 전제 조건을 먼저 확인하세요: [setup 런타임 선택](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861), [Claude 런타임 설정](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64), [SDK 사전 확인](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215), [`claude` 및 `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82). 이 동작은 인용한 `592c667f` 소스 기준이므로 설치 버전의 도움말과 안내도 확인하세요.
 
 `pip install`은 이 문서의 Git 커밋을 고정하지 않습니다. `ouroboros --version`은 해당 터미널의 CLI 패키지를 나타내며 호스트가 별도로 실행하는 서버의 버전은 확인하지 않습니다. 설정 결과와 사용할 런타임을 확인하세요. 다른 설치 경로와 세부 전제는 [제품 설치 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)를 참고하세요.
 

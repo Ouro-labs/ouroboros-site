@@ -47,8 +47,21 @@ In a terminal with the virtual environment activated:
 ```bash
 python -m pip install ouroboros-ai
 ouroboros --version
-ouroboros setup
 ```
+
+Choose a runtime explicitly to match the CLI you have installed and authenticated. If Claude Code CLI is already installed and ready to use with your authentication, run:
+
+```bash
+ouroboros setup --runtime claude-cli
+```
+
+If Codex CLI is already installed and ready to use with your authentication, run:
+
+```bash
+ouroboros setup --runtime codex
+```
+
+If you have not installed or authenticated the CLI you plan to use, complete that provider's setup first, then choose the matching option. If both are installed, select the one you intend to use. If only one runtime is detected, `ouroboros setup` without a runtime argument selects it automatically; if that runtime is Claude Code CLI, it selects the `claude` SDK path. With multiple detected runtimes, interactive setup prompts you to choose. In non-interactive mode, setup keeps an existing configuration if its runtime is available; otherwise it prefers the `claude` SDK path when Claude is detected, then falls back to the first available runtime. The base `ouroboros-ai` package does not include the Claude Agent SDK, so worker preflight can stop before execution. If you intend to use the Python SDK, first check the SDK extra and prerequisites for your installed version: [setup runtime selection](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861), [Claude runtime setup](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64), [SDK preflight](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215), and the [`claude` and `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82). This behavior describes source revision `592c667f`; check the help and guidance for your installed version too.
 
 `pip install` does not pin the Git commit used by this document. `ouroboros --version` reports the CLI package in that terminal; it does not check the version of a server that the host may run separately. Review the setup result and the runtime you intend to use. For other installation paths and detailed prerequisites, see the [product installation guide](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md).
 

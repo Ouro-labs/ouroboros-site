@@ -47,8 +47,21 @@ codex plugin add ouroboros@ouroboros
 ```bash
 python -m pip install ouroboros-ai
 ouroboros --version
-ouroboros setup
 ```
+
+请根据已安装并完成认证、准备使用的 CLI 明确选择运行时。如果已经安装 Claude Code CLI 并完成认证，请运行：
+
+```bash
+ouroboros setup --runtime claude-cli
+```
+
+如果已经安装 Codex CLI 并完成认证，请运行：
+
+```bash
+ouroboros setup --runtime codex
+```
+
+如果计划使用的 CLI 尚未安装或尚未完成认证，请先按照该运行时的提供方说明完成安装和认证，再选择相应选项。若两者都已安装，请选择实际计划使用的一种。如果只检测到一个运行时，不带运行时参数执行 `ouroboros setup` 会自动选择它；若该运行时是 Claude Code CLI，则会选择 `claude` SDK 路径。检测到多个运行时时，交互模式会提示你选择。非交互模式下，如果现有配置对应的运行时仍可用，程序会保留该配置；否则，若检测到 `claude`，会优先选择 SDK 路径，再不然选择第一个可用运行时。基础 `ouroboros-ai` 软件包不包含 Claude Agent SDK，因此 worker 预检可能会在执行前停止。如果你需要 Python SDK 路径，请先检查已安装版本对应的 SDK extra 和前置条件：[setup 运行时选择](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L4806-L4861)、[Claude 运行时设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/claude_setup.py#L27-L64)、[SDK 预检](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/adapter.py#L1201-L1215)，以及 [`claude` 与 `claude-sdk` extras](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L74-L82)。此处行为依据源码版本 `592c667f`；也请查看你所安装版本的帮助和说明。
 
 `pip install` 不会固定本文所依据的 Git commit。`ouroboros --version` 显示的是该终端中的 CLI 软件包版本；它不会检查宿主可能单独运行的服务器版本。请检查设置结果和计划使用的运行时。其他安装方式和详细前提条件请参阅[产品安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。
 
