@@ -39,6 +39,9 @@ nav:
   - AI 문제 해결: ai-troubleshooting.md
   - 판본과 확인: version-guide.md
   - 상태와 ID: status-guide.md
+  - 모델 라우팅 (592판): model-routing-guide.md
+  - Megacode 사용 (592판): megacode-guide.md
+  - 설정 GUI (592판): settings-gui-guide.md
   - 참조:
       - CLI 안내: cli-reference-guide.md
       - CLI 상세 (722판): cli-reference-detail.md
@@ -85,6 +88,7 @@ nav:
       - MCP 입력 스키마 캡처: mcp-schema-snapshot-detail.md
       - Synapse 제어: synapse-detail.md
       - Python 심벌 색인: python-api-inventory-detail.md
+  - English settings GUI (draft, 592): en/settings-gui-guide.md
   - English quickstart (draft): en/quickstart.md
   - English troubleshooting (draft): en/troubleshooting.md
   - English AI diagnostics (draft): en/ai-troubleshooting.md

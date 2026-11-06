@@ -2,6 +2,26 @@
   "format": 1,
   "semantic_links_reviewed": false,
   "pages": {
+    "model-routing-guide.md": {
+      "source": "content/model-routing-guide.md",
+      "source_sha256": "2f5812dfac1b87b14b6589674658ced8cc73b444d54a052286cff77ce14aa674",
+      "page_sha256": "ccb0b4a778616a287fdeed32a3b9161be2757202b438a105db5b2ccc154a7952"
+    },
+    "megacode-guide.md": {
+      "source": "content/megacode-guide.md",
+      "source_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258",
+      "page_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258"
+    },
+    "settings-gui-guide.md": {
+      "source": "content/settings-gui-guide-ko.md",
+      "source_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5",
+      "page_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5"
+    },
+    "en/settings-gui-guide.md": {
+      "source": "content/settings-gui-guide.md",
+      "source_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7",
+      "page_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7"
+    },
     "index.md": {
       "source": "content/guide-home.md",
       "source_sha256": "ca368d80f7f3bd7ededac3c46d8098cf7d03f3468ebe4a52eb7f60ab16d501ac",
