@@ -13,22 +13,14 @@
 - Ourocode shell: https://github.com/Ouro-labs/ourocode
 - Plugin ecosystem: https://github.com/Ouro-labs/ouroboros-plugins
 
-## Install
+## Version scope and installation
 
-Inside Claude Code (no Python needed):
+The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe as their reference. Installed CLI packages, host plugins, and MCP servers can have different versions. Check the installed version and the product repository's current installation and command documentation before applying instructions.
 
-    claude plugin marketplace add Q00/ouroboros
-    claude plugin install ouroboros@ouroboros
-
-Standalone CLI (any terminal):
-
-    curl -fsSL https://raw.githubusercontent.com/Q00/ouroboros/main/scripts/install.sh | OUROBOROS_INSTALL_REF=llms bash
-
-After install, run `ooo setup` once inside your coding agent, then start with `ooo interview "<your goal>"`. Install guide: https://ouroboros.page/learn/en/install/
-
-## Supported runtimes
-
-Works with Claude Code, Codex CLI, GitHub Copilot CLI, OpenCode, Hermes, Gemini, Kiro CLI, Pi CLI, Zcode, Goose, GJC, Antigravity CLI, and Grok Build CLI.
+- Getting started and installation: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
+- CLI reference: https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md
+- Product AI index: https://github.com/Q00/ouroboros/blob/main/llms.txt
+- Full product AI context: https://github.com/Q00/ouroboros/blob/main/llms-full.txt
 
 ## Guides by language
 
