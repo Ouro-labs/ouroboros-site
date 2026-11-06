@@ -124,7 +124,7 @@ The interactive Interview in the terminal asks whether to create a Seed. Approve
 
 In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. Execution can change code and files and start commands and model calls.
 
-A plugin background run uses a separate worktree by default, but confirm isolation from the returned `worktree_path` and `worktree_branch` fields; other dispatch modes can differ. A completed run normally starts formal evaluation, and rejection may trigger a bounded Ralph loop, with additional time and model costs. Check its status and final result.
+For a normal MCP background run, `orchestrator.use_worktrees` is enabled by default, and a working directory inside a Git repository is eligible for a separate worktree. Creation can fail. Outside a Git repository, or when the setting is disabled, execution may use the specified working directory without a worktree. Check `worktree_path` and `worktree_branch` if returned; otherwise confirm the actual selected working directory. The `dispatch_mode="plugin"` path delegates to an OpenCode child Task, which is distinct from ordinary plugin installation: it has no job ID or managed worktree, so follow it in the Task pane. A completed run normally starts formal evaluation, and rejection may trigger a bounded Ralph loop, with additional time and model costs. Check its status and final result.
 
 Record the IDs and statuses actually returned while the task runs. A completion message or ID alone does not prove the requirements were met. Check the following:
 

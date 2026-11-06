@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,8 +22,26 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    worktree = json.loads((root/'pending-worktree.json').read_text())
+    if worktree.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != worktree['manifest_sha256']:
+        raise ValueError('Worktree manifest or pending status changed')
+    if worktree['prior_manifest_sha256'] != '69796799c107e5a995469e2c1a5c6e7e249f67237df0ddc9d1b2ce447241c2d6': raise ValueError('Worktree prior manifest changed')
+    worktree_summary=(root/'pending-worktree-review.md').read_bytes()
+    if sha(worktree_summary) != worktree['summary_sha256']: raise ValueError('Worktree summary changed')
+    worktree_names={'quickstart.md','en/quickstart.md','zh/quickstart.md','ai-troubleshooting.md','en/ai-troubleshooting.md'}
+    if set(worktree['pages']) != worktree_names: raise ValueError('Worktree page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',worktree_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(worktree_names) or {x[0] for x in rows}!=worktree_names: raise ValueError('Worktree summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=worktree['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Worktree current metadata mismatch: '+name)
+    worktree_restored=copy.deepcopy(manifest)
+    for name in worktree_names: worktree_restored['pages'][name]=worktree['pages'][name]['prior']
+    if sha((json.dumps(worktree_restored,ensure_ascii=False,indent=2)+'\n').encode())!=worktree['prior_manifest_sha256']:
+        raise ValueError('Worktree snapshot chain mismatch')
     search = json.loads((root/'pending-search.json').read_text())
-    if search.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != search['manifest_sha256']:
+    if search.get('status') != 'pending' or worktree['prior_manifest_sha256'] != search['manifest_sha256']:
         raise ValueError('Search manifest or pending status changed')
     if search['prior_manifest_sha256'] != '51ee6cf67ffed9fba8ab8b593b4728b7169452076b9f741730d833b94e82d56c': raise ValueError('Search prior manifest changed')
     search_summary=(root/'pending-search-review.md').read_bytes()
@@ -37,12 +55,12 @@ def verify(root=ROOT):
         raise ValueError('Search summary rows mismatch')
     for name, source_hash, page_hash in page_rows:
         page=search['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or worktree_restored['pages'].get(name)!=page:
             raise ValueError('Search current metadata mismatch: '+name)
     for name, expected in search['files'].items():
         path=root/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Search file changed: '+name)
-    search_restored=copy.deepcopy(manifest)
+    search_restored=copy.deepcopy(worktree_restored)
     for name in search_names: search_restored['pages'][name]=search['pages'][name]['prior']
     if sha((json.dumps(search_restored,ensure_ascii=False,indent=2)+'\n').encode())!=search['prior_manifest_sha256']:
         raise ValueError('Search snapshot chain mismatch')
