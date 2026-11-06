@@ -19,8 +19,15 @@ The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe a
 
 - Getting started and installation: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
 - CLI reference: https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md
-- Product AI index: https://github.com/Q00/ouroboros/blob/main/llms.txt
-- Full product AI context: https://github.com/Q00/ouroboros/blob/main/llms-full.txt
+- Seed guide (Korean; reviewed against product main 592c667f): https://ouroboros.page/docs/seed-guide/
+- Quickstart, including the separate plugin and CLI paths (Korean): https://ouroboros.page/docs/quickstart/
+
+The product AI index and full context linked below currently state that an Interview automatically creates a Seed. Do not rely on that claim. In the supported host conversation, complete the Interview and confirm the goal, then request `ooo seed` in the same conversation; inspect the actual Seed YAML before execution, using the returned path if saved, and check its goal, constraints, and acceptance criteria. The standalone CLI has a separate flow; follow the quickstart and check the installed version. Host behavior and installed versions may differ from the referenced source.
+
+The correction proposed at https://github.com/Q00/ouroboros/pull/2916 is an open, unmerged draft; it has not corrected product main yet.
+
+- Product AI index (see caveat above): https://github.com/Q00/ouroboros/blob/main/llms.txt
+- Full product AI context (see caveat above): https://github.com/Q00/ouroboros/blob/main/llms-full.txt
 
 ## Korean task documentation
 
