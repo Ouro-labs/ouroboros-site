@@ -13,7 +13,8 @@
 | 목표를 인터뷰로 정리하거나 Seed를 만들기 | [`init start`](/docs/cli-reference-detail/#ouroboros-init-start), [`interview start`](/docs/cli-reference-detail/#ouroboros-interview-start), [`seed`](/docs/cli-reference-detail/#ouroboros-seed) |
 | 기존 Seed 실행 또는 자동 실행 | [`run workflow`](/docs/cli-reference-detail/#ouroboros-run-workflow), [`auto`](/docs/cli-reference-detail/#ouroboros-auto) |
 | job·실행 상태와 결과 확인 | [`job status`](/docs/cli-reference-detail/#ouroboros-job-status), [`job result`](/docs/cli-reference-detail/#ouroboros-job-result), [`status execution`](/docs/cli-reference-detail/#ouroboros-status-execution) |
-| 재개 후보·취소·복구 확인 | [`resume`](/docs/cli-reference-detail/#ouroboros-resume), [`cancel execution`](/docs/cli-reference-detail/#ouroboros-cancel-execution) |
+| 재개 후보 조회 및 실행 재개 | [`resume`](/docs/cli-reference-detail/#ouroboros-resume) |
+| 실행 취소: 상태 변경 | [`cancel execution`](/docs/cli-reference-detail/#ouroboros-cancel-execution) |
 | 설정·backend·호스트 연결 진단 | [`config`](/docs/cli-reference-detail/#ouroboros-config), [`mcp doctor`](/docs/cli-reference-detail/#ouroboros-mcp-doctor), [`setup`](/docs/cli-reference-detail/#ouroboros-setup) |
 | 산출물·실행 기록 조사 | [`artifacts`](/docs/cli-reference-detail/#ouroboros-artifacts), [`harness`](/docs/cli-reference-detail/#ouroboros-harness), [`workflow-ir`](/docs/cli-reference-detail/#ouroboros-workflow-ir) |
 | 플러그인·업데이트·제거 | [`plugin`](/docs/cli-reference-detail/#ouroboros-plugin), [`update`](/docs/cli-reference-detail/#ouroboros-update), [`uninstall`](/docs/cli-reference-detail/#ouroboros-uninstall) |
@@ -26,6 +27,8 @@
 | 진행 조회 | `ouroboros job status JOB_ID`, `ouroboros status execution EXECUTION_ID --events` | 해당 ID의 상태·결과를 확인 | 조회 성공은 작업 성공이 아님. ID 종류를 혼용하지 않음 |
 | 목록·복구 | `ouroboros resume --list` | 재개 후보 목록을 읽음 | 목록 조회는 재개가 아님. 목록이 비어도 이력이 없다고 단정하지 않음 |
 | MCP 설치 진단 | `ouroboros mcp doctor` | 각 검사 행과 실패를 확인 | 기본은 서버를 시작하지 않지만 전체 명령의 네트워크 부재나 OS 격리를 보장하지 않음 |
+
+`ouroboros cancel execution --list`는 활성 실행을 나열하고 선택·취소 없이 끝납니다. 목록 조회도 이벤트 저장소 초기화로 파일이나 스키마가 생성될 수 있어 무변경을 보장하지 않습니다. `ouroboros cancel execution <실제 세션 ID>`는 취소를 시도해 상태·이벤트에 영향을 줄 수 있습니다. `--all`은 해당 이벤트 저장소에서 조회되는 실행 중 또는 일시 중지된 세션 전체를 대상으로 하므로 대상과 다른 작업자를 먼저 확인하세요. 취소 요청·실제 취소·실패는 구분하며 외부 작업이 즉시 멈췄다고 가정하지 않습니다. [main 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/cancel.py#L457-L548) · [release 구현](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/cancel.py#L457-L548)
 
 `JOB_ID` 등은 설명용 자리표시자입니다. `ouroboros job result JOB_ID`는 종료된 job 결과를 읽을 때 사용합니다. 오류가 DB 접근 실패인지 없는 ID인지 구분하고, 중단 후 새 실행을 만들기 전에 기존 소유자·작업 폴더·외부 효과를 확인하세요. `run workflow --resume`은 특정 복구 실패 시 기존 세션 실패를 기록하고 새 시도를 시작할 수 있습니다. [제품 run 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py).
 

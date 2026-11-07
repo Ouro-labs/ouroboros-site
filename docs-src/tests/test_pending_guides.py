@@ -21,7 +21,7 @@ class PendingGuidesTest(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
-        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Worktree warning manifest or pending status changed'
+        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'MCP query manifest or pending status changed'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
     def test_landing_summary_tamper(self):
@@ -30,6 +30,12 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-landing.json';e=json.loads(p.read_text());e['prior_home_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Landing prior home mismatch')
     def test_landing_evidence_symlink(self):
         p=self.root/'pending-landing.json';p.unlink();p.symlink_to(self.root/'pending-home.json');self.rejected('Evidence input is not a regular non-symlink file')
+    def test_mcp_query_summary_tamper(self):
+        (self.root/'pending-mcp-query-review.md').write_text('changed');self.rejected('MCP query summary changed')
+    def test_mcp_query_prior_tamper(self):
+        p=self.root/'pending-mcp-query.json';e=json.loads(p.read_text());e['pages']['mcp-reference-guide.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('MCP query snapshot chain mismatch')
+    def test_mcp_query_symlink(self):
+        p=self.root/'pending-mcp-query.json';p.unlink();p.symlink_to(self.root/'pending-worktree-warning.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_worktree_warning_summary_tamper(self):
         (self.root/'pending-worktree-warning-review.md').write_text('changed');self.rejected('Worktree warning summary changed')
     def test_worktree_warning_prior_tamper(self):
@@ -116,7 +122,7 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-seed-order.json';p.unlink();p.symlink_to(self.root/'pending-descriptions.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_seed_order_forged_current_source(self):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-seed-order.json';m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='seed-guide.md'
-        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64;mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));self.rejected('Worktree warning manifest or pending status changed')
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64;mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));self.rejected('MCP query manifest or pending status changed')
     def test_descriptions_summary_tamper(self):
         (self.root/'pending-descriptions-review.md').write_text('changed');self.rejected('Descriptions summary changed')
     def test_descriptions_prior_tamper(self):
@@ -128,7 +134,7 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='existing-project-detail.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Worktree warning manifest or pending status changed')
+        self.rejected('MCP query manifest or pending status changed')
     def test_worktree_input_summary_tamper(self):
         (self.root/'pending-worktree-input-review.md').write_text('changed');self.rejected('Worktree input summary changed')
     def test_worktree_input_prior_tamper(self):
@@ -677,7 +683,10 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());warn=json.loads((root/'pending-worktree-warning.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());query=json.loads((root/'pending-mcp-query.json').read_text())
+            for name,entry in query['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),query['prior_manifest_sha256'])
+            warn=json.loads((root/'pending-worktree-warning.json').read_text())
             for name,entry in warn['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),warn['prior_manifest_sha256'])
             win=json.loads((root/'pending-windows-codex.json').read_text())
@@ -716,7 +725,7 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
             outer=json.loads((root/'pending-megacode-warning.json').read_text())
             for name,entry in outer['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),outer['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    worktree_warning = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    mcp_query = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("megacode_warning['prior_manifest_sha256'] != seed_order['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != seed_order['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'seed_order_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-seed-order.json';p=json.loads(ppath.read_text());name='seed-guide.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -728,7 +737,10 @@ class WorktreePriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());warn=json.loads((root/'pending-worktree-warning.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());query=json.loads((root/'pending-mcp-query.json').read_text())
+            for name,entry in query['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),query['prior_manifest_sha256'])
+            warn=json.loads((root/'pending-worktree-warning.json').read_text())
             for name,entry in warn['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),warn['prior_manifest_sha256'])
             win=json.loads((root/'pending-windows-codex.json').read_text())
@@ -773,7 +785,7 @@ class WorktreePriorTamperTest(unittest.TestCase):
             descriptions=json.loads((root/'pending-descriptions.json').read_text())
             for name,entry in descriptions['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),descriptions['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    worktree_warning = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    mcp_query = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("descriptions['prior_manifest_sha256'] != worktree_input['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != worktree_input['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'worktree_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-worktree-input.json';p=json.loads(ppath.read_text());name='existing-project-detail.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -786,6 +798,9 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
         manifest=json.loads((self.root/'content-manifest.json').read_text())
+        query = json.loads((self.root/'pending-mcp-query.json').read_text())
+        for name, entry in query['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), query['prior_manifest_sha256'])
         warn = json.loads((self.root/'pending-worktree-warning.json').read_text())
         for name, entry in warn['pages'].items(): manifest['pages'][name] = entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), warn['prior_manifest_sha256'])
@@ -840,7 +855,7 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
         code=(ROOT/'verify-pending-guides.py').read_text()
-        start=code.index("    worktree_warning = json.loads(")
+        start=code.index("    mcp_query = json.loads(")
         end=code.index("    translated = json.loads(",start)
         code=code[:start]+code[end:]
         code=code.replace("preflight['prior_manifest_sha256'] != translated['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != translated['manifest_sha256']")
@@ -872,6 +887,9 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        query = json.loads((self.root/'pending-mcp-query.json').read_text())
+        for name, entry in query['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), query['prior_manifest_sha256'])
         warn = json.loads((self.root/'pending-worktree-warning.json').read_text())
         for name, entry in warn['pages'].items(): manifest['pages'][name] = entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), warn['prior_manifest_sha256'])
