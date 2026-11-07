@@ -109,8 +109,8 @@
     },
     "status-guide.md": {
       "source": "content/status-guide.md",
-      "source_sha256": "e11a0972a52f51aa81e1b5b26e432db7aafbcb3f16be2d7df5f2e4190eb17c65",
-      "page_sha256": "97df9368602590f2c050b38ce93dbcdaf97878a5fd365136766ad1212bcd2c29"
+      "source_sha256": "2b4b6871b8195e4d4bd6b52913ffb26e1fc6acceebebc62367fa9dd8a14c4425",
+      "page_sha256": "b74835957f2ee39e7443140634c66981f742413e85f7502648d77788481a249d"
     },
     "architecture-map-public.md": {
       "source": "content/architecture-map-public.md",
