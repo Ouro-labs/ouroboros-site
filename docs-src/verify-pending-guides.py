@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -35,8 +35,29 @@ def verify(root=ROOT):
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
     if home['prior_home_sha256'] != '3f53646153e3023e81d452e751b5a65649e98e33ce9e69f7c5b89c611dbbff99': raise ValueError('Home prior homepage changed')
+    initial_commit = json.loads((root/'pending-initial-commit.json').read_text())
+    if initial_commit.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != initial_commit['manifest_sha256']:
+        raise ValueError('Initial commit manifest or pending status changed')
+    if initial_commit['prior_manifest_sha256'] != 'f299710b8495c8378e6a3a719fb54a1774e89a30eba41ddb758ffae12bd1b8a4': raise ValueError('Initial commit prior manifest changed')
+    initial_commit_summary=(root/'pending-initial-commit-review.md').read_bytes()
+    if sha(initial_commit_summary) != initial_commit['summary_sha256']: raise ValueError('Initial commit summary changed')
+    initial_commit_names={'quickstart.md','en/quickstart.md','zh/quickstart.md','recovery-detail.md'}
+    if set(initial_commit['pages']) != initial_commit_names: raise ValueError('Initial commit page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',initial_commit_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(initial_commit_names) or {x[0] for x in rows}!=initial_commit_names: raise ValueError('Initial commit summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=initial_commit['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Initial commit current metadata mismatch: '+name)
+    initial_commit_restored=copy.deepcopy(manifest)
+    for name in initial_commit_names:
+        prior=initial_commit['pages'][name]['prior']
+        if prior is None: del initial_commit_restored['pages'][name]
+        else: initial_commit_restored['pages'][name]=prior
+    if sha((json.dumps(initial_commit_restored,ensure_ascii=False,indent=2)+'\n').encode())!=initial_commit['prior_manifest_sha256']:
+        raise ValueError('Initial commit snapshot chain mismatch')
     browser_example = json.loads((root/'pending-browser-example.json').read_text())
-    if browser_example.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != browser_example['manifest_sha256']:
+    if browser_example.get('status') != 'pending' or initial_commit['prior_manifest_sha256'] != browser_example['manifest_sha256']:
         raise ValueError('Browser example manifest or pending status changed')
     if browser_example['prior_manifest_sha256'] != 'ef700511346707327ec93499a86e7082180ec751ce037b364d82241ed80b6139': raise ValueError('Browser example prior manifest changed')
     browser_example_summary=(root/'pending-browser-example-review.md').read_bytes()
@@ -47,9 +68,9 @@ def verify(root=ROOT):
     if len(rows)!=len(browser_example_names) or {x[0] for x in rows}!=browser_example_names: raise ValueError('Browser example summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=browser_example['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or initial_commit_restored['pages'].get(name)!=page:
             raise ValueError('Browser example current metadata mismatch: '+name)
-    browser_example_restored=copy.deepcopy(manifest)
+    browser_example_restored=copy.deepcopy(initial_commit_restored)
     for name in browser_example_names:
         prior=browser_example['pages'][name]['prior']
         if prior is None: del browser_example_restored['pages'][name]

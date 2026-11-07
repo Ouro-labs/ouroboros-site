@@ -57,7 +57,39 @@ codex plugin add ouroboros@ouroboros
 <details>
 <summary>独立 CLI 用户：展开查看安装、运行时和 Codex MCP 设置</summary>
 
-<p>首次安装时，请先创建并激活新的虚拟环境。<a href="/docs/first-run-detail/#cli-venv">独立 CLI 虚拟环境指南</a>提供了创建新目录、安装、激活和检查环境的命令。该链接页面为韩语，依据产品源码 <code>722172ef</code> 编写；其版本可能与本快速入门依据的 <code>592c667f</code> 以及当前公开软件包不同，请检查已安装版本的帮助信息。</p>
+<h4 id="standalone-cli-venv-zh">创建独立的 Python 环境</h4>
+
+<p>独立 CLI 请使用新的 Python 3.12+ 虚拟环境。以下示例会在当前目录创建新的 <code>ouroboros-cli-env</code> 文件夹；如果该路径已存在，先停止并另选路径。<a href="/docs/first-run-detail/#cli-venv">独立 CLI 虚拟环境指南</a>为韩语页面，依据产品源码 <code>722172ef</code> 编写；其版本可能与本快速入门依据的 <code>592c667f</code> 以及当前公开软件包不同，请检查已安装版本的帮助信息。</p>
+
+<p><strong>macOS、Linux 或 WSL 终端：</strong></p>
+
+<pre><code class="language-bash">python3 --version &amp;&amp;
+mkdir ouroboros-cli-env &amp;&amp;
+cd ouroboros-cli-env &amp;&amp;
+python3 -m venv .venv &amp;&amp;
+source .venv/bin/activate &amp;&amp;
+python -m pip install ouroboros-ai &amp;&amp;
+ouroboros --version</code></pre>
+
+<p><strong>Windows PowerShell：</strong>请使用 Python 3 Launcher；示例会在创建环境前检查它所选的解释器是否为 Python 3.12 或更高版本。</p>
+
+<pre><code class="language-powershell">$ErrorActionPreference = "Stop"
+py -3 --version
+if ($LASTEXITCODE -ne 0) { throw "请通过 Python Launcher 安装或注册 Python 3.12 或更高版本。" }
+py -3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 12) else 1)"
+if ($LASTEXITCODE -ne 0) { throw "所选 Python 版本低于 3.12；请安装或注册 Python 3.12 或更高版本。" }
+if (Test-Path .\ouroboros-cli-env) { throw "请另选一个新目录；此路径已存在。" }
+New-Item -ItemType Directory -Path .\ouroboros-cli-env | Out-Null
+Set-Location .\ouroboros-cli-env
+py -3 -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "虚拟环境创建失败。" }
+.\.venv\Scripts\Activate.ps1
+python -m pip install ouroboros-ai
+if ($LASTEXITCODE -ne 0) { throw "软件包安装失败。" }
+ouroboros --version
+if ($LASTEXITCODE -ne 0) { throw "CLI 版本检查失败。" }</code></pre>
+
+<p>如果 PowerShell 阻止运行激活脚本，请勿为本指南更改执行策略。可直接使用该环境的 Python：<code>.\.venv\Scripts\python.exe -m pip install ouroboros-ai</code>，以后运行 CLI 时使用 <code>.\.venv\Scripts\python.exe -m ouroboros ...</code>（例如 <code>.\.venv\Scripts\python.exe -m ouroboros --version</code>）。Windows 命令依据 Python 和 PowerShell 约定编写，未在 Windows 上实际运行。</p>
 
 <p>在已激活虚拟环境的终端中运行：</p>
 
@@ -133,6 +165,8 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 ## 3. 运行任务并检查结果
 
 在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。执行过程可能会更改代码和文件，并启动命令及模型调用。
+
+如果这是刚初始化的 Git 仓库，且普通 MCP 后台运行将使用默认的受管理 worktree 设置，请在项目目录运行 `git rev-parse --verify HEAD` 检查是否已有初始提交。如果因没有提交而失败，请先检查文件，并由你自己决定是否以及提交哪些内容，再重试；不要让代理自动创建提交。此检查只针对默认受管理 worktree 路径：非 Git 目录、`orchestrator.use_worktrees: false`，以及独立的 `dispatch_mode="plugin"` OpenCode Task 路径可能有不同表现。在针对候选版本 `965c1d94` 的一次隔离试验中，对执行过 `git init` 但尚无提交的仓库返回了 `launch_workspace_unavailable`；该观察不能推广到所有宿主或分派模式。请参阅固定版本的 [main worktree 基准检查](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385)、[默认 worktree 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780)及对应的 [release `0.59.9` worktree 源码](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385)。
 
 普通 MCP 后台运行中，`orchestrator.use_worktrees` 默认开启；工作目录位于 Git 仓库内时，才有条件创建独立 worktree，但创建也可能失败。工作目录不在 Git 仓库内或该设置关闭时，可能不使用 worktree，而直接在指定的工作目录中执行。如果返回了 `worktree_path` 和 `worktree_branch`，请核对它们；否则请确认实际选用的工作目录。`dispatch_mode="plugin"` 是委派给 OpenCode 子 Task 的路径，与普通插件安装不同：它没有 job ID 或受管理的 worktree，应在 Task 窗格中追踪。运行完成后通常会启动正式评估。普通 MCP 评估 job 中，当 `auto_evolve` 开启且 `final_approved` 为 `false` 时，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
 

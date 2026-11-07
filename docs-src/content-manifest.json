@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "23dd0e8e865eed180a03abd4564afa66bebd9424ead428e77a8cccd389b3a7df",
-      "page_sha256": "7131687a41bd48feb5c04315e2fca3aedbefdc411501414fee7c4793fffa8b5a"
+      "source_sha256": "e8020bc221127186f27ab8fec5bab95c181d638899d9aec24310c3625f511502",
+      "page_sha256": "b63d9b6526ba6ceaa58b46e492632e44cdb4c66f85a85bfcea2d17017ed34324"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -64,13 +64,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "0c7aa4c9c17b87e2fd2b2f5226e7b1e9dc2fcfa5de0538737f59d43e030d10dd",
-      "page_sha256": "60c99927b71f62df88e63dfabf6dad1828cd160975b594f9922bf06a908c2bb9"
+      "source_sha256": "3a7dd68c77e7f61b9e92353782300fbc19b0c5dcaf1d8b3ce692c29528373130",
+      "page_sha256": "962582687539824817044ea46c99b0cbd0e6fad90291aef71700b741a2c069a1"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "6ed5d5ae4373653f17570f5f334c1dd3bbc5b55f19f8392beee162ac60ec4635",
-      "page_sha256": "d24624f6cb2782ef043c51956e3882b6abf758b28d18a32ffc80bc013f41479d"
+      "source_sha256": "5eb4c81cf17294a199ef7d33b9fb2bdcb442bf6ee8ad278be6fea97d204f6735",
+      "page_sha256": "50a3974a88c696d216201525c7b58cdc7cf4c91e6c6ec7496cc26f9dc61bed48"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",
@@ -154,8 +154,8 @@
     },
     "recovery-detail.md": {
       "source": "content/recovery-detail.md",
-      "source_sha256": "7b022bd11563e0efbf33ee1633bc29d2c04ec95eefd9eca9fa2f230490f1b7aa",
-      "page_sha256": "af4020e513eed39e994b00b54bc693f05026bb3ffdd267ead60c48d30c8e32fc"
+      "source_sha256": "ca7906f0f4394ea5678f3af4bd16db37b199f6bfd018a3bbd1c2e4a23dc3ab8e",
+      "page_sha256": "b1fd1d9874a07eea7240f4cba8afb2a794445329117fe31ee7eb90e0dc1d66b9"
     },
     "setup-host-detail.md": {
       "source": "content/setup-host-detail.md",

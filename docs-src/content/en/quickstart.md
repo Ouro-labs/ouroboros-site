@@ -57,7 +57,39 @@ codex plugin add ouroboros@ouroboros
 <details>
 <summary>Standalone CLI users: open for installation, runtime, and Codex MCP setup</summary>
 
-<p>For a first install, create and activate a new virtual environment. The <a href="/docs/first-run-detail/#cli-venv">standalone CLI virtual environment guide</a> has commands to create a new directory, install, activate, and check it. That linked guide is in Korean and is based on product source <code>722172ef</code>. Its version may differ from this quickstart's <code>592c667f</code> and from the current public package, so check the help for your installed version.</p>
+<h4 id="standalone-cli-venv-en">Create a separate Python environment</h4>
+
+<p>For the standalone CLI, use a new Python 3.12+ virtual environment. These examples create a new <code>ouroboros-cli-env</code> folder in the current directory and stop if it already exists; choose another folder if needed. The <a href="/docs/first-run-detail/#cli-venv">standalone CLI virtual environment guide</a> is in Korean and based on product source <code>722172ef</code>. Its version may differ from this quickstart's <code>592c667f</code> and from the current public package, so check the help for your installed version.</p>
+
+<p><strong>macOS, Linux, or WSL terminal:</strong></p>
+
+<pre><code class="language-bash">python3 --version &amp;&amp;
+mkdir ouroboros-cli-env &amp;&amp;
+cd ouroboros-cli-env &amp;&amp;
+python3 -m venv .venv &amp;&amp;
+source .venv/bin/activate &amp;&amp;
+python -m pip install ouroboros-ai &amp;&amp;
+ouroboros --version</code></pre>
+
+<p><strong>Windows PowerShell:</strong> use the Python 3 launcher; the example checks that its selected interpreter is Python 3.12 or later before creating the environment.</p>
+
+<pre><code class="language-powershell">$ErrorActionPreference = "Stop"
+py -3 --version
+if ($LASTEXITCODE -ne 0) { throw "Install/register Python 3.12 or later with the Python launcher." }
+py -3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 12) else 1)"
+if ($LASTEXITCODE -ne 0) { throw "The selected Python is older than 3.12; install/register Python 3.12 or later." }
+if (Test-Path .\ouroboros-cli-env) { throw "Choose a new folder; this path already exists." }
+New-Item -ItemType Directory -Path .\ouroboros-cli-env | Out-Null
+Set-Location .\ouroboros-cli-env
+py -3 -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "Virtual environment creation failed." }
+.\.venv\Scripts\Activate.ps1
+python -m pip install ouroboros-ai
+if ($LASTEXITCODE -ne 0) { throw "Package installation failed." }
+ouroboros --version
+if ($LASTEXITCODE -ne 0) { throw "CLI verification failed." }</code></pre>
+
+<p>If PowerShell blocks the activation script, do not change the execution policy for this guide. Use the environment's Python directly: <code>.\.venv\Scripts\python.exe -m pip install ouroboros-ai</code>, then use <code>.\.venv\Scripts\python.exe -m ouroboros ...</code> for CLI commands (for example, <code>.\.venv\Scripts\python.exe -m ouroboros --version</code>). The Windows commands are documented from Python and PowerShell conventions but were not run on Windows.</p>
 
 <p>In a terminal with the virtual environment activated:</p>
 
@@ -133,6 +165,8 @@ The interactive Interview in the terminal asks whether to create a Seed. Approve
 ## 3. Run the Task and Review the Results
 
 In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. Execution can change code and files and start commands and model calls.
+
+If this is a newly initialized Git repository and the normal MCP background path will use its default managed-worktree setting, check for an initial commit from the project directory with `git rev-parse --verify HEAD`. If it fails because no commit exists, review the files and decide yourself whether and what to commit before retrying; do not let an agent create a commit automatically. This check is specific to the default managed-worktree path: a non-Git directory, `orchestrator.use_worktrees: false`, and the separate `dispatch_mode="plugin"` OpenCode Task path may behave differently. In one isolated probe on candidate `965c1d94`, a `git init` repository with no commit returned `launch_workspace_unavailable`; that observation does not generalize to every host or dispatch mode. See the pinned [main worktree base check](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385) and [default worktree setting](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780), plus the corresponding [release `0.59.9` worktree source](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385).
 
 For a normal MCP background run, `orchestrator.use_worktrees` is enabled by default, and a working directory inside a Git repository is eligible for a separate worktree. Creation can fail. Outside a Git repository, or when the setting is disabled, execution may use the specified working directory without a worktree. Check `worktree_path` and `worktree_branch` if returned; otherwise confirm the actual selected working directory. The `dispatch_mode="plugin"` path delegates to an OpenCode child Task, which is distinct from ordinary plugin installation: it has no job ID or managed worktree, so follow it in the Task pane. A completed run normally starts formal evaluation. In a normal MCP evaluation job, when `auto_evolve` is enabled and `final_approved` is `false`, both `rejected` and `unverified` results may trigger an attempt to enqueue a bounded Ralph continuation. Whether it actually runs depends on conditions including Seed availability and the enqueue result; it can add time and model costs. Check its status and final result.
 

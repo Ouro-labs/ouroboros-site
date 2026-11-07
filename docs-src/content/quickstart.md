@@ -132,6 +132,8 @@ MCP 서버를 사용할 수 없으면 스킬은 대화의 확인된 요구로 Se
 
 플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. 독립 CLI에서는 실제 생성 경로를 사용해 터미널에서 `ouroboros run <Seed 파일 경로>`를 실행합니다. 꺾쇠 괄호를 포함한 예시 경로를 그대로 입력하지 마세요. 실행은 코드와 파일을 변경하고 명령 및 모델 호출을 시작할 수 있습니다.
 
+실행 전에 선택한 작업 폴더가 Git 저장소라면 그 폴더의 터미널에서 `git rev-parse --verify HEAD`를 실행해 초기 커밋이 있는지 확인하세요. Git 저장소인데 이 확인이 실패해 커밋이 없다면 사용자가 파일과 보존할 변경을 먼저 검토하고 초기 커밋을 만들지 직접 결정한 뒤 진행합니다. 명령을 무조건 커밋으로 이어가거나 기존 파일을 임의로 변경하지 마세요. 고정 main `592c667f`와 release `0.59.9`의 일반 MCP worktree 활성 경로에서 커밋 없는 저장소는 작업 공간 준비에 실패해 `launch_workspace_unavailable`이 보고될 수 있습니다. Git 저장소가 아닌 폴더는 해당 구현에서 worktree를 만들지 않고 넘어가는 별도 경우이며 같은 격리가 보장되지 않습니다. OpenCode의 `dispatch_mode="plugin"` 위임이나 worktree 비활성 경로에도 이 결과를 일반화하지 마세요. [main 작업 공간 준비](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py) · [release 작업 공간 준비](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py).
+
 일반 MCP 백그라운드 실행에서 `orchestrator.use_worktrees`의 기본값은 켜짐이며, 작업 폴더가 Git 저장소 안에 있을 때 별도 worktree 생성 대상이 됩니다. 생성은 실패할 수 있습니다. Git 저장소가 아니거나 설정이 꺼져 있으면 worktree 없이 지정한 작업 폴더에서 실행될 수 있습니다. 반환된 `worktree_path`와 `worktree_branch`가 있다면 확인하고, 없다면 실제 선택된 작업 경로를 확인하세요. OpenCode의 자식 Task에 위임하는 `dispatch_mode="plugin"` 경로는 일반적인 플러그인 설치와 구분되며, job ID나 관리 worktree 없이 진행되므로 Task 창에서 추적합니다. 완료 후 기본적으로 정식 평가가 시작됩니다. 일반 MCP 평가 job에서는 `auto_evolve`가 켜져 있고 `final_approved`가 `false`이면 `rejected`뿐 아니라 `unverified`도 제한된 Ralph 후속 등록을 시도할 수 있습니다. 실제 후속 실행 여부는 Seed 등 조건과 등록 결과에 따라 달라지며, 실행되면 추가 시간과 모델 비용이 들 수 있습니다. 상태와 최종 결과를 확인하세요.
 
 진행 중에는 실제로 반환된 ID와 상태를 기록합니다. 완료 표시나 ID만으로 요구가 충족됐다고 판단하지 말고 다음을 확인하세요.
