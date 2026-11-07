@@ -21,9 +21,21 @@ class PendingGuidesTest(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
-        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Preflight manifest or pending status changed'
+        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Worktree input manifest or pending status changed'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_worktree_input_forged_current_source(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-worktree-input.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='existing-project-detail.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
+        self.rejected('Worktree input current metadata mismatch')
+    def test_worktree_input_summary_tamper(self):
+        (self.root/'pending-worktree-input-review.md').write_text('changed');self.rejected('Worktree input summary changed')
+    def test_worktree_input_prior_tamper(self):
+        p=self.root/'pending-worktree-input.json';e=json.loads(p.read_text());e['pages']['existing-project-detail.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Worktree input snapshot chain mismatch')
+    def test_worktree_input_symlink(self):
+        p=self.root/'pending-worktree-input.json';p.unlink();p.symlink_to(self.root/'pending-preflight.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_preflight_summary_tamper(self):
         (self.root/'pending-preflight-review.md').write_text('changed');self.rejected('Preflight summary changed')
     def test_preflight_prior_tamper(self):
@@ -567,13 +579,16 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
         manifest=json.loads((self.root/'content-manifest.json').read_text())
+        outer=json.loads((self.root/'pending-worktree-input.json').read_text())
+        for name,entry in outer['pages'].items(): manifest['pages'][name]=entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),outer['prior_manifest_sha256'])
         preflight=json.loads((self.root/'pending-preflight.json').read_text())
         for name,entry in preflight['pages'].items(): manifest['pages'][name]=entry['prior']
         raw=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
         code=(ROOT/'verify-pending-guides.py').read_text()
-        start=code.index("    preflight = json.loads(")
+        start=code.index("    worktree_input = json.loads(")
         end=code.index("    translated = json.loads(",start)
         code=code[:start]+code[end:]
         code=code.replace("preflight['prior_manifest_sha256'] != translated['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != translated['manifest_sha256']")
@@ -605,6 +620,9 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        outer = json.loads((self.root/'pending-worktree-input.json').read_text())
+        for name, entry in outer['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), outer['prior_manifest_sha256'])
         preflight = json.loads((self.root/'pending-preflight.json').read_text())
         for name, entry in preflight['pages'].items(): manifest['pages'][name] = entry['prior']
         preflight_raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
