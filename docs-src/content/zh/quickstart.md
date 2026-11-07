@@ -8,6 +8,8 @@ description: "本草稿用合成待办应用示例介绍从 Interview、Seed 到
 
 选择一种安装方式，然后从 Interview 一直走到结果检查，完成一个**可以添加待办并标记完成的简单网页应用**。这个目标延续了[贯穿韩语指南的示例](https://ouroboros.page/learn/interview/)。
 
+如果仓库中已有代码或需要保留的更改，请在运行前先阅读[现有项目指南（韩文）](/docs/existing-project-detail/)。
+
 本指南草稿对照的是产品源码 [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0) 中的[安装指南](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)。请勿假设公开发行版 `0.59.9`、现有指南标注的 `0.51.5`，以及你安装的插件和 MCP 服务器与此源码版本相同。本文的完整流程尚未在所有真实模型和宿主环境中运行验证。界面和问题会因版本、环境和你的回答而异。
 
 ## 开始前
@@ -153,7 +155,7 @@ ouroboros setup --runtime codex</code></pre>
 ## 2. 描述目标并检查 Seed
 
 !!! warning "运行前检查受管理 worktree 路径"
-    使用 worktree 的执行在准备时，如果 `<worktree_root>/<仓库名称>/<durable_id>` 已存在但未在目标仓库注册为 Git worktree，可能尝试递归删除该路径。默认 root 为 `~/.ouroboros/worktrees`。开始或恢复前，包括 `init start` 的执行选择前，请检查实际 root、预期路径、Git 注册状态及需要保留的数据。如果无法确认，请暂缓执行；不要擅自删除或覆盖不确定的路径。此说明仅适用于 worktree 准备条件，不代表所有路径都能删除成功。 [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357)
+    使用 worktree 的执行在准备时，如果 `<worktree_root>/<仓库名称>/<durable_id>` 已存在但未在目标仓库注册为 Git worktree，可能尝试递归删除该路径。默认 root 为 `~/.ouroboros/worktrees`。新的 CLI 执行以及未另行提供 ID 的普通 MCP 执行会在运行中生成 ID，因此无法事先知道精确的新路径。开始前请检查实际管理 root、仓库对应目录、在目标仓库用 `git worktree list --porcelain` 检查 Git worktree 注册，以及进行中的工作和需要保留的数据。恢复时，如有实际 session ID 和已保存的 workspace 路径，也请核对这些记录。若无法确认，请暂缓执行，不要擅自删除或覆盖不确定的路径。检查后仍可能发生并发变化；这也不代表所有路径都能删除成功。 [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
 **插件：**在新的 Claude Code 或 Codex 会话中打开任务目录，然后在宿主的**对话中**输入以下命令。
 

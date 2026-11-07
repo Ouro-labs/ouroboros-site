@@ -4,8 +4,8 @@
   "pages": {
     "todo-reference-example.md": {
       "source": "content/todo-reference-example.md",
-      "source_sha256": "be43c94f750f0c1d7b6980c767ceaa116090ad176e849a7a19c3c7cf802db531",
-      "page_sha256": "796176a7b5abc30f52da5a377f447d59c9c4eca1977a07403eae4367a6fcff1f"
+      "source_sha256": "522677eb17bb18653454de605a1a8d2c999000bdbf35ee11f87cb914b2265855",
+      "page_sha256": "628c1b9b8465ed151b4ce12357d922d646bb5b6d473ebfc31a8d631e07c76f8d"
     },
     "dashboard-guide.md": {
       "source": "content/dashboard-guide.md",
@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "7649f0dbe2d2b6612023a5737a90417ebb90b127f558e5c7bdaa9d82c8371461",
-      "page_sha256": "15ebfbf441cd631c1564d1969bf5894e7b95be392f4c31d2fb0cd4d0ae7a7101"
+      "source_sha256": "7b05eaa95dad17ce0499035e641c6ddb48658af76ab7379f106b091ec6febd4d",
+      "page_sha256": "28d18935458c6f11cd7f1943bdcb818f3ac20604336fb54ab95a749c00fbd402"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -64,13 +64,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "9a5f5824d1ab4b88d6463fa15153ad849909ea07fc236dcaa196d1bb02ddf955",
-      "page_sha256": "ccbd4b0c5d9738faaa70e7b9533a8565c5e1adda58dcaadb70ffde83382527ab"
+      "source_sha256": "a7a37f488fce1404e56dd0c5ce6f65938d1e924bd3d95d56483fc86a30ef1e5f",
+      "page_sha256": "a3c0faefde60f96cef227d849702669179e7f857d63eb0aa6b51621c2efed87c"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "e96b80e659f8dba1f14f8358501df32d2188353300edb1540b81ab7fc4dafb07",
-      "page_sha256": "a2aa4cbcb942a8ed9b5c10038ad9b15ace5dde51e860568c9756c6d88388f126"
+      "source_sha256": "319566761e76787ec9f9d134c60f3ab5612e84351772d43e43d493cf3734db65",
+      "page_sha256": "a6c9d6ce3e0577ffcfd842ace043eea6392831c0327ab87d60f5d3efe672474d"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",
@@ -189,8 +189,8 @@
     },
     "existing-project-detail.md": {
       "source": "content/existing-project-detail.md",
-      "source_sha256": "3431c182994c761d43dde55ffeb77015ad85a90424944d63edad87921bd087bf",
-      "page_sha256": "67105e0c7cd370530a95c05628e46c1c8f5033c19e756f12f627c423892a869a"
+      "source_sha256": "303b7f0663e85e994098bc7fb6dd3af86670bb08fc940b1057220b0d2a053d7c",
+      "page_sha256": "7afeaba58a73029b3136117192625c1ed6149dfb4544bc44b6a151564a5ced6c"
     },
     "progress-detail.md": {
       "source": "content/progress-detail.md",

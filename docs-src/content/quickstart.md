@@ -6,6 +6,8 @@ description: "첫 작업을 인터뷰, Seed 작성, 실행, 결과 확인까지 
 
 설치 경로를 선택하고 **할 일을 추가하고 완료 표시하는 간단한 웹앱**을 목표로 Interview부터 결과 확인까지 살펴봅니다. 이 목표는 기존 [한국어 가이드의 연속 예제](https://ouroboros.page/learn/interview/)와 이어집니다.
 
+기존 코드나 보존할 변경이 있는 저장소라면 실행 전에 [기존 프로젝트 안내](/docs/existing-project-detail/)를 먼저 읽으세요.
+
 이 안내는 제품 소스 [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0)의 [설치 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/getting-started.md)를 대조한 초안입니다. 공개 릴리스 `0.59.9`, 기존 가이드 0.51.5, 설치한 플러그인과 MCP 서버가 이 소스와 동일하다고 가정하지 마세요. 아래 흐름 전체를 실제 모델과 모든 호스트에서 실행해 검증하지 않았습니다. 화면과 질문은 버전·환경·답변에 따라 달라집니다.
 
 ## 시작하기 전에
@@ -124,7 +126,7 @@ ouroboros setup --runtime codex</code></pre>
 ## 2. 목표를 이야기하고 Seed 검토하기
 
 !!! warning "실행 전 관리 worktree 경로 확인"
-    worktree를 사용하는 실행의 준비 과정은 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 해당 경로의 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. `init start`의 실행 선택을 포함해 시작·재개 전에 실제 root와 예상 경로, Git 등록 상태와 보존할 자료를 확인하세요. 확인할 수 없다면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 이는 worktree 준비 조건에 한정되며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357)
+    worktree를 사용하는 실행은 관리 경로 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. 새 CLI 실행과 ID가 별도 제공되지 않은 일반 MCP 실행은 ID를 실행 중 생성하므로 정확한 새 경로를 미리 알 수 없습니다. 시작 전에 실제 관리 root와 저장소별 디렉터리, 대상 저장소에서 `git worktree list --porcelain`으로 등록을 확인하고 진행 중 작업과 보존 자료를 살펴보세요. 재개는 실제 세션 ID와 저장된 workspace 경로가 있으면 그 기록도 대조하세요. 확인할 수 없으면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 확인 후에도 동시 변경에 따른 위험은 남으며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
 **플러그인:** 새 Claude Code 또는 Codex 세션에서 작업 폴더를 열고, 호스트 **대화에** 입력합니다.
 

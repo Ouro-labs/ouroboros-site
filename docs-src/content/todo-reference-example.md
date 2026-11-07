@@ -115,111 +115,108 @@ python3 -m http.server 8000 --bind 127.0.0.1
 1. 제목에 `문서 읽기`를 입력하고 **추가**를 누릅니다. 목록에 같은 제목이 보여야 합니다.
 2. 빈 제목이나 공백만 입력하고 **추가**를 누릅니다. 항목 수가 늘지 않아야 합니다.
 3. 추가한 항목의 체크 상자를 선택하고 페이지를 새로고침합니다. 같은 제목과 완료 표시가 남아 있어야 합니다. 브라우저 저장을 허용하지 않았다면 이 조건을 확인할 수 없습니다.
-4. 서버를 종료하고, 이 페이지가 설명한 저장·실행·주소·종료 방법과 실제 환경의 결과를 비교합니다. 위 세 앱 동작을 확인하는 선택형 자동 브라우저 테스트는 아래 절차를 따르세요. README에 기록할 의존성·실행·접속·종료 및 테스트 기준은 여전히 이 합성 HTML이 충족하지 않습니다.
+4. 실행한 터미널에서 `Ctrl+C`를 눌러 서버를 종료하고, 실제 환경에서 접속·종료가 설명대로 됐는지 확인합니다.
+
+실제 Ouroboros 작업에서는 이 코드나 주소를 생성 결과라고 가정하지 마세요. 반환된 실제 작업 경로의 README에서 의존성 출처와 설치, 실행·종료, URL·포트, 테스트와 범위를 읽고, 그 프로젝트의 실제 파일과 결과로 Seed의 각 기준을 확인합니다. 결과가 없거나 실패했다면 성공으로 기록하지 말고 기존 실행 상태와 오류를 먼저 확인하세요.
 
 ## 세 앱 기준을 자동으로 검사하기
 
-이 선택형 브라우저 테스트는 앞의 세 앱 AC(추가, 빈 제목 거부, 완료 상태를 새로고침 뒤 복원)를 대상으로 합니다. 실제 제품이 생성한 결과가 아니라 이 페이지의 합성 `index.html`을 확인합니다. README의 설치·실행·접속·종료 안내와 테스트 범위에 관한 나머지 두 AC는 검사하지 않습니다.
+<details>
+<summary>선택형 자동 브라우저 테스트와 검증 환경·한계 보기</summary>
 
-Linux 테스트용 프로젝트 루트에 앞 절의 `index.html`을 저장하고 아래 의존성을 설치하세요. Python 3, `uv`, 그리고 Linux의 `/usr/bin/chromium`이 필요합니다. 이 안내의 테스트는 Python 3.14.8과 시스템 Chromium 155.0.8059.84에서 확인했습니다. 의존성 버전은 pytest 9.2.0, pytest-playwright 0.10.0, Playwright 1.64.1입니다. Playwright 브라우저 자동 다운로드는 끄고 시스템 Chromium을 사용합니다.
+<p>이 선택형 브라우저 테스트는 앞의 세 앱 AC(추가, 빈 제목 거부, 완료 상태를 새로고침 뒤 복원)를 대상으로 합니다. 실제 제품이 생성한 결과가 아니라 이 페이지의 합성 <code>index.html</code>을 확인합니다. README의 설치·실행·접속·종료 안내와 테스트 범위에 관한 나머지 두 AC는 검사하지 않습니다.</p>
 
-```sh
-uv venv --no-config --python /usr/bin/python3 .venv
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 uv pip install --no-config --index-url https://pypi.org/simple --python .venv/bin/python "pytest==9.2.0" "pytest-playwright==0.10.0" "playwright==1.64.1"
-```
+<p>Linux 테스트용 프로젝트 루트에 앞 절의 <code>index.html</code>을 저장하고 아래 의존성을 설치하세요. Python 3, <code>uv</code>, 그리고 Linux의 <code>/usr/bin/chromium</code>이 필요합니다. 이 안내의 테스트는 Python 3.14.8과 시스템 Chromium 155.0.8059.84에서 확인했습니다. 의존성 버전은 pytest 9.2.0, pytest-playwright 0.10.0, Playwright 1.64.1입니다. Playwright 브라우저 자동 다운로드는 끄고 시스템 Chromium을 사용합니다.</p>
 
-프로젝트 루트에서 아래 파일을 `tests/test_todo.py`로 저장하세요.
+<pre><code class="language-sh">uv venv --no-config --python /usr/bin/python3 .venv
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 uv pip install --no-config --index-url https://pypi.org/simple --python .venv/bin/python &quot;pytest==9.2.0&quot; &quot;pytest-playwright==0.10.0&quot; &quot;playwright==1.64.1&quot;</code></pre>
 
-```python
-from pathlib import Path
+<p>프로젝트 루트에서 아래 파일을 <code>tests/test_todo.py</code>로 저장하세요.</p>
+
+<pre><code class="language-python">from pathlib import Path
 from urllib.parse import urlsplit
 
 import pytest
 from playwright.sync_api import Page
 
 ROOT = Path(__file__).resolve().parents[1]
-TODO_URL = "http://todo.test/"
+TODO_URL = &quot;http://todo.test/&quot;
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope=&quot;session&quot;)
 def browser_type_launch_args(browser_type_launch_args):
     return {
         **browser_type_launch_args,
-        "executable_path": "/usr/bin/chromium",
-        "headless": True,
-        "args": ["--disable-background-networking", "--disable-extensions"],
+        &quot;executable_path&quot;: &quot;/usr/bin/chromium&quot;,
+        &quot;headless&quot;: True,
+        &quot;args&quot;: [&quot;--disable-background-networking&quot;, &quot;--disable-extensions&quot;],
     }
 
 @pytest.fixture
 def browser_context_args():
-    return {"service_workers": "block"}
+    return {&quot;service_workers&quot;: &quot;block&quot;}
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope=&quot;session&quot;, autouse=True)
 def delete_output_dir():
-    # The plugin's default fixture deletes ./test-results. This test writes no artifacts.
+    # The plugin&#x27;s default fixture deletes ./test-results. This test writes no artifacts.
     yield
 
 
 def test_todo_three_app_acceptance_criteria(page: Page):
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    html = (ROOT / &quot;index.html&quot;).read_text(encoding=&quot;utf-8&quot;)
 
     fulfilled = []
     external_requests = []
 
     def fulfill_only_fixture(route):
         url = urlsplit(route.request.url)
-        if url.scheme == "http" and url.netloc == "todo.test" and url.path == "/":
+        if url.scheme == &quot;http&quot; and url.netloc == &quot;todo.test&quot; and url.path == &quot;/&quot;:
             fulfilled.append(route.request.url)
-            route.fulfill(status=200, content_type="text/html; charset=utf-8", body=html)
+            route.fulfill(status=200, content_type=&quot;text/html; charset=utf-8&quot;, body=html)
         else:
-            if url.netloc != "todo.test":
+            if url.netloc != &quot;todo.test&quot;:
                 external_requests.append(route.request.url)
             route.abort()
 
-    page.context.route("**/*", fulfill_only_fixture)
-    page.goto(TODO_URL, wait_until="domcontentloaded")
+    page.context.route(&quot;**/*&quot;, fulfill_only_fixture)
+    page.goto(TODO_URL, wait_until=&quot;domcontentloaded&quot;)
 
-    title = page.locator("#task-title")
-    add = page.get_by_role("button", name="추가")
-    tasks = page.locator("#tasks li")
+    title = page.locator(&quot;#task-title&quot;)
+    add = page.get_by_role(&quot;button&quot;, name=&quot;추가&quot;)
+    tasks = page.locator(&quot;#tasks li&quot;)
 
-    title.fill("Buy oats")
+    title.fill(&quot;Buy oats&quot;)
     add.click()
     assert tasks.count() == 1
-    assert "Buy oats" in tasks.first.inner_text()
+    assert &quot;Buy oats&quot; in tasks.first.inner_text()
 
-    title.fill("   ")
+    title.fill(&quot;   &quot;)
     add.click()
     assert tasks.count() == 1
-    assert page.locator("#message").inner_text().strip()
+    assert page.locator(&quot;#message&quot;).inner_text().strip()
 
-    checkbox = tasks.first.locator("input[type=checkbox]")
+    checkbox = tasks.first.locator(&quot;input[type=checkbox]&quot;)
     checkbox.check()
-    page.reload(wait_until="domcontentloaded")
+    page.reload(wait_until=&quot;domcontentloaded&quot;)
     assert tasks.count() == 1
-    assert "Buy oats" in tasks.first.inner_text()
-    assert tasks.first.locator("input[type=checkbox]").is_checked()
-    assert len(fulfilled) >= 2
-    assert external_requests == []
-```
+    assert &quot;Buy oats&quot; in tasks.first.inner_text()
+    assert tasks.first.locator(&quot;input[type=checkbox]&quot;).is_checked()
+    assert len(fulfilled) &gt;= 2
+    assert external_requests == []</code></pre>
 
-테스트는 pytest-playwright의 `page`/context fixture로 격리된 브라우저 context를 사용합니다. `route.fulfill`은 `http://todo.test/`에 합성 HTML을 제공합니다. 다른 host 요청은 abort하며 service worker를 막고 Chromium background networking을 끕니다. 이는 테스트 page의 요청 제한이며 OS 차원의 네트워크 격리는 아닙니다. plugin의 자동 `test-results` 삭제 fixture는 테스트 로컬에서 비활성화하고, 별도 산출물도 저장하지 않습니다. Playwright fixture teardown은 context와 browser를 닫지만, 프로세스가 비정상 종료되거나 도구가 자체 세션 밖으로 분리한 자손까지 정리한다고 보장하지는 않습니다.
+<p>테스트는 pytest-playwright의 <code>page</code>/context fixture로 격리된 브라우저 context를 사용합니다. <code>route.fulfill</code>은 <code>http://todo.test/</code>에 합성 HTML을 제공합니다. 다른 host 요청은 abort하며 service worker를 막고 Chromium background networking을 끕니다. 이는 테스트 page의 요청 제한이며 OS 차원의 네트워크 격리는 아닙니다. plugin의 자동 <code>test-results</code> 삭제 fixture는 테스트 로컬에서 비활성화하고, 별도 산출물도 저장하지 않습니다. Playwright fixture teardown은 context와 browser를 닫지만, 프로세스가 비정상 종료되거나 도구가 자체 세션 밖으로 분리한 자손까지 정리한다고 보장하지는 않습니다.</p>
 
-정식 평가 Stage 1에서 이 명령을 읽으려면 프로젝트 루트의 `.ouroboros/mechanical.toml`에 항목을 둡니다. 이미 파일이 있으면 덮어쓰지 말고 필요한 값만 검토해 합치세요.
+<p>정식 평가 Stage 1에서 이 명령을 읽으려면 프로젝트 루트의 <code>.ouroboros/mechanical.toml</code>에 항목을 둡니다. 이미 파일이 있으면 덮어쓰지 말고 필요한 값만 검토해 합치세요.</p>
 
-```toml
-test = "python3 -m pytest -q tests/test_todo.py"
-timeout = 120
-```
+<pre><code class="language-toml">test = &quot;python3 -m pytest -q tests/test_todo.py&quot;
+timeout = 120</code></pre>
 
-직접 실행할 때는 프로젝트 루트에서 `.venv`를 활성화하고 다음을 실행하세요.
+<p>직접 실행할 때는 프로젝트 루트에서 <code>.venv</code>를 활성화하고 다음을 실행하세요.</p>
 
-```sh
-. .venv/bin/activate
-python3 -m pytest -q tests/test_todo.py
-```
+<pre><code class="language-sh">. .venv/bin/activate
+python3 -m pytest -q tests/test_todo.py</code></pre>
 
-정상 결과는 `1 passed`입니다. 이 문서의 표본에서 실제 제품 main `592c667` `MechanicalVerifier`는 Stage 1 `test`를 `executed=true`, `passed=true`, 종료 코드 0으로 기록했습니다. 같은 verifier에서 앱 `<script>`를 제거한 negative control과 `localStorage` 접근을 막은 control은 각각 종료 코드 1로 실패했습니다. 두 실패는 테스트가 기능 부재와 새로고침 후 데이터 손실을 잡았음을 확인한 격리 대조이며, 제품 생성물이나 전체 평가 결과가 아닙니다. `.ouroboros/mechanical.toml`의 검사가 실행되어도 그것만으로 최종 `approved`가 되지는 않습니다. 이 검증 환경은 Linux/Python 3.14.8/Chromium 155.0.8059.84입니다. 다른 OS, 브라우저, 설치 조합은 확인하지 않았습니다.
+<p>정상 결과는 <code>1 passed</code>입니다. 이 문서의 표본에서 실제 제품 main <code>592c667</code> <code>MechanicalVerifier</code>는 Stage 1 <code>test</code>를 <code>executed=true</code>, <code>passed=true</code>, 종료 코드 0으로 기록했습니다. 같은 verifier에서 앱 <code>&lt;script&gt;</code>를 제거한 negative control과 <code>localStorage</code> 접근을 막은 control은 각각 종료 코드 1로 실패했습니다. 두 실패는 테스트가 기능 부재와 새로고침 후 데이터 손실을 잡았음을 확인한 격리 대조이며, 제품 생성물이나 전체 평가 결과가 아닙니다. <code>.ouroboros/mechanical.toml</code>의 검사가 실행되어도 그것만으로 최종 <code>approved</code>가 되지는 않습니다. 이 검증 환경은 Linux/Python 3.14.8/Chromium 155.0.8059.84입니다. 다른 OS, 브라우저, 설치 조합은 확인하지 않았습니다.</p>
 
-main `592c667`과 release `0.59.9`의 기계 명령 검증기는 프로젝트 `.venv`에서 `pytest` 모듈을 찾을 때 `python3 -m pytest` 경로를 허용합니다. [main Stage 1 TOML 로더](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/languages.py#L1018-L1062), [main Python module 검증 및 `.venv` 의존성 탐지](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/detector.py#L1851-L1880), [main Stage 1 실행기](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/mechanical.py#L242-L326), release `0.59.9`의 [TOML 로더](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/languages.py#L1018-L1062), [Python module 검증 및 `.venv` 의존성 탐지](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/detector.py#L1851-L1880), [Stage 1 실행기](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/mechanical.py#L242-L326)을 확인했습니다. 실제 공식 평가는 설정된 프로젝트 검사를 넘어서 recorded check와 전체 acceptance 조건을 함께 판정합니다. 자세한 경계는 [Seed 평가 안내](/docs/seed-guide/#seed-execution-and-evaluation-evidence)를 보세요.
+<p>main <code>592c667</code>과 release <code>0.59.9</code>의 기계 명령 검증기는 프로젝트 <code>.venv</code>에서 <code>pytest</code> 모듈을 찾을 때 <code>python3 -m pytest</code> 경로를 허용합니다. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/languages.py#L1018-L1062">main Stage 1 TOML 로더</a>, <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/detector.py#L1851-L1880">main Python module 검증 및 `.venv` 의존성 탐지</a>, <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/mechanical.py#L242-L326">main Stage 1 실행기</a>, release <code>0.59.9</code>의 <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/languages.py#L1018-L1062">TOML 로더</a>, <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/detector.py#L1851-L1880">Python module 검증 및 `.venv` 의존성 탐지</a>, <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/mechanical.py#L242-L326">Stage 1 실행기</a>을 확인했습니다. 실제 공식 평가는 설정된 프로젝트 검사를 넘어서 recorded check와 전체 acceptance 조건을 함께 판정합니다. 자세한 경계는 <a href="/docs/seed-guide/#seed-execution-and-evaluation-evidence">Seed 평가 안내</a>를 보세요.</p>
 
-실제 Ouroboros 작업에서는 이 코드나 주소를 생성 결과라고 가정하지 마세요. 반환된 실제 작업 경로의 README에서 의존성 출처와 설치, 실행·종료, URL·포트, 테스트와 범위를 읽고, 그 프로젝트의 실제 파일과 결과로 Seed의 각 기준을 확인합니다. 결과가 없거나 실패했다면 성공으로 기록하지 말고 기존 실행 상태와 오류를 먼저 확인하세요.
+</details>
