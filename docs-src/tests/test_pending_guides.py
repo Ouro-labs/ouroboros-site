@@ -47,6 +47,14 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-details.json';e=json.loads(p.read_text());e['generator_sha256']='bad';p.write_text(json.dumps(e));self.rejected('Details generator hash missing')
     def test_changed_accessibility_summary(self):
         (self.root/'pending-accessibility-review.md').write_text('altered');self.rejected('Accessibility summary changed')
+    def test_search_focus_status_not_approved(self):
+        p=self.root/'pending-search-focus.json';e=json.loads(p.read_text());e['status']='approved';p.write_text(json.dumps(e))
+        self.rejected('Search focus status changed')
+
+    def test_search_focus_prior_css_mismatch(self):
+        p=self.root/'pending-search-focus.json';e=json.loads(p.read_text());e['prior_css_sha256']='0'*64;p.write_text(json.dumps(e))
+        self.rejected('Search focus prior CSS mismatch')
+
     def test_changed_accessibility_css(self):
         (self.root/'content/assets/site.css').write_text('altered');self.rejected('Accessibility file changed')
     def test_accessibility_css_symlink(self):

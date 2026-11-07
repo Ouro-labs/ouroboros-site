@@ -1,0 +1,9 @@
+{
+  "status": "pending",
+  "prior_css_sha256": "adc2a5b37c191960e4b53aa6ce1ccd820fc0ad6528619a77e4e11e08e1cd60fe",
+  "files": {
+    "docs-src/content/assets/site.css": "955d9e1652074ea33f0c5877f4baebd54f31c1b3db98840b355eb12ffd7993e3",
+    "docs-src/tests/test_search_focus.py": "57bac8a438d9f8246f518ca55947a02eede9e433c065bb3a1dd824695aac846e"
+  },
+  "summary_sha256": "0b8f82ed67ad09c7852f07f763afa28b83665680aa81791dba47a021dd48cc6d"
+}
