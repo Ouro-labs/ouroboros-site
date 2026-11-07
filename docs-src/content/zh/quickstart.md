@@ -109,9 +109,13 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
 
+<p><strong>平台支持范围：</strong>已核对的产品文档将原生 Windows 标为实验性，且不支持在原生 Windows 上使用 Codex CLI。Windows 用户建议使用 WSL2 路径。 <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
+
 <p>如果已经安装 Codex CLI 并完成认证，请运行：</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+
 
 <p>Windows PowerShell：</p>
 
@@ -135,6 +139,8 @@ command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
 <p>若使用 Git/dev 源码检出，请在仓库根目录向该源码的 Python 环境安装 <code>python -m pip install -e '.[mcp]'</code>，然后在 <code>command -v codex</code> 成功的 shell 中运行 <code>python -m ouroboros setup --runtime codex</code>。setup 成功只表示服务器入口已注册，并不验证 Codex 的实时连接或工具发现；请另行确认 Codex 中实际出现了 Ouroboros 工具。MCP 2 <code>[mcp]</code> 不要与包含 MCP 1 依赖的 <code>[claude]</code> 或 <code>[claude-sdk]</code> 安装在同一环境中。</p>
+
+<p><strong>Codex Desktop HTTP 只是服务器注册方式，并不能证明原生 Windows Codex CLI 的端到端执行受支持。</strong></p>
 
 <p><strong>原生 Windows Codex Desktop：</strong><code>auto</code> 模式可能跳过新的 MCP 注册却报告成功；不要把成功提示当作已注册的证明。请使用 WSL2 执行以上 stdio 步骤，或查看独立的 loopback HTTP 流程：<code>ouroboros setup --runtime codex --mcp-mode http</code>。该流程要求先单独启动 setup 打印的服务器命令，再打开 Codex，并使用 <code>127.0.0.1:8765/mcp</code>。<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py">Windows 行为（main）</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py">Windows 行为（0.59.9）</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py">Codex 启动器</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720">setup 分支</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89">软件包配置</a></p>
 

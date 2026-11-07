@@ -80,9 +80,13 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
 
+<p><strong>플랫폼 지원 경계:</strong> 확인한 제품 문서에서 네이티브 Windows는 실험적이며 Codex CLI는 네이티브 Windows에서 지원하지 않습니다. Windows에서는 WSL2 경로를 권장합니다. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
+
 <p>Codex CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+
 
 <p>Windows PowerShell:</p>
 
@@ -106,6 +110,8 @@ command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
 <p>Git/dev 체크아웃은 저장소 루트에서 그 소스와 같은 Python 환경에 <code>python -m pip install -e '.[mcp]'</code>를 설치하고, <code>command -v codex</code>가 성공하는 셸에서 <code>python -m ouroboros setup --runtime codex</code>를 실행하세요. setup 성공은 서버 항목 등록이지 Codex 연결이나 도구 발견의 검증이 아닙니다. Codex 호스트에서 실제 Ouroboros 도구가 보이는지 별도로 확인하세요. MCP 2 <code>[mcp]</code>를 MCP 1 의존성이 있는 <code>[claude]</code> 또는 <code>[claude-sdk]</code>와 같은 환경에 설치하지 마세요.</p>
+
+<p><strong>Codex Desktop HTTP 등록은 서버 등록 방식일 뿐 네이티브 Windows Codex CLI의 전체 실행 지원을 입증하지 않습니다.</strong></p>
 
 <p><strong>Native Windows Codex Desktop:</strong> <code>auto</code> 모드는 새 MCP 등록을 건너뛰고 성공을 보고할 수 있으므로 setup 성공을 등록 증거로 보지 마세요. 이 흐름 대신 WSL2를 사용하거나 <code>ouroboros setup --runtime codex --mcp-mode http</code>의 별도 loopback HTTP 경로를 검토하세요. HTTP 경로는 setup 출력에 제시되는 서버 명령을 별도로 실행한 뒤 Codex를 열어야 하며, <code>127.0.0.1:8765/mcp</code>를 사용합니다. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py">Windows 동작 (main)</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py">Windows 동작 (0.59.9)</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py">Codex 런처</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720">setup 분기</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89">패키지 프로필</a></p>
 

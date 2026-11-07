@@ -109,9 +109,13 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
 
+<p><strong>Platform support:</strong> In the checked product documentation, native Windows is experimental and Codex CLI is not supported on native Windows. On Windows, use the recommended WSL2 path. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
+
 <p>If Codex CLI is already installed and ready to use with your authentication, run:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+
 
 <p>Windows PowerShell:</p>
 
@@ -135,6 +139,8 @@ command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
 <p>For a Git/dev checkout, from the repository root install <code>python -m pip install -e '.[mcp]'</code> into that source's Python environment, then run <code>python -m ouroboros setup --runtime codex</code> in a shell where <code>command -v codex</code> succeeds. Setup success means the server entry was registered; it does not verify the live Codex connection or tool discovery. Confirm that Ouroboros tools actually appear in Codex. Keep MCP 2 <code>[mcp]</code> separate from <code>[claude]</code> or <code>[claude-sdk]</code>, which include MCP 1 dependencies.</p>
+
+<p><strong>Codex Desktop HTTP is a server registration method; it does not establish end-to-end native Windows Codex CLI support.</strong></p>
 
 <p><strong>Native Windows Codex Desktop:</strong> <code>auto</code> mode may skip a new MCP registration while reporting success; do not treat setup success as proof of registration. Use WSL2 for the stdio steps above, or review the separate loopback HTTP flow with <code>ouroboros setup --runtime codex --mcp-mode http</code>. That flow requires starting the server command printed by setup before opening Codex and uses <code>127.0.0.1:8765/mcp</code>. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/windows_codex_mcp.py">Windows behavior (main)</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/windows_codex_mcp.py">Windows behavior (0.59.9)</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/codex_mcp_launcher.py">Codex launcher</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L698-L720">setup branch</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/pyproject.toml#L73-L89">package profiles</a></p>
 
