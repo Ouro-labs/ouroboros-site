@@ -121,6 +121,11 @@ ouroboros setup --runtime codex</code></pre>
 
 ```text
 ooo setup
+```
+
+설정 질문에 답해 설정을 마친 다음, 다음 메시지로 Interview를 요청합니다.
+
+```text
 ooo interview "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
 ```
 

@@ -150,6 +150,11 @@ ouroboros setup --runtime codex</code></pre>
 
 ```text
 ooo setup
+```
+
+Answer the setup questions and finish setup, then send the Interview request as the next message.
+
+```text
 ooo interview "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
 ```
 

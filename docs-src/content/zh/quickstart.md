@@ -150,6 +150,11 @@ ouroboros setup --runtime codex</code></pre>
 
 ```text
 ooo setup
+```
+
+回答设置问题并完成设置，然后在下一条消息中发送 Interview 请求。
+
+```text
 ooo interview "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
