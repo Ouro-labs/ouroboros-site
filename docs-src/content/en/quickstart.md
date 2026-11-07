@@ -69,6 +69,8 @@ codex plugin add ouroboros@ouroboros
 <details>
 <summary>Standalone CLI users: open for installation, runtime, and Codex MCP setup</summary>
 
+<p><strong>Common preparation</strong></p>
+
 <h4 id="standalone-cli-venv-en">Create a separate Python environment</h4>
 
 <p>For the standalone CLI, use a new Python 3.12+ virtual environment. These examples create a new <code>ouroboros-cli-env</code> folder in the current directory and stop if it already exists; choose another folder if needed. The <a href="/docs/first-run-detail/#cli-venv">standalone CLI virtual environment guide</a> is in Korean and based on product source <code>722172ef</code>. Its version may differ from this quickstart's <code>592c667f</code> and from the current public package, so check the help for your installed version.</p>
@@ -109,6 +111,8 @@ if ($LASTEXITCODE -ne 0) { throw "CLI verification failed." }</code></pre>
 <pre><code class="language-bash">python -m pip install ouroboros-ai
 ouroboros --version</code></pre>
 
+<p><strong>Claude CLI selection</strong></p>
+
 <p>Choose a runtime explicitly to match the CLI you have installed and authenticated. If Claude Code CLI is already installed and ready to use with your authentication, run:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
@@ -116,6 +120,8 @@ ouroboros --version</code></pre>
 <p>Windows PowerShell:</p>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
+<p><strong>Codex CLI and Windows support</strong></p>
 
 <p><strong>Platform support:</strong> In the checked product documentation, native Windows is experimental and Codex CLI is not supported on native Windows. On Windows, use the recommended WSL2 path. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
 
@@ -129,7 +135,11 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
+<p><strong>Codex: with uvx</strong></p>
+
 <p><strong>Codex CLI server (macOS/Linux/WSL2 standalone path):</strong> This is separate from installing the Codex plugin. The local stdio steps below do not apply to native Windows PowerShell. With the official <code>0.59.9</code> CLI and <code>uvx</code> on PATH in the same shell, <code>ouroboros setup --runtime codex</code> registers an isolated launcher, <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>; the current CLI environment does not need the <code>[mcp]</code> extra. In the same shell, check <code>command -v ouroboros</code>, <code>ouroboros --version</code>, and <code>command -v uvx</code> so you know which CLI and launcher setup will use. Other installed releases pin the launcher to their own installed version.</p>
+
+<p><strong>Codex: without uvx</strong></p>
 
 <p>Without <code>uvx</code>, create a separate MCP 2 environment at a path that does not exist. These macOS/Linux/WSL2 commands use a timestamped path and stop if that path already exists. Continue only after each step succeeds; after a failure, choose a new path instead of reusing the partial environment.</p>
 
@@ -146,7 +156,11 @@ python -m pip show ouroboros-ai mcp &amp;&amp;
 command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
+<p><strong>Development source checkout</strong></p>
+
 <p>For a Git/dev checkout, from the repository root install <code>python -m pip install -e '.[mcp]'</code> into that source's Python environment, then run <code>python -m ouroboros setup --runtime codex</code> in a shell where <code>command -v codex</code> succeeds. Setup success means the server entry was registered; it does not verify the live Codex connection or tool discovery. Confirm that Ouroboros tools actually appear in Codex. Keep MCP 2 <code>[mcp]</code> separate from <code>[claude]</code> or <code>[claude-sdk]</code>, which include MCP 1 dependencies.</p>
+
+<p><strong>Windows exception</strong></p>
 
 <p><strong>Codex Desktop HTTP is a server registration method; it does not establish end-to-end native Windows Codex CLI support.</strong></p>
 
@@ -229,7 +243,9 @@ Check that the README acceptance criteria require dependency installation, the a
 
 If this is a newly initialized Git repository and the normal MCP background path will use its default managed-worktree setting, check for an initial commit from the project directory with `git rev-parse --verify HEAD`. If it fails because no commit exists, review the files and decide yourself whether and what to commit before retrying; do not let an agent create a commit automatically. This check is specific to the default managed-worktree path: a non-Git directory, `orchestrator.use_worktrees: false`, and the separate `dispatch_mode="plugin"` OpenCode Task path may behave differently. In one isolated probe on candidate `965c1d94`, a `git init` repository with no commit returned `launch_workspace_unavailable`; that observation does not generalize to every host or dispatch mode. See the pinned [main worktree base check](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385) and [default worktree setting](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780), plus the corresponding [release `0.59.9` worktree source](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385).
 
-For a normal MCP background run, `orchestrator.use_worktrees` is enabled by default, and a working directory inside a Git repository is eligible for a separate worktree. Creation can fail. Outside a Git repository, or when the setting is disabled, execution may use the specified working directory without a worktree. Check `worktree_path` and `worktree_branch` if returned; otherwise confirm the actual selected working directory. The `dispatch_mode="plugin"` path delegates to an OpenCode child Task, which is distinct from ordinary plugin installation: it has no job ID or managed worktree, so follow it in the Task pane. A completed run normally starts formal evaluation. In a normal MCP evaluation job, when `auto_evolve` is enabled and `final_approved` is `false`, both `rejected` and `unverified` results may trigger an attempt to enqueue a bounded Ralph continuation. Whether it actually runs depends on conditions including Seed availability and the enqueue result; it can add time and model costs. Check its status and final result.
+**Actual working location：** For a normal MCP background run, `orchestrator.use_worktrees` is enabled by default, and a working directory inside a Git repository is eligible for a separate worktree. Creation can fail. Outside a Git repository, or when the setting is disabled, execution may use the specified working directory without a worktree. Check `worktree_path` and `worktree_branch` if returned; otherwise confirm the actual selected working directory. The `dispatch_mode="plugin"` path delegates to an OpenCode child Task, which is distinct from ordinary plugin installation: it has no job ID or managed worktree, so follow it in the Task pane.
+
+**Automatic follow-up evaluation：** A completed run normally starts formal evaluation. In a normal MCP evaluation job, when `auto_evolve` is enabled and `final_approved` is `false`, both `rejected` and `unverified` results may trigger an attempt to enqueue a bounded Ralph continuation. Whether it actually runs depends on conditions including Seed availability and the enqueue result; it can add time and model costs. Check its status and final result.
 
 In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. In Windows PowerShell, quote the actual path and run:
 

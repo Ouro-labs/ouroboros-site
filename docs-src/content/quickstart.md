@@ -67,6 +67,8 @@ codex plugin add ouroboros@ouroboros
 <details>
 <summary>독립 CLI 사용자: 설치·런타임·Codex MCP 설정 보기</summary>
 
+<p><strong>공통 준비</strong></p>
+
 <p>처음 설치한다면 새 가상환경을 만들고 활성화해야 합니다. <a href="/docs/first-run-detail/#cli-venv">독립 CLI 가상환경 안내</a>에 새 디렉터리 생성, 설치, 활성화와 확인 명령이 있습니다. 이 링크는 한국어 안내이며 제품 소스 <code>722172ef</code> 기준입니다. 이 quickstart의 <code>592c667f</code> 및 현재 공개 패키지와 판본이 다를 수 있으므로 설치된 버전의 도움말을 확인하세요.</p>
 
 <p>macOS·Linux·WSL에서는 가상환경을 활성화한 터미널에서 명령을 실행합니다. Windows PowerShell은 <a href="/docs/first-run-detail/#cli-venv">가상환경 상세 안내</a>의 비활성화 직접 경로를 따르세요. 가상환경 디렉터리에서 다음을 실행해 확인한 절대 Python 경로를 기록합니다. 작업 폴더로 <code>Set-Location</code>한 뒤에도 같은 PowerShell 세션에서는 <code>$OuroborosPython</code>을 그대로 사용할 수 있습니다. 새 PowerShell 세션에서는 저장한 실제 절대 경로로 변수를 다시 지정하세요.</p>
@@ -80,6 +82,8 @@ $OuroborosPython
 <pre><code class="language-bash">python -m pip install ouroboros-ai
 ouroboros --version</code></pre>
 
+<p><strong>Claude CLI 선택</strong></p>
+
 <p>설치된 CLI와 인증 상태에 맞춰 런타임을 명시적으로 선택하세요. Claude Code CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
@@ -87,6 +91,8 @@ ouroboros --version</code></pre>
 <p>Windows PowerShell:</p>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
+<p><strong>Codex CLI와 Windows 지원 경계</strong></p>
 
 <p><strong>플랫폼 지원 경계:</strong> 확인한 제품 문서에서 네이티브 Windows는 실험적이며 Codex CLI는 네이티브 Windows에서 지원하지 않습니다. Windows에서는 WSL2 경로를 권장합니다. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
 
@@ -100,7 +106,11 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
+<p><strong>Codex: uvx가 있는 경우</strong></p>
+
 <p><strong>Codex CLI 서버 (macOS/Linux/WSL2 독립 CLI 경로):</strong> Codex 플러그인 설치와 별도 절차입니다. 아래 로컬 stdio 안내는 native Windows PowerShell에는 적용하지 않습니다. 공식 <code>0.59.9</code> CLI를 사용하고 같은 셸에서 <code>uvx</code>가 PATH에 있으면 <code>ouroboros setup --runtime codex</code>가 격리 런처 <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>를 Codex 설정에 등록합니다. 이때 현재 CLI 환경에 <code>[mcp]</code> extra는 필요하지 않습니다. 사용 중인 CLI 경로·판본과 런처를 확인하려면 <code>command -v ouroboros</code>, <code>ouroboros --version</code>, <code>command -v uvx</code>를 setup과 같은 셸에서 확인하세요. 설치 버전이 다르면 런처는 현재 설치판의 버전에 맞춰 고정됩니다.</p>
+
+<p><strong>Codex: uvx가 없는 경우</strong></p>
 
 <p><code>uvx</code>가 없다면 MCP 2 서버용으로 아직 없는 별도 가상환경을 만드세요. 아래 macOS/Linux/WSL2 명령은 타임스탬프로 경로를 새로 만들고, 이미 존재하는 경로면 설치를 멈춥니다. 각 단계가 성공한 뒤 다음으로 진행하며, 실패했다면 같은 경로를 재사용하지 말고 새 이름을 고르세요.</p>
 
@@ -117,7 +127,11 @@ python -m pip show ouroboros-ai mcp &amp;&amp;
 command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
+<p><strong>개발 소스 체크아웃</strong></p>
+
 <p>Git/dev 체크아웃은 저장소 루트에서 그 소스와 같은 Python 환경에 <code>python -m pip install -e '.[mcp]'</code>를 설치하고, <code>command -v codex</code>가 성공하는 셸에서 <code>python -m ouroboros setup --runtime codex</code>를 실행하세요. setup 성공은 서버 항목 등록이지 Codex 연결이나 도구 발견의 검증이 아닙니다. Codex 호스트에서 실제 Ouroboros 도구가 보이는지 별도로 확인하세요. MCP 2 <code>[mcp]</code>를 MCP 1 의존성이 있는 <code>[claude]</code> 또는 <code>[claude-sdk]</code>와 같은 환경에 설치하지 마세요.</p>
+
+<p><strong>Windows 예외</strong></p>
 
 <p><strong>Codex Desktop HTTP 등록은 서버 등록 방식일 뿐 네이티브 Windows Codex CLI의 전체 실행 지원을 입증하지 않습니다.</strong></p>
 
@@ -200,7 +214,9 @@ README 수용 기준이 의존성 설치, 앱 실행 명령, 실제 URL·포트,
 
 실행 전에 선택한 작업 폴더가 Git 저장소라면 그 폴더의 터미널에서 `git rev-parse --verify HEAD`를 실행해 초기 커밋이 있는지 확인하세요. Git 저장소인데 이 확인이 실패해 커밋이 없다면 사용자가 파일과 보존할 변경을 먼저 검토하고 초기 커밋을 만들지 직접 결정한 뒤 진행합니다. 명령을 무조건 커밋으로 이어가거나 기존 파일을 임의로 변경하지 마세요. 고정 main `592c667f`와 release `0.59.9`의 일반 MCP worktree 활성 경로에서 커밋 없는 저장소는 작업 공간 준비에 실패해 `launch_workspace_unavailable`이 보고될 수 있습니다. Git 저장소가 아닌 폴더는 해당 구현에서 worktree를 만들지 않고 넘어가는 별도 경우이며 같은 격리가 보장되지 않습니다. OpenCode의 `dispatch_mode="plugin"` 위임이나 worktree 비활성 경로에도 이 결과를 일반화하지 마세요. [main 작업 공간 준비](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py) · [release 작업 공간 준비](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py).
 
-일반 MCP 백그라운드 실행에서 `orchestrator.use_worktrees`의 기본값은 켜짐이며, 작업 폴더가 Git 저장소 안에 있을 때 별도 worktree 생성 대상이 됩니다. 생성은 실패할 수 있습니다. Git 저장소가 아니거나 설정이 꺼져 있으면 worktree 없이 지정한 작업 폴더에서 실행될 수 있습니다. 반환된 `worktree_path`와 `worktree_branch`가 있다면 확인하고, 없다면 실제 선택된 작업 경로를 확인하세요. OpenCode의 자식 Task에 위임하는 `dispatch_mode="plugin"` 경로는 일반적인 플러그인 설치와 구분되며, job ID나 관리 worktree 없이 진행되므로 Task 창에서 추적합니다. 완료 후 기본적으로 정식 평가가 시작됩니다. 일반 MCP 평가 job에서는 `auto_evolve`가 켜져 있고 `final_approved`가 `false`이면 `rejected`뿐 아니라 `unverified`도 제한된 Ralph 후속 등록을 시도할 수 있습니다. 실제 후속 실행 여부는 Seed 등 조건과 등록 결과에 따라 달라지며, 실행되면 추가 시간과 모델 비용이 들 수 있습니다. 상태와 최종 결과를 확인하세요.
+**실제 작업 위치：** 일반 MCP 백그라운드 실행에서 `orchestrator.use_worktrees`의 기본값은 켜짐이며, 작업 폴더가 Git 저장소 안에 있을 때 별도 worktree 생성 대상이 됩니다. 생성은 실패할 수 있습니다. Git 저장소가 아니거나 설정이 꺼져 있으면 worktree 없이 지정한 작업 폴더에서 실행될 수 있습니다. 반환된 `worktree_path`와 `worktree_branch`가 있다면 확인하고, 없다면 실제 선택된 작업 경로를 확인하세요. OpenCode의 자식 Task에 위임하는 `dispatch_mode="plugin"` 경로는 일반적인 플러그인 설치와 구분되며, job ID나 관리 worktree 없이 진행되므로 Task 창에서 추적합니다.
+
+**자동 후속 평가：** 완료 후 기본적으로 정식 평가가 시작됩니다. 일반 MCP 평가 job에서는 `auto_evolve`가 켜져 있고 `final_approved`가 `false`이면 `rejected`뿐 아니라 `unverified`도 제한된 Ralph 후속 등록을 시도할 수 있습니다. 실제 후속 실행 여부는 Seed 등 조건과 등록 결과에 따라 달라지며, 실행되면 추가 시간과 모델 비용이 들 수 있습니다. 상태와 최종 결과를 확인하세요.
 
 플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. 독립 CLI에서는 실제 생성 경로를 사용해 터미널에서 `ouroboros run <Seed 파일 경로>`를 실행합니다. 꺾쇠 괄호를 포함한 예시 경로를 그대로 입력하지 마세요. Windows PowerShell에서는 실제 경로를 큰따옴표로 감싸고 다음처럼 실행합니다.
 

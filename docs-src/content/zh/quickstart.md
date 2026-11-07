@@ -69,6 +69,8 @@ codex plugin add ouroboros@ouroboros
 <details>
 <summary>独立 CLI 用户：展开查看安装、运行时和 Codex MCP 设置</summary>
 
+<p><strong>共同准备</strong></p>
+
 <h4 id="standalone-cli-venv-zh">创建独立的 Python 环境</h4>
 
 <p>独立 CLI 请使用新的 Python 3.12+ 虚拟环境。以下示例会在当前目录创建新的 <code>ouroboros-cli-env</code> 文件夹；如果该路径已存在，先停止并另选路径。<a href="/docs/first-run-detail/#cli-venv">独立 CLI 虚拟环境指南</a>为韩语页面，依据产品源码 <code>722172ef</code> 编写；其版本可能与本快速入门依据的 <code>592c667f</code> 以及当前公开软件包不同，请检查已安装版本的帮助信息。</p>
@@ -109,6 +111,8 @@ if ($LASTEXITCODE -ne 0) { throw "CLI 版本检查失败。" }</code></pre>
 <pre><code class="language-bash">python -m pip install ouroboros-ai
 ouroboros --version</code></pre>
 
+<p><strong>选择 Claude CLI</strong></p>
+
 <p>请根据已安装并完成认证、准备使用的 CLI 明确选择运行时。如果已经安装 Claude Code CLI 并完成认证，请运行：</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
@@ -116,6 +120,8 @@ ouroboros --version</code></pre>
 <p>Windows PowerShell：</p>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
+<p><strong>Codex CLI 与 Windows 支持范围</strong></p>
 
 <p><strong>平台支持范围：</strong>已核对的产品文档将原生 Windows 标为实验性，且不支持在原生 Windows 上使用 Codex CLI。Windows 用户建议使用 WSL2 路径。 <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
 
@@ -129,7 +135,11 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
+<p><strong>Codex：已有 uvx</strong></p>
+
 <p><strong>Codex CLI 服务器（macOS/Linux/WSL2 独立 CLI 路径）：</strong>这与安装 Codex 插件是两回事。以下本地 stdio 步骤不适用于原生 Windows PowerShell。在同一 shell 中使用官方 <code>0.59.9</code> CLI 且 PATH 中有 <code>uvx</code> 时，<code>ouroboros setup --runtime codex</code> 会注册隔离启动器 <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>；当前 CLI 环境无需安装 <code>[mcp]</code> extra。请在运行 setup 的同一 shell 中检查 <code>command -v ouroboros</code>、<code>ouroboros --version</code> 和 <code>command -v uvx</code>，确认使用的 CLI 与启动器。其他已安装发行版会将启动器固定到各自的安装版本。</p>
+
+<p><strong>Codex：没有 uvx</strong></p>
 
 <p>如果没有 <code>uvx</code>，请在一个尚不存在的路径创建单独的 MCP 2 环境。以下 macOS/Linux/WSL2 命令使用时间戳生成路径，并在路径已存在时停止。每一步成功后再继续；若失败，请换一个新路径，不要复用未完整安装的环境。</p>
 
@@ -146,7 +156,11 @@ python -m pip show ouroboros-ai mcp &amp;&amp;
 command -v codex &amp;&amp;
 ouroboros setup --runtime codex</code></pre>
 
+<p><strong>开发源码检出</strong></p>
+
 <p>若使用 Git/dev 源码检出，请在仓库根目录向该源码的 Python 环境安装 <code>python -m pip install -e '.[mcp]'</code>，然后在 <code>command -v codex</code> 成功的 shell 中运行 <code>python -m ouroboros setup --runtime codex</code>。setup 成功只表示服务器入口已注册，并不验证 Codex 的实时连接或工具发现；请另行确认 Codex 中实际出现了 Ouroboros 工具。MCP 2 <code>[mcp]</code> 不要与包含 MCP 1 依赖的 <code>[claude]</code> 或 <code>[claude-sdk]</code> 安装在同一环境中。</p>
+
+<p><strong>Windows 例外</strong></p>
 
 <p><strong>Codex Desktop HTTP 只是服务器注册方式，并不能证明原生 Windows Codex CLI 的端到端执行受支持。</strong></p>
 
@@ -229,7 +243,9 @@ Windows PowerShell（项目目录中）：
 
 如果这是刚初始化的 Git 仓库，且普通 MCP 后台运行将使用默认的受管理 worktree 设置，请在项目目录运行 `git rev-parse --verify HEAD` 检查是否已有初始提交。如果因没有提交而失败，请先检查文件，并由你自己决定是否以及提交哪些内容，再重试；不要让代理自动创建提交。此检查只针对默认受管理 worktree 路径：非 Git 目录、`orchestrator.use_worktrees: false`，以及独立的 `dispatch_mode="plugin"` OpenCode Task 路径可能有不同表现。在针对候选版本 `965c1d94` 的一次隔离试验中，对执行过 `git init` 但尚无提交的仓库返回了 `launch_workspace_unavailable`；该观察不能推广到所有宿主或分派模式。请参阅固定版本的 [main worktree 基准检查](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385)、[默认 worktree 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780)及对应的 [release `0.59.9` worktree 源码](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385)。
 
-普通 MCP 后台运行中，`orchestrator.use_worktrees` 默认开启；工作目录位于 Git 仓库内时，才有条件创建独立 worktree，但创建也可能失败。工作目录不在 Git 仓库内或该设置关闭时，可能不使用 worktree，而直接在指定的工作目录中执行。如果返回了 `worktree_path` 和 `worktree_branch`，请核对它们；否则请确认实际选用的工作目录。`dispatch_mode="plugin"` 是委派给 OpenCode 子 Task 的路径，与普通插件安装不同：它没有 job ID 或受管理的 worktree，应在 Task 窗格中追踪。运行完成后通常会启动正式评估。普通 MCP 评估 job 中，当 `auto_evolve` 开启且 `final_approved` 为 `false` 时，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
+**实际工作位置：** 普通 MCP 后台运行中，`orchestrator.use_worktrees` 默认开启；工作目录位于 Git 仓库内时，才有条件创建独立 worktree，但创建也可能失败。工作目录不在 Git 仓库内或该设置关闭时，可能不使用 worktree，而直接在指定的工作目录中执行。如果返回了 `worktree_path` 和 `worktree_branch`，请核对它们；否则请确认实际选用的工作目录。`dispatch_mode="plugin"` 是委派给 OpenCode 子 Task 的路径，与普通插件安装不同：它没有 job ID 或受管理的 worktree，应在 Task 窗格中追踪。
+
+**自动后续评估：** 运行完成后通常会启动正式评估。普通 MCP 评估 job 中，当 `auto_evolve` 开启且 `final_approved` 为 `false` 时，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
 
 在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。Windows PowerShell 中，请将实际路径放在双引号内并运行：
 
