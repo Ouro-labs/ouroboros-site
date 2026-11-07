@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "f76e6ecec5cb9c8e939ee71c8c53065e0c476e764f5729f0c88166e47e7312c8",
+  "prior_manifest_sha256": "e3a694d840c40c6f9841bf09d2d3121aa2ce6d620e05d4a36884a27f9fe5dee6",
+  "summary_sha256": "5fe69011476bf0c7c02cb3f9f6bfe86b163f67a5ca7e0ee94fe0e13bc041f765",
+  "pages": {
+    "megacode-guide.md": {
+      "prior": {
+        "source": "content/megacode-guide.md",
+        "source_sha256": "196ba4ea215cedcdd818dc2d8b65190ab5df4220f17f1d731e5e52f78852fd8e",
+        "page_sha256": "196ba4ea215cedcdd818dc2d8b65190ab5df4220f17f1d731e5e52f78852fd8e"
+      },
+      "current": {
+        "source": "content/megacode-guide.md",
+        "source_sha256": "c437ddb7c8e7d8e456b8f5d05e28819fc17bc14cc22dd3957359c302faf27c27",
+        "page_sha256": "c437ddb7c8e7d8e456b8f5d05e28819fc17bc14cc22dd3957359c302faf27c27"
+      }
+    }
+  }
+}

@@ -57,6 +57,9 @@ ooo interview build me a small CLI
 
 Ouroboros CLI에서 한 번의 Seed 실행에 Megacode 런타임을 지정할 수도 있습니다.
 
+!!! warning "CLI 실행 전에 별도 격리 경계를 확인하세요"
+    아래 두 `ouroboros run ... --runtime megacode` 예제는 제품 main `592c667f`의 standalone CLI 경로입니다. 이 경로가 `OrchestratorRunner`를 통하면 runner가 adapter 권한을 `bypassPermissions`로 강제하고 Megacode 호출을 `harness -p --sandbox off`로 구성합니다. Harness sandbox를 보호 경계로 가정하지 마세요. 이것은 setup이 Harness MCP 서버 설정에 기록하는 `sandbox = false`와 별개인 CLI 실행 동작입니다. 실행 전에 별도 OS 사용자·VM·컨테이너가 적용하는 파일 및 네트워크 정책을 확인하고, 격리를 확인할 수 없다면 실행하지 마세요. 세부 근거와 범위는 [Megacode CLI sandbox 경계](#megacode-cli-sandbox-boundary)에서 확인하세요. release `0.59.9`에는 이 안내의 Megacode CLI runtime 구현이 없어 해당 예제의 지원을 뜻하지 않습니다([release orchestrator 소스 트리](https://github.com/Q00/ouroboros/tree/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator)).
+
 ```sh
 ouroboros run workflow seed.yaml --runtime megacode
 ```
@@ -83,7 +86,9 @@ OUROBOROS_LLM_BACKEND=megacode ouroboros run workflow seed.yaml --runtime megaco
 
 이 설정은 공유 `~/.ouroboros/config.yaml`을 수정하지 않습니다. 다만 교체 대상인 `ouroboros/skills/`를 백업하지 않으며, 세 대상의 쓰기가 하나의 원자적 작업으로 처리되거나 실패 시 전체 복구된다고 보장하지 않습니다. `config.toml` 쓰기는 코드에서 `0600` 모드를 지정합니다. `AGENTS.md`는 기존 파일의 권한 모드를 유지하고, 새 파일은 코드 기본값 `0644`를 사용합니다. 실제 권한 적용은 OS와 파일시스템에 따라 확인하세요. 설치가 중간에 실패하면 기존 skills가 복구되었다고 가정하지 말고 `config.toml`, `AGENTS.md`, `ouroboros/skills/`를 각각 다시 확인하세요. 기존 `config.toml`과 `AGENTS.md`의 관리 블록 밖 텍스트는 보존되지만, 두 파일 자체는 다시 쓰입니다. 설정 소유자는 사본을 먼저 확인하고 실행 후 관리 블록·파일 내용·권한을 점검해야 합니다.
 
-설치기는 Harness의 Ouroboros MCP 서버를 `sandbox = false`로 설정하고, `uvx` 또는 `pipx`로 `--runtime megacode --llm-backend megacode` 인수를 사용해 서버를 실행합니다. Harness의 `ouroboros-worker` mode에는 파일 읽기/쓰기/편집, 명령 실행, 검색 도구가 제공되며 대화형 질문은 비활성화됩니다. 다만 이 설정만으로 모든 실행 경로의 sandbox 동작을 설명할 수는 없습니다. 특히 이 안내의 standalone CLI 경로인 `ouroboros run ... --runtime megacode`가 `OrchestratorRunner`를 통하면 runner가 adapter 권한을 `bypassPermissions`로 강제하고, Megacode runtime은 이를 `harness -p --sandbox off`로 전달합니다([runner 권한 처리](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L879), [권한 강제 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L5190-L5207), [Megacode 명령 구성](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/megacode_runtime.py#L239-L245)). 이는 `ouroboros run --runtime megacode` 경로의 설명이며, 일반적인 대화형 Harness 세션이 모두 sandbox를 끈다는 뜻은 아닙니다. 이 CLI 경로에서는 Harness sandbox 설정이 보호 경계라고 가정하지 마세요. 신뢰하지 않는 프로젝트나 민감한 환경에서 실행하기 전에는 별도 OS 사용자·VM·컨테이너의 파일 및 네트워크 정책을 확인하고, 그 격리를 확인할 수 없다면 실행하지 마세요. setup이 성공했다는 사실도 실제 작업이 격리됐다는 증거가 아닙니다.
+### Megacode CLI sandbox 경계 {#megacode-cli-sandbox-boundary}
+
+설치기는 Harness의 Ouroboros MCP 서버를 `sandbox = false`로 설정하고, `uvx` 또는 `pipx`로 `--runtime megacode --llm-backend megacode` 인수를 사용해 서버를 실행합니다. Harness의 `ouroboros-worker` mode에는 파일 읽기/쓰기/편집, 명령 실행, 검색 도구가 제공되며 대화형 질문은 비활성화됩니다. 이것은 setup이 만드는 MCP 서버 설정입니다. 별도로, standalone CLI의 `ouroboros run ... --runtime megacode`가 `OrchestratorRunner`를 통하면 runner가 adapter 권한을 `bypassPermissions`로 강제하고, Megacode runtime은 이를 `harness -p --sandbox off`로 전달합니다([runner 권한 처리](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L879), [권한 강제 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L5190-L5207), [Megacode 명령 구성](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/megacode_runtime.py#L239-L245)). 이 주장은 해당 CLI 경로에 한정되며, 일반적인 대화형 Harness 세션 전체나 다른 실행 경로를 설명하지 않습니다. 이 CLI 경로에서는 Harness sandbox 설정이 보호 경계라고 가정하지 마세요. 신뢰하지 않는 프로젝트나 민감한 환경에서 실행하기 전에는 별도 OS 사용자·VM·컨테이너의 파일 및 네트워크 정책을 확인하고, 격리를 확인할 수 없다면 실행하지 마세요. setup이 성공했다는 사실도 실제 작업이 격리됐다는 증거가 아닙니다.
 
 ## 업그레이드 후 갱신
 
