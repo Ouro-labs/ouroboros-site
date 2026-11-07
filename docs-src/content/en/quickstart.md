@@ -183,6 +183,14 @@ Windows PowerShell (project directory):
 
 Answer the Interview questions. For example, decide whether tasks should remain after a page refresh; this is an **illustrative example**, not actual output. A Seed specifies the goal, constraints, and completion criteria. **An Interview ending does not mean a Seed was created.** Confirm creation using your path below, review the entire YAML for the goal, work target, constraints, and verifiable completion criteria, and check the actual saved path and file contents. Do not run before approval.
 
+**Review example:** These are partial field illustrations, not a complete Seed or actual output or results. Compare them with what you agreed in the conversation.
+
+- `goal`: Build a web app to add and complete tasks.
+- `constraints`: Follow agreed constraints; for example, preserve existing data only if agreed.
+- `acceptance_criteria`: Check that an added and completed task stays completed after refresh. Include this persistence condition only if agreed.
+
+Check the actual returned Seed file path and the selected working folder separately; do not assume a working-folder YAML field always exists. If the goal, constraints, criteria, or work target differ from the agreement, edit the existing YAML and review it all again. [Pinned Seed model](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L925-L948)
+
 Check that the README acceptance criteria require dependency installation, the app start command, actual URL and port, how to stop it, and test commands and scope. If there are no tests, the criteria can require the README to say so. This is a requested outcome, not a claim that a README already exists, is accurate, or was tested.
 
 ### Create a Seed from a Plugin Conversation
