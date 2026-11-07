@@ -54,8 +54,8 @@
     },
     "seed-guide.md": {
       "source": "content/seed-guide.md",
-      "source_sha256": "95517ece5661b462ede3973b3dfdb02824241ff9cc5017896ad0bc00f5d94dd6",
-      "page_sha256": "f37b54c9f93263a8a9b4a911c60fc6e69826bb9db95458758ce55d0def4f8b17"
+      "source_sha256": "d9fbb4d7e0a9ecc687b129262e8feb003a67447603197e76ca80dffbf463f107",
+      "page_sha256": "f7c07c57848c73456694c517c4ab90b55ff4662299d1ee07c1a42a17d4883508"
     },
     "ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting.md",
