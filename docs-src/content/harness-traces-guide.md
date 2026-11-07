@@ -33,6 +33,8 @@ Auto trace는 실행 당시 프로젝트 디렉터리를 기준으로 쓰일 수
 
 아래 `<AUTO_SESSION_ID>`를 시작 응답에서 받은 실제 `auto_session_id`로 바꾸세요. 꺾쇠 괄호를 입력값에 포함하지 않습니다.
 
+**`show`, `trace`, `diff`를 실행하기 전에 trace 보존 여부를 확인하세요.** main `592c667f` 기준으로 요청한 trace에 `outcome.json`이 없으면 이 명령들은 Auto 상태에서 projection을 만들거나 기존 projection 파일을 덮어쓸 수 있으며, 새 stream이 비어 있으면 같은 이름의 기존 JSONL 파일을 삭제할 수 있습니다. trace를 보존해야 한다면 명령 전에 해당 trace 디렉터리 전체를 원래 위치 밖의 독립 백업 위치에 복사하고 복사본을 열어 확인하세요. 독립 백업을 확인할 수 없거나 대상 경로가 불확실하면 이 세 명령을 보류하세요. 이미 `outcome.json`이 있는 trace는 이 조회 경로에서 자동 재투영하지 않습니다. 아래 위험은 고정 main `592c667f`의 코드 확인이며 `0.59.9`나 다른 설치본에도 같다고 가정하지 말고, 그 설치본의 버전과 도움말을 먼저 대조하세요. 자세한 조건은 [조회와 export의 파일/DB 효과](#trace-projection-file-effects)를 참조하세요.
+
 ```sh
 # 저장된 상태와 이미 내보낸 trace를 함께 확인
 ouroboros harness list
@@ -61,6 +63,8 @@ ouroboros harness frontier --metric final_ambiguity
 - `frontier --metric`은 디스크에 이미 내보낸 trace만 한 지표로 순위화합니다. Auto 상태를 전부 trace로 변환하지 않습니다. 소스의 지표는 `final_ambiguity`, `rounds`, `decisions`, `promoted`, `rejected`, `gated`, `ambiguity_points`, `lateral`, `flags`, `unverified_provenance`입니다. 낮은 값 우선인 지표와 높은 값 우선인 지표가 섞여 있으며 결측은 끝으로 갑니다. `rounds`는 별도 대화 턴 수가 아니라 outcome의 question count를 사용합니다. 이는 정렬 기능이지 합격 판정이 아닙니다.
 
 `No traces found.`가 나오면 현재 경로의 trace root와 Auto data root, 실제 ID, 실행 프로젝트를 먼저 대조하세요. `Run not found`는 해당 ID의 trace와 투영 가능한 Auto 상태가 발견되지 않았다는 뜻입니다. 잘못된 형식의 ID도 같은 오류일 수 있으니 ID 종류를 확인하고 파일을 임의 삭제하거나 생성하지 마세요. 알 수 없는 stream은 malformed input 오류이고, 알 수 없는 metric은 지원 목록을 함께 출력합니다. 유효한 지표에 대한 빈 frontier는 `No traced runs found.`가 될 수 있습니다. 빈 출력이나 종료 코드 0을 실행 성공 또는 레코드 부재의 증거로 간주하지 마세요.
+
+<span id="trace-projection-file-effects"></span>
 
 ## 조회와 export의 파일/DB 효과
 

@@ -14,8 +14,8 @@
     },
     "harness-traces-guide.md": {
       "source": "content/harness-traces-guide.md",
-      "source_sha256": "8d736bfcb4db564b5791a16a014e87ecf687ae7aefbfe688affa8ce4a17d1ec4",
-      "page_sha256": "1d374c9e9c302fe6b331241a3fea74256d930696bf081074df9a1a1515659004"
+      "source_sha256": "a41a9596d4adecfc4f603bcf9dfc6db4f46f7c63c3bdfc33e161d8e619dfd820",
+      "page_sha256": "86ee9b30fa244b0e7479fce0eb522a773b6adeb0651c9b2a4e976687d76fca5e"
     },
     "model-routing-guide.md": {
       "source": "content/model-routing-guide.md",
