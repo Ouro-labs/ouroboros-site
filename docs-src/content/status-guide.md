@@ -7,12 +7,17 @@
 | ID 모양/출처 | 가리키는 것 | 기본 조회 |
 | --- | --- | --- |
 | `job_…` — 백그라운드 시작 도구의 반환값 | 완료와 결과를 기다리는 job | 호스트 MCP `ouroboros_job_status` / `ouroboros_job_wait`; 종료 후 `ouroboros_job_result`. CLI라면 `ouroboros job status`, `wait`, `result` |
-| `orch_…` — 오케스트레이터의 세션 ID | Seed 실행 세션 | `ouroboros status run --session-id SESSION_ID`; MCP 세션 상태 도구가 있으면 `ouroboros_session_status`에 실제 session ID |
+| MCP `ouroboros_interview`가 반환한 `session_id` | 저장된 Interview 기록(`state.interview_id`); 오케스트레이터 실행 세션이 아님 | 같은 host에서 실제 `ouroboros_interview` 도구와 schema를 확인하고, 같은 ID와 실제 답으로 인터뷰 이어가기; 상태 조회 명령에 넣지 않음 |
+| `orch_…` — 오케스트레이터 실행 세션 ID | Seed 실행 세션 | `ouroboros status run --session-id SESSION_ID`; MCP `ouroboros_session_status`가 있으면 실제 execution session ID |
 | execution/run ID — 실행 시작 응답이나 목록의 execution ID | Run/Stage/Step 기록 및 실행 이벤트 | `ouroboros status execution EXECUTION_ID --events`; 단계 projection은 `ouroboros status run EXECUTION_ID` |
 | `auto_…` — Auto 시작 응답의 `auto_session_id` | Auto 인터뷰·handoff·후속 단계 상태 | `ouroboros status auto AUTO_SESSION_ID`; 호스트 세션 상태 조회도 실제 auto ID를 받을 수 있음 |
 | `exec_…` 또는 다른 execution handle | 시작 도구가 제공한 특정 실행 handle일 수 있음 | 시작 응답에서 연결된 실제 `session_id`, `execution_id`, `job_id` 필드를 확인한 뒤 그 ID에 맞는 조회 선택 |
 
-접두사는 힌트일 뿐입니다. 값이 반환된 JSON 필드명과 도구 설명이 최종 기준입니다. ID를 임의로 만들거나 job ID를 session ID 칸에 넣지 마세요. start 응답에 `job_id: null` 또는 호스트 위임(`delegated_to_plugin`)이 있으면 job 조회 도구가 결과를 찾지 못할 수 있습니다. 이 경우 job ID를 추측하지 말고 같은 호스트의 자식 세션/작업 화면과 handoff 응답을 확인합니다. Auto의 인터뷰·Seed 작성·실행 handoff 완료 표시는 제품 작업의 성공이나 QA 승인과 같지 않습니다. [Auto 흐름과 handoff 경계](/docs/auto-detail/)
+같은 `session_id`라는 필드명도 어느 도구가 반환했는지 구별하세요. MCP `ouroboros_interview`의 `session_id`는 Interview state ID이며 `ouroboros status run --session-id`와 `ouroboros_session_status`는 오케스트레이터 실행 세션을 조회합니다. Interview를 이어가려면 현재 연결 서버의 실제 도구 목록과 입력 schema에서 `ouroboros_interview`를 확인한 뒤, 같은 host 도구에 반환된 `session_id`와 현재 질문에 대한 실제 답을 전달합니다. 이는 상태를 읽는 조회가 아니라 인터뷰를 계속하는 호출이며 모델 요청·시간·provider 비용이 발생할 수 있습니다. OpenCode 위임에서는 접수 영수증이 아닌 자식 응답에 실제 ID와 질문이 있는지 확인하고, schema가 요구하면 실제 질문 텍스트도 전달하세요.
+
+독립 CLI 인터뷰라면 기존 state directory를 사용해 `ouroboros init list`로 인터뷰 ID를 확인하고, 이어가기로 결정한 경우에만 `ouroboros init start --resume INTERVIEW_ID`를 실행합니다. 처음부터 사용자 지정 `--state-dir`을 썼다면 두 명령 모두 같은 기존 디렉터리를 전달하세요: `ouroboros init list --state-dir STATE_DIR`, `ouroboros init start --resume INTERVIEW_ID --state-dir STATE_DIR`. 이 명령은 조회 전용이 아닙니다. 인터뷰를 이어가고 모델을 호출해 상태를 저장하거나 Seed를 만들 수 있으며, 완료 뒤 `Start workflow now?` 확인은 기본 `yes`입니다. Seed 파일과 수용 기준을 검토하기 전에는 이 질문에 `n`으로 답해 workflow가 시작되지 않게 하세요. `ouroboros resume --list`는 오케스트레이터의 진행 중 실행 세션 목록이지 Interview 목록이 아닙니다. ID가 없으면 원래 응답과 알려진 기존 저장 상태를 확인하고, 찾지 못했다고 새 인터뷰를 시작하거나 ID를 추측하지 마세요. 이 구분은 고정 main `592c667f`와 release `v0.59.9`의 [Interview MCP handler](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py) · [release handler](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/authoring_handlers.py), [CLI init 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/init.py) · [release init 구현](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/init.py)을 대조했습니다. 설치된 host/MCP 서버가 같은 판본이거나 해당 도구를 제공한다고 보장하지 않습니다.
+
+ID 접두사는 힌트일 뿐입니다. 값이 반환된 JSON 필드명과 도구 설명이 최종 기준입니다. ID를 임의로 만들거나 job ID를 session ID 칸에 넣지 마세요. 실행 시작 응답에 `job_id: null` 또는 호스트 위임(`delegated_to_plugin`)이 있으면 job 조회 도구가 결과를 찾지 못할 수 있습니다. 이 경우 job ID를 추측하지 말고 같은 호스트의 자식 세션/작업 화면과 handoff 응답을 확인합니다. Auto의 인터뷰·Seed 작성·실행 handoff 완료 표시는 제품 작업의 성공이나 QA 승인과 같지 않습니다. [Auto 흐름과 handoff 경계](/docs/auto-detail/)
 
 ## 독립 CLI에서 찾아보기
 

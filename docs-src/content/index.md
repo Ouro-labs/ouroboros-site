@@ -11,7 +11,9 @@ Ouroboros는 AI 코딩 작업의 목표와 완료 조건을 정리하고, 실행
 | 설치하고 첫 작업을 시작하기 | [빠른 시작](/docs/quickstart/) |
 | Interview와 Seed 이해하기 | [핵심 개념](/docs/concepts-detail/) · [Interview 안내](/docs/interview-guide/) · [Seed 안내](/docs/seed-guide/) · [Seed 형식 참조](/docs/seed-format-detail/) |
 | 기존 프로젝트에 적용하기 | [기존 프로젝트](/docs/existing-project-detail/) |
-| 진행 상태를 확인하거나 실패를 복구하기 | [진행 상태](/docs/progress-detail/) · [복구](/docs/recovery-detail/) |
+| 현재 작업 상태와 실제 반환 ID 확인하기 | [상태와 ID 안내 (main 592판)](/docs/status-guide/) |
+| 작업 중단·실패를 진단하고 안전한 다음 행동 정하기 | [AI 진단의 상태·복구 안내 (main 592판)](/docs/ai-troubleshooting/#recovery) |
+| 구판 CLI 진행 상태·복구 상세 확인하기 | [진행 상태 상세 (722판)](/docs/progress-detail/) · [복구 상세 (722판)](/docs/recovery-detail/) |
 | 결과를 평가하고 개선하기 | [평가와 진화](/docs/evaluation-evolution-detail/) |
 | MCP 연결 오류를 진단하기 | [AI 진단 안내](/docs/ai-troubleshooting/#mcp) |
 | 설치된 판본과 문서의 차이 확인하기 | [판본 안내](/docs/version-guide/) |

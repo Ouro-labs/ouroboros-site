@@ -34,8 +34,8 @@
     },
     "index.md": {
       "source": "content/guide-home.md",
-      "source_sha256": "ca368d80f7f3bd7ededac3c46d8098cf7d03f3468ebe4a52eb7f60ab16d501ac",
-      "page_sha256": "958d36511ecd5b6183e99cbc68522ed3bfa6803a3601986862e5ddafce505734"
+      "source_sha256": "61130ae56e228b376811fbc89685ba0edc5bfe89a3b595f5d8fa0fb8824cf6fd",
+      "page_sha256": "a4ed2a652fc9008dab7d0ab34c8bc61c9a6c82339ad86b46d9fac05993e6514d"
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
@@ -54,8 +54,8 @@
     },
     "ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting.md",
-      "source_sha256": "1b316eaaab73cb5ffd30a9539853dead5a31314504d8fc6223b7afafc80219cf",
-      "page_sha256": "7a2dc76cb16dc276c6da533631a248ae64d7354236dcb2d2662aeb39bea3c8a2"
+      "source_sha256": "d17b266b2e47a95622211a6740f549298ff9f0917849d850a794722873599bb0",
+      "page_sha256": "bb885592d901f9536bd1681b29ecff13ae3287bdaafd51401ff9d478989e3251"
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
@@ -79,8 +79,8 @@
     },
     "en/ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting-en.md",
-      "source_sha256": "d6c30f62da06ad7e4031149c3107e454f0c17dfe8269fa7aed12b3e49718940a",
-      "page_sha256": "d6c30f62da06ad7e4031149c3107e454f0c17dfe8269fa7aed12b3e49718940a"
+      "source_sha256": "563050e5b36163963a8e31437f9cbd15232303c38e3fbaf427679c2637ce5d58",
+      "page_sha256": "563050e5b36163963a8e31437f9cbd15232303c38e3fbaf427679c2637ce5d58"
     },
     "cli-reference-guide.md": {
       "source": "content/cli-reference-guide.md",
@@ -104,8 +104,8 @@
     },
     "status-guide.md": {
       "source": "content/status-guide.md",
-      "source_sha256": "df786b42ee2c5ad3b36af96bced340a45d23327b5250eafede9b66048f3e8ebd",
-      "page_sha256": "e5a27571a67cffcccd2c37dd42a92cd0349c45f0d5415a24e9cbb03f5ea82423"
+      "source_sha256": "e11a0972a52f51aa81e1b5b26e432db7aafbcb3f16be2d7df5f2e4190eb17c65",
+      "page_sha256": "97df9368602590f2c050b38ce93dbcdaf97878a5fd365136766ad1212bcd2c29"
     },
     "architecture-map-public.md": {
       "source": "content/architecture-map-public.md",
@@ -149,8 +149,8 @@
     },
     "recovery-detail.md": {
       "source": "content/recovery-detail.md",
-      "source_sha256": "7d521a86878760700650909d42897d9d7ccb84758cc645edf7333029111cb444",
-      "page_sha256": "8cd68abb93225b896b4527a858578024ee3741227d7d10dbe0664f3c50f37e13"
+      "source_sha256": "7b022bd11563e0efbf33ee1633bc29d2c04ec95eefd9eca9fa2f230490f1b7aa",
+      "page_sha256": "af4020e513eed39e994b00b54bc693f05026bb3ffdd267ead60c48d30c8e32fc"
     },
     "setup-host-detail.md": {
       "source": "content/setup-host-detail.md",
@@ -189,8 +189,8 @@
     },
     "progress-detail.md": {
       "source": "content/progress-detail.md",
-      "source_sha256": "45136bd537d3883deb4aa67b20c81140919cc68bd55d79c044472167c9ec6135",
-      "page_sha256": "d6e0db3b9c17d63a8f567f24a91583ac1c696c9c5d76a3945d2fa334a326ac15"
+      "source_sha256": "202572f2289f8900df35cd80c89799f92095acfd009a795f7057d7f103e71ed1",
+      "page_sha256": "d92470d608a0a52001dd02ea43b1ec2f5a63e500d38444488414a33b7894230b"
     },
     "query-projections-detail.md": {
       "source": "content/query-projections-detail.md",

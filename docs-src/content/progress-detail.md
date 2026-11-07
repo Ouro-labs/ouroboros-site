@@ -16,10 +16,14 @@
 | --- | --- | --- |
 | `job_...` | `ouroboros job status JOB_ID` | `ouroboros_job_status` 또는 같은 ID의 `ouroboros_job_wait`; 종결 상태 뒤 `ouroboros_job_result` |
 | `auto_...` (`auto_session_id`) | `ouroboros status auto AUTO_SESSION_ID` | 해당 버전에서 제공하는 세션 상태 도구 또는 Auto 시작 응답의 연결 ID |
-| `orch_...` 또는 session ID | `ouroboros status run --session-id SESSION_ID` | 실제 session ID를 받는 세션 상태 도구가 있을 때 사용 |
+| MCP `ouroboros_interview`의 `session_id` | 실행 상태 ID가 아닌 Interview 저장 ID; 실행 조회를 하지 않음 | 같은 host에서 현재 실제 도구/schema를 확인하고 `ouroboros_interview`에 같은 ID와 실제 답변 전달 |
+| `orch_...` — 오케스트레이터 실행 세션 ID | `ouroboros status run --session-id SESSION_ID` | 해당 서버가 실제 제공하는 실행 세션 상태 도구에 같은 execution session ID |
 | 실행 ID | `ouroboros status execution EXECUTION_ID --events` | 시작 응답의 실제 실행 ID에 맞는 조회 도구 |
 | 실행 집계 ID | `ouroboros status run --execution-id EXECUTION_ID` | 서버가 실제 제공하는 실행 상태 도구 |
-| ID를 잃음 | `ouroboros resume --list` 또는 `ouroboros status executions` | 원래 대화의 시작 응답과 host의 실제 세션·작업 목록 |
+| 실행 ID를 잃음 | `ouroboros resume --list` 또는 `ouroboros status executions` | 원래 대화의 시작 응답과 host의 실제 실행·작업 목록 |
+| Interview ID를 잃음 | `ouroboros init list` (같은 기존 `--state-dir`이 있으면 함께 지정) | Interview를 시작한 host의 원래 응답과 저장 상태 |
+
+**Interview MCP 응답의 `session_id`는 실행 상태 조회에 쓰지 않습니다.** 이는 Interview 저장 ID입니다. 이어갈 때는 같은 host의 실제 `ouroboros_interview` 도구에 같은 ID와 현재 질문에 대한 실제 답을 전달하세요. 상태만 읽는 호출이 아니며 후속 인터뷰가 모델을 호출해 시간·비용이 들 수 있습니다. 독립 CLI에서는 `ouroboros init list`로 찾고, 같은 기존 `--state-dir`을 사용해 `ouroboros init start --resume INTERVIEW_ID`로 이어갑니다. 이 명령도 읽기 전용이 아니며 모델 사용·상태 저장·Seed 생성으로 이어질 수 있습니다. Seed와 수용 기준을 확인하기 전에는 뒤이어 표시되는 `Start workflow now?`에 `n`으로 답해 workflow 실행을 보류하세요. `ouroboros resume --list`는 실행 세션 목록이지 Interview 목록이 아닙니다. ID가 없다면 기존 응답과 저장 상태부터 확인하고 새 인터뷰를 중복 시작하지 마세요. 현재 판본의 상세 절차와 main/release 근거는 [상태와 ID 안내](/docs/status-guide/)를 보세요.
 
 상태에 따라 다음 행동도 달라집니다.
 

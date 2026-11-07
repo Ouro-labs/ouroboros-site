@@ -19,7 +19,7 @@ class PendingGuidesTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)/'docs-src'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
-        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt')
+        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
@@ -60,7 +60,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_discovery_summary(self):
         (self.root/'pending-discovery-review.md').write_text('altered');self.rejected('Discovery summary changed')
     def test_changed_discovery_main(self):
-        (self.root/'overrides/main.html').write_text('altered');self.rejected('Accessibility file changed')
+        (self.root/'overrides/main.html').write_text('altered');self.rejected('Home file changed')
     def test_changed_discovery_llms(self):
         (self.root.parent/'site/llms.txt').write_text('altered');self.rejected('Discovery file changed')
     def test_discovery_llms_symlink(self):
@@ -82,15 +82,17 @@ class PendingGuidesTest(unittest.TestCase):
     def test_forged_install_source_hash(self):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-runtime.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['quickstart.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime snapshot chain mismatch')
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));hpath=self.root/'pending-home.json';h=json.loads(hpath.read_text());h['manifest_sha256']=p['manifest_sha256'];hpath.write_text(json.dumps(h))
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
     def test_forged_latest_source_hash(self):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-runtime.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime snapshot chain mismatch')
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));hpath=self.root/'pending-home.json';h=json.loads(hpath.read_text());h['manifest_sha256']=p['manifest_sha256'];hpath.write_text(json.dumps(h))
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
     def test_changed_journey_summary(self):
@@ -100,7 +102,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md','pending-job-diagnostic.json','pending-job-diagnostic-review.md','pending-package.json','pending-package-review.md','pending-seed.json','pending-seed-review.md','pending-interview.json','pending-interview-review.md','pending-seed-version.json','pending-seed-version-review.md','pending-runtime.json','pending-runtime-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md','pending-job-diagnostic.json','pending-job-diagnostic-review.md','pending-package.json','pending-package-review.md','pending-seed.json','pending-seed-review.md','pending-interview.json','pending-interview-review.md','pending-seed-version.json','pending-seed-version-review.md','pending-runtime.json','pending-runtime-review.md','pending-home.json','pending-home-review.md','pending-session.json','pending-session-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -110,8 +112,9 @@ class PendingGuidesTest(unittest.TestCase):
     def test_forged_source_hash_in_both_records(self):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-runtime.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
-        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime snapshot chain mismatch')
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));hpath=self.root/'pending-home.json';h=json.loads(hpath.read_text());h['manifest_sha256']=p['manifest_sha256'];hpath.write_text(json.dumps(h))
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_diagnostic_summary(self):
         (self.root/'pending-job-diagnostic-review.md').write_text('altered');self.rejected('Diagnostic summary changed')
     def test_changed_diagnostic_chain(self):
@@ -121,7 +124,8 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='ai-troubleshooting.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime manifest or pending status changed')
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session current metadata mismatch')
     def test_changed_package_summary(self):
         (self.root/'pending-package-review.md').write_text('altered');self.rejected('Package summary changed')
     def test_changed_package_chain(self):
@@ -131,7 +135,8 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='check-package-detail.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime manifest or pending status changed')
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_seed_summary(self):
         (self.root/'pending-seed-review.md').write_text('altered');self.rejected('Seed summary changed')
     def test_changed_seed_chain(self):
@@ -141,7 +146,8 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='seed-guide.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime manifest or pending status changed')
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_interview_summary(self):
         (self.root/'pending-interview-review.md').write_text('altered');self.rejected('Interview summary changed')
     def test_changed_interview_chain(self):
@@ -151,7 +157,8 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='interview-guide.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime manifest or pending status changed')
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_seed_version_summary(self):
         (self.root/'pending-seed-version-review.md').write_text('altered');self.rejected('Seed version summary changed')
     def test_changed_seed_version_chain(self):
@@ -161,7 +168,8 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='seed-guide.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime manifest or pending status changed')
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
     def test_changed_runtime_summary(self):
         (self.root/'pending-runtime-review.md').write_text('altered');self.rejected('Runtime summary changed')
     def test_changed_runtime_chain(self):
@@ -170,11 +178,36 @@ class PendingGuidesTest(unittest.TestCase):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-runtime.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='megacode-guide.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));hpath=self.root/'pending-home.json';h=json.loads(hpath.read_text());h['manifest_sha256']=p['manifest_sha256'];hpath.write_text(json.dumps(h))
+        spath=self.root/'pending-session.json';q=json.loads(spath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();spath.write_text(json.dumps(q))
+        self.rejected('Session snapshot chain mismatch')
+    def test_changed_home_summary(self):
+        (self.root/'pending-home-review.md').write_text('altered');self.rejected('Home summary changed')
+    def test_changed_home_prior_template(self):
+        p=self.root/'pending-home.json';e=json.loads(p.read_text());e['prior_main_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Home prior template mismatch')
+    def test_changed_homepage(self):
+        (self.root.parent/'site/index.html').write_text('altered');self.rejected('Home file changed')
+    def test_homepage_symlink(self):
+        p=self.root.parent/'site/index.html';p.unlink();p.symlink_to(self.root/'overrides/main.html');self.rejected('Home file changed')
+    def test_changed_home_prior(self):
+        p=self.root/'pending-home.json';e=json.loads(p.read_text());e['prior_home_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Home prior homepage changed')
+    def test_changed_home_manifest_chain(self):
+        p=self.root/'pending-home.json';e=json.loads(p.read_text());e['manifest_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Home manifest chain mismatch')
+    def test_home_template_symlink(self):
+        p=self.root/'overrides/main.html';p.unlink();p.symlink_to(self.root/'overrides/partials/nav.html');self.rejected('Home file changed')
+    def test_changed_session_summary(self):
+        (self.root/'pending-session-review.md').write_text('altered');self.rejected('Session summary changed')
+    def test_changed_session_chain(self):
+        p=self.root/'pending-session.json';e=json.loads(p.read_text());e['pages']['status-guide.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Session snapshot chain mismatch')
+    def test_forged_session_source_hash(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-session.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='status-guide.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Runtime current metadata mismatch')
+        self.rejected('Session current metadata mismatch')
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Runtime manifest or pending status changed')
+        self.rejected('Session manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):

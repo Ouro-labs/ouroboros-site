@@ -51,6 +51,7 @@
 .cards a{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--paper)}
 .cards a strong{display:block;margin-bottom:6px}
 .cards a span{font-size:14px;color:var(--muted)}
+@media(max-width:800px){.top-inner{height:auto;min-height:64px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.top nav{width:100%;margin-left:0;flex-wrap:wrap;gap:8px 12px}.top nav a[data-aux]{display:inline}.top nav a,.top nav button{white-space:nowrap}}
 @media(max-width:720px){.demos{grid-template-columns:1fr}.hero{padding:40px 26px 36px}}
 @media(max-width:640px){.cards{grid-template-columns:1fr}}
 </style>
@@ -61,7 +62,7 @@
 <div class="top-inner">
 <a class="brand" href="/"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
 <nav aria-label="Main menu">
-<a href="/learn/en/">Guide</a>
+<a href="/docs/en/quickstart/">Quickstart (draft)</a>
 <a href="/roadmap/">Roadmap</a>
 <a href="/learn/">한국어</a>
 <a href="/learn/zh/">中文</a>
@@ -77,7 +78,7 @@
 <p class="sub">For developers working with AI coding agents: turn a goal into a Seed specification, run the work, and review the evaluation and records.</p>
 <div class="cta">
 <a class="primary" href="#quickstart">Get started</a>
-<a class="ghost" href="/learn/en/">Read the guide</a>
+<a class="ghost" href="/docs/en/quickstart/">Read the quickstart draft</a>
 </div>
 <div class="chips" aria-label="Supported runtimes">
 <span>Claude Code</span><span>Codex CLI</span><span>GitHub Copilot CLI</span><span>OpenCode</span><span>Hermes</span><span>Gemini</span><span>Kiro CLI</span><span>Pi CLI</span><span>Zcode</span><span>Goose</span><span>GJC</span><span>Antigravity CLI</span><span>Grok Build CLI</span>
@@ -93,7 +94,7 @@
 <li>Answer the questions and review the resulting Seed and its acceptance criteria before execution.</li>
 <li>After execution, inspect the work and evaluation against your goal. A completed run or evaluation is evidence to review, not a substitute for your own judgment.</li>
 </ol>
-<p>Need help? Start with the <a href="/learn/en/troubleshooting/">troubleshooting guide</a> or check the <a href="https://github.com/Q00/ouroboros/issues">product issues</a>. The site guide describes version 0.51.5, so compare it with your installed version and the current product documentation.</p>
+<p>For the first task, read the <a href="/docs/en/quickstart/">English quickstart draft</a> and its <a href="/docs/en/troubleshooting/">partial troubleshooting guide</a>. These drafts refer to product source <code>592c667f</code>; check your installed version and host. The earlier <a href="/learn/en/troubleshooting/">0.51.5 troubleshooting chapter</a> remains available, as do <a href="https://github.com/Q00/ouroboros/issues">product issues</a>.</p>
 </div>
 
 <p class="demo-lead"><b>Four separate runs, four hosts.</b> Different tasks on purpose — the engine is what is shared, not the prompt.</p>
@@ -118,15 +119,17 @@ claude plugin install ouroboros@ouroboros</code></pre>
 <figure class="diagram"><img src="/assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
 
 <h2 id="docs">Documentation</h2>
-<p>The English and Korean guides describe Ouroboros 0.51.5; check the product documentation and your installed version for current commands and behavior.</p>
+<p>The English quickstart and partial troubleshooting drafts refer to product source <code>592c667f</code>. The earlier learning guides describe 0.51.5. Check your installed version and host for applicable commands and behavior.</p>
 <div class="cards">
 <a href="/docs/"><strong>한국어 작업 문서</strong><span>빠른 시작, Interview, Seed와 문제 해결.</span></a>
-<a href="/learn/en/"><strong>Guide (English)</strong><span>What it is, install, and every step from Interview to Ralph.</span></a>
+<a href="/docs/en/quickstart/"><strong>English quickstart draft</strong><span>Installation choices and a first task, based on source 592c667f.</span></a>
+<a href="/learn/en/"><strong>English learning guide (0.51.5)</strong><span>Earlier chapters from Interview to Ralph.</span></a>
 <a href="/learn/"><strong>한국어 가이드</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
 <a href="/learn/zh/"><strong>中文指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
 <a href="/roadmap/"><strong>GTM Roadmap</strong><span>Evidence gates, proposed joint validation, and conditional enterprise horizons.</span></a>
 <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md"><strong>Getting started</strong><span>Product installation and first workflow.</span></a>
-<a href="/learn/en/troubleshooting/"><strong>Troubleshooting</strong><span>Find recovery guidance for common problems.</span></a>
+<a href="/docs/en/troubleshooting/"><strong>English troubleshooting draft</strong><span>Partial first-task status, evaluation and recovery guidance, based on source 592c667f.</span></a>
+<a href="/learn/en/troubleshooting/"><strong>Earlier troubleshooting (0.51.5)</strong><span>Historical learning-guide chapter.</span></a>
 <a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md"><strong>CLI reference</strong><span>Commands and options in the product repository.</span></a>
 <a href="/llms.txt"><strong>AI documentation index</strong><span>Guide and product documentation links for AI tools.</span></a>
 <a href="https://github.com/Q00/ouroboros"><strong>GitHub</strong><span>Source, official docs, CLI Reference, issues.</span></a>

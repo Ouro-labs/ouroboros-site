@@ -11,17 +11,20 @@
 | 시작 응답에 있는 ID | 독립 CLI에서 첫 조회 | 호스트에서 첫 조회 |
 | --- | --- | --- |
 | `job_id` | `ouroboros job status JOB_ID` | 실제 연결된 `ouroboros_job_status`에 같은 job ID |
-| `session_id` | `ouroboros status run --session-id SESSION_ID` | 현재 서버가 제공하는 session status 조회 도구와 실제 입력 schema |
+| MCP `ouroboros_interview`가 반환한 `session_id` | 실행 상태 조회 ID가 아닌 Interview 저장 ID | 같은 host의 실제 `ouroboros_interview`에 같은 ID와 실제 답을 전달; 상태 조회 도구에 넣지 않음 |
+| 오케스트레이터 실행 `session_id` (예: `orch_...`) | `ouroboros status run --session-id SESSION_ID` | 현재 서버가 제공하는 execution session status 조회 도구와 실제 입력 schema |
 | `execution_id` | `ouroboros status execution EXECUTION_ID --events` | 현재 서버가 제공하는 실행 상태/이벤트 조회 도구와 실제 입력 schema |
 | `auto_session_id` | `ouroboros status auto AUTO_SESSION_ID` | 서버에 해당 auto 상태 조회가 있으면 그 실제 도구와 schema |
 
-`job_id`가 아직 terminal 상태가 아니면 같은 job ID로 `ouroboros job wait JOB_ID` 또는 호스트의 `ouroboros_job_wait`를 사용해 다시 확인합니다. terminal 상태를 확인한 뒤에만 같은 ID의 `ouroboros job result JOB_ID` 또는 실제 호스트 result 도구로 결과를 읽습니다. `job_id`, `session_id`, `execution_id`, `auto_session_id`는 서로 다른 레코드이므로 서로 바꿔 넣지 않습니다. `auto_session_id` 조회가 후속 Ralph 상태를 보여 주더라도 실행 job의 상세 결과를 대신하지 않습니다.
+MCP Interview의 `session_id`는 저장된 Interview ID이며 Run/Stage/Step 실행 세션 ID와 다릅니다. 인터뷰를 이어가려면 현재 서버의 실제 도구 목록과 schema에서 `ouroboros_interview`를 확인하고, 같은 host에서 같은 ID와 현재 질문의 실제 답을 전달합니다. 이것은 읽기 전용 상태 조회가 아니며 인터뷰 후속 모델 호출·비용이 발생할 수 있습니다. standalone CLI라면 같은 기존 저장소에서 `ouroboros init list`, 이어가기로 결정한 경우 `ouroboros init start --resume INTERVIEW_ID`를 사용합니다. 원래 사용자 지정 `--state-dir`이 있었다면 두 명령에도 같은 디렉터리를 지정합니다. CLI 재개는 상태 저장·Seed 생성에 이어 `Start workflow now?` 확인을 표시할 수 있고 기본 응답은 `yes`입니다. Seed와 수용 기준을 확인하기 전에는 `n`으로 답해 workflow가 실행되지 않게 하세요. `ouroboros resume --list`는 실행 세션 목록이지 인터뷰 목록이 아닙니다. ID를 못 찾으면 원래 응답과 기존 저장 상태를 확인하고 새 인터뷰를 중복 시작하지 마세요. 상세 절차와 고정 main/release 근거는 [상태와 ID 안내](/docs/status-guide/)에 있습니다.
+
+`job_id`, Interview `session_id`, 오케스트레이터 `session_id`, `execution_id`, `auto_session_id`는 서로 다른 레코드이므로 서로 바꿔 넣지 않습니다. `job_id`가 아직 terminal 상태가 아니면 같은 job ID로 `ouroboros job wait JOB_ID` 또는 호스트의 `ouroboros_job_wait`를 사용해 다시 확인합니다. terminal 상태를 확인한 뒤에만 같은 ID의 `ouroboros job result JOB_ID` 또는 실제 호스트 result 도구로 결과를 읽습니다. `auto_session_id` 조회가 후속 Ralph 상태를 보여 주더라도 실행 job의 상세 결과를 대신하지 않습니다.
 
 조회 결과와 별도로 기록의 소유 프로세스가 실제로 살아 있는지, 작업 경로·branch와 파일 상태, 이미 발생한 외부 효과를 확인하세요. 저장된 `running` 표시만으로 프로세스 생존을 단정하지 않습니다. 새 실행, 취소 또는 재개는 첫 조회가 아니며 이 안내가 이를 자동 승인하지 않습니다. 일부 상태 조회는 DB 초기화·로그·상태 기록에 영향을 줄 수 있으므로 아래의 조회 부작용 경계와 [진행상태·ID 안내](/docs/status-guide/)를 읽고, 설치 버전과 실제 DB 경로를 확인하세요. 존재하지 않는 DB를 만들거나 다른 사용자/프로젝트의 DB를 초기화하지 마세요.
 
 ## 현재 상황 {#_2}
 
-인터뷰나 실행이 멈췄거나, 연결이 끊겼거나, 검증이 실패한 상태입니다. 먼저 [진행상태 안내](/docs/progress-detail/)에서 같은 ID의 현재 상태를 읽으세요. 새 실행을 바로 시작하면 어느 작업이 결과를 냈는지 구분하기 어려워집니다.
+인터뷰나 실행이 멈췄거나, 연결이 끊겼거나, 검증이 실패한 상태입니다. **실행 ID**는 [진행상태 안내](/docs/progress-detail/)에서 같은 ID의 상태를 확인하세요. MCP Interview의 `session_id`는 실행 status 조회에 쓰지 않습니다. 원래 응답을 확인하고 같은 host의 `ouroboros_interview`에 같은 ID와 실제 답을 전달하거나, 독립 CLI라면 같은 state directory의 `ouroboros init list`에서 확인하세요. 실행 재개와 달리 인터뷰 계속하기도 모델을 호출할 수 있습니다. 새 인터뷰나 실행을 바로 시작하면 어느 작업이 결과를 냈는지 구분하기 어려워집니다.
 
 ## 증상별로 먼저 볼 곳 {#_3}
 

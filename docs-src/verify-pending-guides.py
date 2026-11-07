@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,8 +22,40 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    home = json.loads((root/'pending-home.json').read_text())
+    if home.get('status') != 'pending':
+        raise ValueError('Home manifest or pending status changed')
+    home_files={'site/index.html','docs-src/overrides/main.html','docs-src/tests/test_home_discovery.py'}
+    if set(home.get('files', {})) != home_files: raise ValueError('Home file set changed')
+    home_summary=(root/'pending-home-review.md').read_bytes()
+    if sha(home_summary)!=home['summary_sha256']: raise ValueError('Home summary changed')
+    home_rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',home_summary.decode('utf-8'),re.MULTILINE)
+    if len(home_rows)!=len(home_files) or dict(home_rows)!=home['files']: raise ValueError('Home summary rows mismatch')
+    for name, expected in home['files'].items():
+        path=root.parent/name
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
+    if home['prior_home_sha256'] != '3f53646153e3023e81d452e751b5a65649e98e33ce9e69f7c5b89c611dbbff99': raise ValueError('Home prior homepage changed')
+    session = json.loads((root/'pending-session.json').read_text())
+    if session.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != session['manifest_sha256']:
+        raise ValueError('Session manifest or pending status changed')
+    if session['prior_manifest_sha256'] != 'ea59b6a439e9af819e1915035f6bd14fcac6581e37ab211d1aed8f006506a69f': raise ValueError('Session prior manifest changed')
+    session_summary=(root/'pending-session-review.md').read_bytes()
+    if sha(session_summary) != session['summary_sha256']: raise ValueError('Session summary changed')
+    session_names={'index.md','progress-detail.md','recovery-detail.md','status-guide.md','ai-troubleshooting.md','en/ai-troubleshooting.md'}
+    if set(session['pages']) != session_names: raise ValueError('Session page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',session_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(session_names) or {x[0] for x in rows}!=session_names: raise ValueError('Session summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=session['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Session current metadata mismatch: '+name)
+    session_restored=copy.deepcopy(manifest)
+    for name in session_names: session_restored['pages'][name]=session['pages'][name]['prior']
+    if sha((json.dumps(session_restored,ensure_ascii=False,indent=2)+'\n').encode())!=session['prior_manifest_sha256']:
+        raise ValueError('Session snapshot chain mismatch')
     runtime = json.loads((root/'pending-runtime.json').read_text())
-    if runtime.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != runtime['manifest_sha256']:
+    if home.get('manifest_sha256') != session.get('prior_manifest_sha256') or home.get('manifest_sha256') != runtime.get('manifest_sha256'): raise ValueError('Home manifest chain mismatch')
+    if runtime.get('status') != 'pending' or session['prior_manifest_sha256'] != runtime['manifest_sha256']:
         raise ValueError('Runtime manifest or pending status changed')
     if runtime['prior_manifest_sha256'] != 'cba82169c5fffef75de469b8e3722016ece8551b0067c4906d6154efa9642bb8': raise ValueError('Runtime prior manifest changed')
     runtime_summary=(root/'pending-runtime-review.md').read_bytes()
@@ -34,9 +66,9 @@ def verify(root=ROOT):
     if len(rows)!=len(runtime_names) or {x[0] for x in rows}!=runtime_names: raise ValueError('Runtime summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=runtime['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or session_restored['pages'].get(name)!=page:
             raise ValueError('Runtime current metadata mismatch: '+name)
-    runtime_restored=copy.deepcopy(manifest)
+    runtime_restored=copy.deepcopy(session_restored)
     for name in runtime_names: runtime_restored['pages'][name]=runtime['pages'][name]['prior']
     if sha((json.dumps(runtime_restored,ensure_ascii=False,indent=2)+'\n').encode())!=runtime['prior_manifest_sha256']:
         raise ValueError('Runtime snapshot chain mismatch')
@@ -180,7 +212,9 @@ def verify(root=ROOT):
     if len(access_rows)!=len(access_files) or dict(access_rows)!=access['files']: raise ValueError('Accessibility summary rows mismatch')
     for name, expected in access['files'].items():
         path=root.parent/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
+        if name == 'docs-src/overrides/main.html':
+            if expected != home['prior_main_sha256']: raise ValueError('Home prior template mismatch')
+        elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
     evaluation = json.loads((root/'pending-evaluation.json').read_text())
     if evaluation.get('status') != 'pending' or details['prior_manifest_sha256'] != evaluation['manifest_sha256']:
         raise ValueError('Evaluation manifest or pending status changed')
