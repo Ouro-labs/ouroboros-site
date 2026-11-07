@@ -58,25 +58,6 @@ metadata:
 
 앱 동작 세 기준의 예시는 [합성 참고 예제](/docs/todo-reference-example/)에서 따로 살펴볼 수 있습니다. 이 코드는 제품 생성물이 아니며 README에 관한 두 기준은 실제 프로젝트에서 확인해야 합니다.
 
-## 각 부분에서 확인할 것
-
-| 필드 | 확인 질문 |
-| --- | --- |
-| `goal` | 필수. 작업이 끝났을 때 사용자가 실제로 무엇을 할 수 있어야 하나요? “좋은 앱”, “완벽하게”처럼 판정할 수 없는 단어만 남아 있지 않나요? |
-| `constraints` | 선택 가능. 반드시 지킬 기술·환경·범위와 만들지 않을 일이 사용자의 답과 맞나요? 예제에서는 한 사용자, 지속 저장, 계정/동기화 제외를 적었습니다. |
-| `acceptance_criteria` | 선택 가능하지만 실행 결과의 판정 기준으로 구체적으로 작성하세요. 각 항목이 완성된 결과의 관찰 가능한 상태인가요? 사용자가 직접 화면이나 테스트에서 확인할 수 있나요? 구현 방법을 요구사항처럼 쓴 것은 없나요? |
-| `ontology_schema` | 필수. 도메인을 표현하는 이름과 설명을 적고, 각 필드에는 `name`, `type`, `description`이 필요합니다. 도메인 필드와 설명이 실제 기능과 맞나요? 이 표는 결과 화면의 모든 레이아웃이나 기술 선택을 고정하는 설계서가 아닙니다. |
-| `metadata` | 필수 객체. 생성 시각과 Seed ID 등은 제품 기본값이 채울 수 있습니다. 이 예제는 선택값인 `ambiguity_score`만 기입합니다. 예시 점수를 실제 점수로 해석하지 마세요. |
-| `verify_command` 등 선택 검증 필드 | 명령이 실제 실행될 수 있습니다. 실행 위치, 셸 동작과 외부 효과를 먼저 확인하고 신뢰할 수 있는 명령만 허용하세요. |
-
-예제에는 `verify_command`가 없습니다. 이는 형식 설명용이며, 파싱되는 Seed라도 검증 가능한 실행 계약을 갖췄다는 뜻은 아닙니다. 실행기가 어떤 자동 검사를 수행할지 또는 평가가 수용 기준을 통과할지 증명하지 않습니다. 수용 기준의 타입, `verify_cwd`, `expected_artifacts`, `output_assertion`과 소비 경로 차이는 [Seed 형식 참조](/docs/seed-format-detail/)를 확인하세요.
-
-### 실행 게이트와 정식 평가의 증거를 구분하기 {#seed-execution-and-evaluation-evidence}
-
-이 할 일 예제의 다섯 AC에는 `verify_command`가 없고, [합성 HTML 참고 예제](/docs/todo-reference-example/)는 사람이 브라우저에서 확인하는 절차만 제공합니다. 이 확인은 제품의 Seed 실행이나 정식 평가가 실제로 실행됐다는 증거가 아닙니다. main `592c667`과 release `0.59.9`의 Seed 형식은 AC별 `verify_command`를 선택 필드로 받습니다. 실제 실행에서 이 필드를 사용하려면 `execution.run_verify_commands`가 켜져 있어야 합니다(두 소스의 기본값은 `true`이며 설치 설정은 다를 수 있습니다). 선언된 명령은 오케스트레이터가 작업 공간에서 실행하고 그 결과를 AC 성공 게이트에 사용합니다. 설명 문장만으로 실행 명령이 생기지는 않으므로, 실제 프로젝트가 만들어진 뒤 신뢰할 수 있는 검사와 작업 경로를 정하고 명령·작업 디렉터리·파일 및 네트워크 효과를 검토하세요. [main Seed 스키마](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L586-L616), [main 실행 게이트](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/parallel_executor.py#L9711-L9747), [main 실행 설정 기본값](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L311) · 같은 경로의 [release Seed 스키마](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/seed.py#L583-L613), [실행 게이트](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator/parallel_executor.py#L9680-L9725), [실행 설정 기본값](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/config/models.py#L310).
-
-정식 평가의 Stage 1 기계 검사는 별도 경로입니다. 평가기는 프로젝트 루트 `.ouroboros/mechanical.toml`의 `lint`, `build`, `test`, `static`, `coverage` 명령을 사용합니다. 파일이 없으면 MCP 평가가 탐지를 시도할 수 있고, 해당 경로는 모델 호출과 TOML 파일 쓰기를 수반할 수 있으므로 기존 파일과 제안된 명령을 먼저 확인하세요. 다만 TOML 명령이 없다는 사실만으로 `unverified`라고 단정할 수는 없습니다. 같은 실행의 해당 AC에 연결된 유효한 recorded check-package 결과가 Stage 1에 합쳐질 수도 있습니다. 실행된 Stage 1 검사 결과와 사용할 수 있는 recorded check 결과가 모두 없으면 `approved`가 아니라 `unverified`입니다. 승인은 유효한 Stage 1 실행 증거가 있고 모든 검사가 통과해야 하며, 긍정적인 모델 의견은 실행 증거를 대신하지 않습니다. AC `verify_command`의 실행 게이트와 정식 평가 Stage 1은 서로 다른 경로이므로, 앞의 결과가 평가에 자동 재사용된다고 가정하지 마세요. 실제 프로젝트에서는 평가 결과의 검사·실행 여부·종료 결과와 해당 실행·AC에 속한 기록, `acceptance_state`를 함께 확인하고, 오류나 `unverified`를 통과로 바꾸지 않습니다. 이 합성 Seed YAML 자체에는 테스트 명령이나 실행·평가 결과가 없습니다. 연결된 [HTML 참고 예제](/docs/todo-reference-example/)에는 별도 브라우저 테스트 절차가 있지만, 그것은 문서용 표본에 대한 시험이며 제품 Seed 실행이나 AC 검증 증거가 아닙니다. [main 평가 입력과 탐지 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluation_handlers.py#L549-L559), [main Stage 1 설정 로더](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/languages.py#L1018-L1062), [main 해당 AC 기록 조회와 병합](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluation_handlers.py#L739-L760), [main Stage 1 기록 병합](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/models.py#L190-L203), [main 승인 조건](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/models.py#L568-L605) · release `0.59.9`의 [평가 입력](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/evaluation_handlers.py#L549-L559), [Stage 1 설정 로더](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/languages.py#L1018-L1062), [기록 조회·병합 및 승인 조건](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/evaluation_handlers.py#L739-L760). 실제 기계 검사 설정의 구문과 검토할 부작용은 [평가 안내](/docs/evaluation-evolution-detail/)에서 확인하세요.
-
 **생성 후 한 번 검토할 목록**
 
 - 목표가 요청자의 의도와 범위를 정확히 담고 있다.
@@ -86,6 +67,10 @@ metadata:
 - 위험·외부 효과·테스트 방법을 이해하고, 실행해도 되는 상태다.
 
 점수 또는 등급은 내용 검토를 대신하지 않습니다. 제품 main의 `seed` skill은 생성된 Seed에 대한 QA를 한 차례 자문(advisory)으로 실행하며, 그 판정은 자동 차단 gate가 아닙니다. QA의 점수나 `A` 등급은 정확성·완성·테스트 통과의 증명으로 취급하지 마세요. `ooo auto`의 grade gate는 자동 실행 경로의 조건이며 일반 Seed 검토와 다릅니다.
+
+예제에는 `verify_command`가 없습니다. 이는 형식 설명용이며, 파싱되는 Seed라도 검증 가능한 실행 계약을 갖췄다는 뜻은 아닙니다. 실행기가 어떤 자동 검사를 수행할지 또는 평가가 수용 기준을 통과할지 증명하지 않습니다. 수용 기준의 타입, `verify_cwd`, `expected_artifacts`, `output_assertion`과 소비 경로 차이는 [Seed 형식 참조](/docs/seed-format-detail/)를 확인하세요.
+
+실제 Seed에 `verify_command` 등 선택 검증 필드가 있으면 실행 과정에서 명령이 실행될 수 있습니다. 실행 위치, 셸 동작과 외부 효과를 먼저 확인하고 신뢰할 수 있는 명령만 허용하세요. 이 합성 예제에는 그런 명령이 없습니다. 정식 평가의 기계 검사 경로는 실행 뒤 아래 상세 절에서 확인하세요.
 
 ## Seed가 틀렸으면 수정하기
 
@@ -109,6 +94,22 @@ ooo run
 호스트가 특정 Seed를 요구하면 방금 검토한 실제 파일 경로나 YAML을 사용하세요. assistant가 다른 경로·이전 버전의 Seed를 고르면 진행 전에 멈춰 수정합니다. 터미널의 독립 CLI 명령은 다른 표면이므로 설치된 버전의 `ouroboros run --help`를 먼저 확인하고, CLI 경로는 [첫 실행](/docs/first-run-detail/) 및 [명령 색인](/docs/cli-reference-detail/#ouroboros-run)을 따릅니다.
 
 실행 뒤에는 반환 ID를 기록하고 실제 파일 변경, 테스트 출력, 각 수용 기준의 평가 근거를 대조합니다. 작업 시작·종료 표시, `job_id`, `seed_ready`, QA score, 등급 또는 “완료” 텍스트만으로 요청 달성을 판단하지 않습니다. 실패·중단·불명확한 작업은 새로 시작하기 전에 [진행상태](/docs/progress-detail/)와 [복구 절차](/docs/recovery-detail/)를 보고 기존 프로세스와 외부 효과를 확인하세요.
+
+## 각 부분에서 확인할 것
+
+| 필드 | 확인 질문 |
+| --- | --- |
+| `goal` | 필수. 작업이 끝났을 때 사용자가 실제로 무엇을 할 수 있어야 하나요? “좋은 앱”, “완벽하게”처럼 판정할 수 없는 단어만 남아 있지 않나요? |
+| `constraints` | 선택 가능. 반드시 지킬 기술·환경·범위와 만들지 않을 일이 사용자의 답과 맞나요? 예제에서는 한 사용자, 지속 저장, 계정/동기화 제외를 적었습니다. |
+| `acceptance_criteria` | 선택 가능하지만 실행 결과의 판정 기준으로 구체적으로 작성하세요. 각 항목이 완성된 결과의 관찰 가능한 상태인가요? 사용자가 직접 화면이나 테스트에서 확인할 수 있나요? 구현 방법을 요구사항처럼 쓴 것은 없나요? |
+| `ontology_schema` | 필수. 도메인을 표현하는 이름과 설명을 적고, 각 필드에는 `name`, `type`, `description`이 필요합니다. 도메인 필드와 설명이 실제 기능과 맞나요? 이 표는 결과 화면의 모든 레이아웃이나 기술 선택을 고정하는 설계서가 아닙니다. |
+| `metadata` | 필수 객체. 생성 시각과 Seed ID 등은 제품 기본값이 채울 수 있습니다. 이 예제는 선택값인 `ambiguity_score`만 기입합니다. 예시 점수를 실제 점수로 해석하지 마세요. |
+
+### 실행 게이트와 정식 평가의 증거를 구분하기 {#seed-execution-and-evaluation-evidence}
+
+이 할 일 예제의 다섯 AC에는 `verify_command`가 없습니다. [합성 HTML 참고 예제](/docs/todo-reference-example/)는 사람이 브라우저에서 확인하는 절차와 선택형 Playwright 자동 테스트를 함께 제공합니다. 두 절차는 문서의 합성 산출물을 확인하는 예시이며, 제품의 Seed 실행이나 정식 평가가 실제로 실행됐다는 증거가 아닙니다. main `592c667`과 release `0.59.9`의 Seed 형식은 AC별 `verify_command`를 선택 필드로 받습니다. 실제 실행에서 이 필드를 사용하려면 `execution.run_verify_commands`가 켜져 있어야 합니다(두 소스의 기본값은 `true`이며 설치 설정은 다를 수 있습니다). 선언된 명령은 오케스트레이터가 작업 공간에서 실행하고 그 결과를 AC 성공 게이트에 사용합니다. 설명 문장만으로 실행 명령이 생기지는 않으므로, 실제 프로젝트가 만들어진 뒤 신뢰할 수 있는 검사와 작업 경로를 정하고 명령·작업 디렉터리·파일 및 네트워크 효과를 검토하세요. [main Seed 스키마](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L586-L616), [main 실행 게이트](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/parallel_executor.py#L9711-L9747), [main 실행 설정 기본값](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L311) · 같은 경로의 [release Seed 스키마](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/seed.py#L583-L613), [실행 게이트](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator/parallel_executor.py#L9680-L9725), [실행 설정 기본값](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/config/models.py#L310).
+
+정식 평가의 Stage 1 기계 검사는 별도 경로입니다. 평가기는 프로젝트 루트 `.ouroboros/mechanical.toml`의 `lint`, `build`, `test`, `static`, `coverage` 명령을 사용합니다. 파일이 없으면 MCP 평가가 탐지를 시도할 수 있고, 해당 경로는 모델 호출과 TOML 파일 쓰기를 수반할 수 있으므로 기존 파일과 제안된 명령을 먼저 확인하세요. 다만 TOML 명령이 없다는 사실만으로 `unverified`라고 단정할 수는 없습니다. 같은 실행의 해당 AC에 연결된 유효한 recorded check-package 결과가 Stage 1에 합쳐질 수도 있습니다. 실행된 Stage 1 검사 결과와 사용할 수 있는 recorded check 결과가 모두 없으면 `approved`가 아니라 `unverified`입니다. 승인은 유효한 Stage 1 실행 증거가 있고 모든 검사가 통과해야 하며, 긍정적인 모델 의견은 실행 증거를 대신하지 않습니다. AC `verify_command`의 실행 게이트와 정식 평가 Stage 1은 서로 다른 경로이므로, 앞의 결과가 평가에 자동 재사용된다고 가정하지 마세요. 실제 프로젝트에서는 평가 결과의 검사·실행 여부·종료 결과와 해당 실행·AC에 속한 기록, `acceptance_state`를 함께 확인하고, 오류나 `unverified`를 통과로 바꾸지 않습니다. 이 합성 Seed YAML 자체에는 테스트 명령이나 실행·평가 결과가 없습니다. 연결된 [HTML 참고 예제](/docs/todo-reference-example/)에는 별도 브라우저 테스트 절차가 있지만, 그것은 문서용 표본에 대한 시험이며 제품 Seed 실행이나 AC 검증 증거가 아닙니다. [main 평가 입력과 탐지 안내](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluation_handlers.py#L549-L559), [main Stage 1 설정 로더](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/languages.py#L1018-L1062), [main 해당 AC 기록 조회와 병합](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluation_handlers.py#L739-L760), [main Stage 1 기록 병합](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/models.py#L190-L203), [main 승인 조건](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/evaluation/models.py#L568-L605) · release `0.59.9`의 [평가 입력](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/evaluation_handlers.py#L549-L559), [Stage 1 설정 로더](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/evaluation/languages.py#L1018-L1062), [기록 조회·병합 및 승인 조건](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/evaluation_handlers.py#L739-L760). 실제 기계 검사 설정의 구문과 검토할 부작용은 [평가 안내](/docs/evaluation-evolution-detail/)에서 확인하세요.
 
 ## 분기와 문제 해결
 
