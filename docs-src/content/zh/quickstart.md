@@ -255,6 +255,8 @@ Windows PowerShell（项目目录中）：
 
 执行过程可能会更改代码和文件，并启动命令及模型调用。
 
+**说明用虚构示例：**假设原执行结束后满足条件，一个评估 job 进入等待队列。等待不代表已批准。如果实际返回了评估 job ID，请检查该 job 的状态和结果。即使评估批准，也仍需单独打开实际应用并检查需求。这不是实际输出，也不表示每次运行都会创建评估；宿主与独立 CLI 的状态查看路径可能不同。[main 后续评估条件](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run_successors.py#L58-L95) · [release 后续评估条件](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run_successors.py#L58-L95)
+
 运行过程中，请记录实际返回的 ID 和状态。仅凭完成提示或 ID 不能证明需求已满足。请检查以下内容：
 
 1. 在运行结果报告的实际工作目录或 worktree 中检查创建或修改的文件。

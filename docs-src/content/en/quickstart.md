@@ -255,6 +255,8 @@ In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify
 
 Execution can change code and files and start commands and model calls.
 
+**Illustrative fictional example:** Suppose the original run finishes and an evaluation job is queued because its conditions were met. Queued is not approved. If an evaluation job ID was actually returned, check that job's status and result. Even approval is separate from opening the real app and checking the requirements. This is not actual output or a claim that every run creates an evaluation. The status path may differ between a host and the standalone CLI. [main successor conditions](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run_successors.py#L58-L95) · [release successor conditions](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run_successors.py#L58-L95)
+
 Record the IDs and statuses actually returned while the task runs. A completion message or ID alone does not prove the requirements were met. Check the following:
 
 1. Inspect created or modified files in the actual workspace or worktree reported by the run.

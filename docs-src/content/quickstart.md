@@ -226,6 +226,8 @@ README 수용 기준이 의존성 설치, 앱 실행 명령, 실제 URL·포트,
 
 실행은 코드와 파일을 변경하고 명령 및 모델 호출을 시작할 수 있습니다.
 
+**설명용 가상 예시:** 원래 실행이 끝난 뒤 조건을 충족해 평가 job이 대기 중이라고 가정해 봅시다. 대기만으로 승인된 것은 아닙니다. 실제로 반환된 평가 job ID가 있으면 그 ID의 상태와 결과를 확인하세요. 평가가 승인돼도 실제 앱을 열어 요구사항을 확인하는 일은 별개입니다. 이는 실제 출력이나 모든 실행에서 평가가 생성된다는 뜻이 아닙니다. 호스트와 독립 CLI는 상태를 확인하는 경로가 다를 수 있습니다. [main 후속 평가 조건](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run_successors.py#L58-L95) · [release 후속 평가 조건](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run_successors.py#L58-L95)
+
 진행 중에는 실제로 반환된 ID와 상태를 기록합니다. 완료 표시나 ID만으로 요구가 충족됐다고 판단하지 말고 다음을 확인하세요.
 
 1. 실행 결과에 보고된 실제 작업 폴더 또는 worktree에서 생성·변경된 파일을 살펴봅니다.
