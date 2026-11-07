@@ -87,13 +87,14 @@ New-Item -ItemType Directory -Path .\ouroboros-cli-env | Out-Null
 Set-Location .\ouroboros-cli-env
 py -3 -m venv .venv
 if ($LASTEXITCODE -ne 0) { throw "虚拟环境创建失败。" }
-.\.venv\Scripts\Activate.ps1
-python -m pip install ouroboros-ai
+$OuroborosPython = (Resolve-Path .\.venv\Scripts\python.exe).Path
+$OuroborosPython
+& $OuroborosPython -m pip install ouroboros-ai
 if ($LASTEXITCODE -ne 0) { throw "软件包安装失败。" }
-ouroboros --version
+& $OuroborosPython -m ouroboros --version
 if ($LASTEXITCODE -ne 0) { throw "CLI 版本检查失败。" }</code></pre>
 
-<p>如果 PowerShell 阻止运行激活脚本，请勿为本指南更改执行策略。可直接使用该环境的 Python：<code>.\.venv\Scripts\python.exe -m pip install ouroboros-ai</code>，以后运行 CLI 时使用 <code>.\.venv\Scripts\python.exe -m ouroboros ...</code>（例如 <code>.\.venv\Scripts\python.exe -m ouroboros --version</code>）。Windows 命令依据 Python 和 PowerShell 约定编写，未在 Windows 上实际运行。</p>
+<p>此方法直接使用虚拟环境解释器，不运行 <code>Activate.ps1</code>，也不需要更改执行策略。请保留输出的绝对路径并存入 <code>$OuroborosPython</code>；使用 <code>Set-Location</code> 移动到项目目录后，它仍指向同一虚拟环境。打开新的 PowerShell 会话时，请再次将保存的准确绝对解释器路径赋给 <code>$OuroborosPython</code>。这些 Windows 命令依据 Python 和 PowerShell 约定编写，未在 Windows 上实际运行。</p>
 
 <p>在已激活虚拟环境的终端中运行：</p>
 
@@ -104,9 +105,17 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
 
+<p>Windows PowerShell：</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
 <p>如果已经安装 Codex CLI 并完成认证，请运行：</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+<p>Windows PowerShell：</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
 <p><strong>Codex CLI 服务器（macOS/Linux/WSL2 独立 CLI 路径）：</strong>这与安装 Codex 插件是两回事。以下本地 stdio 步骤不适用于原生 Windows PowerShell。在同一 shell 中使用官方 <code>0.59.9</code> CLI 且 PATH 中有 <code>uvx</code> 时，<code>ouroboros setup --runtime codex</code> 会注册隔离启动器 <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>；当前 CLI 环境无需安装 <code>[mcp]</code> extra。请在运行 setup 的同一 shell 中检查 <code>command -v ouroboros</code>、<code>ouroboros --version</code> 和 <code>command -v uvx</code>，确认使用的 CLI 与启动器。其他已安装发行版会将启动器固定到各自的安装版本。</p>
 
@@ -150,6 +159,12 @@ ooo interview "构建一个简单的网页应用，让我可以添加今天的�
 ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
+Windows PowerShell（项目目录中）：
+
+```powershell
+& $OuroborosPython -m ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
+```
+
 Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。运行前请检查完整 Seed YAML，确认其中的验收标准要求项目 README 说明该项目的依赖安装、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。如果项目没有测试套件，标准可以要求 README 明确说明这一点。如果缺少标准或与目标不符，请直接编辑已经生成的 Seed YAML 文件并重新检查完整内容。不要重新生成并覆盖已成功创建的 Seed。这里描述的是所要求的结果，不表示 README 已生成、内容准确或测试已通过。
 
 Seed 是整理目标、约束和完成条件的规格说明。不同使用路径检查实际 Seed 的方式有所不同。
@@ -168,7 +183,13 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 
 ## 3. 运行任务并检查结果
 
-在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。执行过程可能会更改代码和文件，并启动命令及模型调用。
+在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。Windows PowerShell 中，请将实际路径放在双引号内并运行：
+
+```powershell
+& $OuroborosPython -m ouroboros run "<实际 Seed 文件路径>"
+```
+
+执行过程可能会更改代码和文件，并启动命令及模型调用。
 
 如果这是刚初始化的 Git 仓库，且普通 MCP 后台运行将使用默认的受管理 worktree 设置，请在项目目录运行 `git rev-parse --verify HEAD` 检查是否已有初始提交。如果因没有提交而失败，请先检查文件，并由你自己决定是否以及提交哪些内容，再重试；不要让代理自动创建提交。此检查只针对默认受管理 worktree 路径：非 Git 目录、`orchestrator.use_worktrees: false`，以及独立的 `dispatch_mode="plugin"` OpenCode Task 路径可能有不同表现。在针对候选版本 `965c1d94` 的一次隔离试验中，对执行过 `git init` 但尚无提交的仓库返回了 `launch_workspace_unavailable`；该观察不能推广到所有宿主或分派模式。请参阅固定版本的 [main worktree 基准检查](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385)、[默认 worktree 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780)及对应的 [release `0.59.9` worktree 源码](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385)。
 

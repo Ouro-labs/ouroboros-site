@@ -87,13 +87,14 @@ New-Item -ItemType Directory -Path .\ouroboros-cli-env | Out-Null
 Set-Location .\ouroboros-cli-env
 py -3 -m venv .venv
 if ($LASTEXITCODE -ne 0) { throw "Virtual environment creation failed." }
-.\.venv\Scripts\Activate.ps1
-python -m pip install ouroboros-ai
+$OuroborosPython = (Resolve-Path .\.venv\Scripts\python.exe).Path
+$OuroborosPython
+& $OuroborosPython -m pip install ouroboros-ai
 if ($LASTEXITCODE -ne 0) { throw "Package installation failed." }
-ouroboros --version
+& $OuroborosPython -m ouroboros --version
 if ($LASTEXITCODE -ne 0) { throw "CLI verification failed." }</code></pre>
 
-<p>If PowerShell blocks the activation script, do not change the execution policy for this guide. Use the environment's Python directly: <code>.\.venv\Scripts\python.exe -m pip install ouroboros-ai</code>, then use <code>.\.venv\Scripts\python.exe -m ouroboros ...</code> for CLI commands (for example, <code>.\.venv\Scripts\python.exe -m ouroboros --version</code>). The Windows commands are documented from Python and PowerShell conventions but were not run on Windows.</p>
+<p>This uses the venv interpreter directly, so it does not run <code>Activate.ps1</code> or require an execution-policy change. Keep the printed absolute path in <code>$OuroborosPython</code>; it still selects this venv after <code>Set-Location</code> moves to the project folder. In a new PowerShell session, assign the exact saved absolute interpreter path to <code>$OuroborosPython</code> again. The Windows commands follow Python and PowerShell conventions and were not run on Windows.</p>
 
 <p>In a terminal with the virtual environment activated:</p>
 
@@ -104,9 +105,17 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
 
+<p>Windows PowerShell:</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
 <p>If Codex CLI is already installed and ready to use with your authentication, run:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+<p>Windows PowerShell:</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
 <p><strong>Codex CLI server (macOS/Linux/WSL2 standalone path):</strong> This is separate from installing the Codex plugin. The local stdio steps below do not apply to native Windows PowerShell. With the official <code>0.59.9</code> CLI and <code>uvx</code> on PATH in the same shell, <code>ouroboros setup --runtime codex</code> registers an isolated launcher, <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>; the current CLI environment does not need the <code>[mcp]</code> extra. In the same shell, check <code>command -v ouroboros</code>, <code>ouroboros --version</code>, and <code>command -v uvx</code> so you know which CLI and launcher setup will use. Other installed releases pin the launcher to their own installed version.</p>
 
@@ -150,6 +159,12 @@ ooo interview "Build a simple web app where I can add tasks for today and mark t
 ouroboros init start "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
 ```
 
+Windows PowerShell (project directory):
+
+```powershell
+& $OuroborosPython -m ouroboros init start "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
+```
+
 Answer the Interview's questions about decisions such as how to store tasks or mark them complete. For example, you might decide whether tasks should remain after a page refresh. That question is an **illustrative example**, not actual output. Before running, review the complete Seed YAML and confirm its acceptance criteria require the project README to explain this project's dependency installation, app start command, actual URL and port, stop instructions, and test commands and their scope. If there is no test suite, the criteria can require the README to say so. If a criterion is missing or does not match your goal, edit the already generated Seed YAML in place and review the whole file again. Do not regenerate and overwrite a successfully created Seed. This is a requested outcome, not a claim that a README has already been created, is accurate, or has been tested.
 
 A Seed is a specification that organizes the goal, constraints, and completion criteria. The steps for checking an actual Seed depend on your path.
@@ -168,7 +183,13 @@ The interactive Interview in the terminal asks whether to create a Seed. Approve
 
 ## 3. Run the Task and Review the Results
 
-In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. Execution can change code and files and start commands and model calls.
+In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. In Windows PowerShell, quote the actual path and run:
+
+```powershell
+& $OuroborosPython -m ouroboros run "<actual Seed file path>"
+```
+
+Execution can change code and files and start commands and model calls.
 
 If this is a newly initialized Git repository and the normal MCP background path will use its default managed-worktree setting, check for an initial commit from the project directory with `git rev-parse --verify HEAD`. If it fails because no commit exists, review the files and decide yourself whether and what to commit before retrying; do not let an agent create a commit automatically. This check is specific to the default managed-worktree path: a non-Git directory, `orchestrator.use_worktrees: false`, and the separate `dispatch_mode="plugin"` OpenCode Task path may behave differently. In one isolated probe on candidate `965c1d94`, a `git init` repository with no commit returned `launch_workspace_unavailable`; that observation does not generalize to every host or dispatch mode. See the pinned [main worktree base check](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385) and [default worktree setting](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780), plus the corresponding [release `0.59.9` worktree source](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385).
 

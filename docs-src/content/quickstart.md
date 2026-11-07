@@ -61,7 +61,13 @@ codex plugin add ouroboros@ouroboros
 
 <p>처음 설치한다면 새 가상환경을 만들고 활성화해야 합니다. <a href="/docs/first-run-detail/#cli-venv">독립 CLI 가상환경 안내</a>에 새 디렉터리 생성, 설치, 활성화와 확인 명령이 있습니다. 이 링크는 한국어 안내이며 제품 소스 <code>722172ef</code> 기준입니다. 이 quickstart의 <code>592c667f</code> 및 현재 공개 패키지와 판본이 다를 수 있으므로 설치된 버전의 도움말을 확인하세요.</p>
 
-<p>가상환경을 활성화한 터미널에서:</p>
+<p>macOS·Linux·WSL에서는 가상환경을 활성화한 터미널에서 명령을 실행합니다. Windows PowerShell은 <a href="/docs/first-run-detail/#cli-venv">가상환경 상세 안내</a>의 비활성화 직접 경로를 따르세요. 가상환경 디렉터리에서 다음을 실행해 확인한 절대 Python 경로를 기록합니다. 작업 폴더로 <code>Set-Location</code>한 뒤에도 같은 PowerShell 세션에서는 <code>$OuroborosPython</code>을 그대로 사용할 수 있습니다. 새 PowerShell 세션에서는 저장한 실제 절대 경로로 변수를 다시 지정하세요.</p>
+
+<pre><code class="language-powershell">$OuroborosPython = (Resolve-Path .\.venv\Scripts\python.exe).Path
+$OuroborosPython
+&amp; $OuroborosPython -m ouroboros --version</code></pre>
+
+<p>아래의 독립 CLI 설정·Interview·실행 명령에 대해서도 Windows PowerShell에서는 <code>&amp; $OuroborosPython -m ouroboros</code>를 앞에 붙입니다.</p>
 
 <pre><code class="language-bash">python -m pip install ouroboros-ai
 ouroboros --version</code></pre>
@@ -70,9 +76,17 @@ ouroboros --version</code></pre>
 
 <pre><code class="language-bash">ouroboros setup --runtime claude-cli</code></pre>
 
+<p>Windows PowerShell:</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime claude-cli</code></pre>
+
 <p>Codex CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
+
+<p>Windows PowerShell:</p>
+
+<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
 <p><strong>Codex CLI 서버 (macOS/Linux/WSL2 독립 CLI 경로):</strong> Codex 플러그인 설치와 별도 절차입니다. 아래 로컬 stdio 안내는 native Windows PowerShell에는 적용하지 않습니다. 공식 <code>0.59.9</code> CLI를 사용하고 같은 셸에서 <code>uvx</code>가 PATH에 있으면 <code>ouroboros setup --runtime codex</code>가 격리 런처 <code>uvx --from ouroboros-ai[mcp]==0.59.9 ...</code>를 Codex 설정에 등록합니다. 이때 현재 CLI 환경에 <code>[mcp]</code> extra는 필요하지 않습니다. 사용 중인 CLI 경로·판본과 런처를 확인하려면 <code>command -v ouroboros</code>, <code>ouroboros --version</code>, <code>command -v uvx</code>를 setup과 같은 셸에서 확인하세요. 설치 버전이 다르면 런처는 현재 설치판의 버전에 맞춰 고정됩니다.</p>
 
@@ -116,6 +130,12 @@ ooo interview "오늘 할 일을 추가하고 완료 표시할 수 있는 간단
 ouroboros init start "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
 ```
 
+Windows PowerShell (project directory):
+
+```powershell
+& $OuroborosPython -m ouroboros init start "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
+```
+
 Interview가 저장 방식이나 완료 처리처럼 결정이 필요한 점을 질문하면 답합니다. 예를 들어 새로고침 뒤에도 할 일이 남아야 하는지 정할 수 있습니다. 이 문장의 질문은 **설명용 예시**이며 실제 출력이 아닙니다. Seed를 실행하기 전에 전체 YAML의 수용 기준을 검토하고 README가 이 프로젝트의 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명하도록 요구하는지 확인하세요. 테스트가 없다면 없다고 기록하도록 기준을 정할 수 있습니다. 기준이 빠졌거나 실제 목표와 다르면 이미 생성된 Seed YAML을 직접 수정하고 전체를 다시 검토하세요. 정상 생성된 파일을 새로 생성해 덮어쓰지 말고, 승인하기 전에는 실행하지 마세요. 이는 요청할 목표이지, 생성된 README가 이미 존재하거나 정확하거나 테스트됐다는 주장이 아닙니다.
 
 Seed는 목표·제약·완료 조건을 정리한 명세입니다. 아래는 경로별로 실제 Seed를 확인하는 방법입니다.
@@ -138,7 +158,13 @@ MCP 서버를 사용할 수 없으면 스킬은 대화의 확인된 요구로 Se
 
 일반 MCP 백그라운드 실행에서 `orchestrator.use_worktrees`의 기본값은 켜짐이며, 작업 폴더가 Git 저장소 안에 있을 때 별도 worktree 생성 대상이 됩니다. 생성은 실패할 수 있습니다. Git 저장소가 아니거나 설정이 꺼져 있으면 worktree 없이 지정한 작업 폴더에서 실행될 수 있습니다. 반환된 `worktree_path`와 `worktree_branch`가 있다면 확인하고, 없다면 실제 선택된 작업 경로를 확인하세요. OpenCode의 자식 Task에 위임하는 `dispatch_mode="plugin"` 경로는 일반적인 플러그인 설치와 구분되며, job ID나 관리 worktree 없이 진행되므로 Task 창에서 추적합니다. 완료 후 기본적으로 정식 평가가 시작됩니다. 일반 MCP 평가 job에서는 `auto_evolve`가 켜져 있고 `final_approved`가 `false`이면 `rejected`뿐 아니라 `unverified`도 제한된 Ralph 후속 등록을 시도할 수 있습니다. 실제 후속 실행 여부는 Seed 등 조건과 등록 결과에 따라 달라지며, 실행되면 추가 시간과 모델 비용이 들 수 있습니다. 상태와 최종 결과를 확인하세요.
 
-플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. 독립 CLI에서는 실제 생성 경로를 사용해 터미널에서 `ouroboros run <Seed 파일 경로>`를 실행합니다. 꺾쇠 괄호를 포함한 예시 경로를 그대로 입력하지 마세요. 실행은 코드와 파일을 변경하고 명령 및 모델 호출을 시작할 수 있습니다.
+플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. 독립 CLI에서는 실제 생성 경로를 사용해 터미널에서 `ouroboros run <Seed 파일 경로>`를 실행합니다. 꺾쇠 괄호를 포함한 예시 경로를 그대로 입력하지 마세요. Windows PowerShell에서는 실제 경로를 큰따옴표로 감싸고 다음처럼 실행합니다.
+
+```powershell
+& $OuroborosPython -m ouroboros run "<실제 Seed 파일 경로>"
+```
+
+실행은 코드와 파일을 변경하고 명령 및 모델 호출을 시작할 수 있습니다.
 
 진행 중에는 실제로 반환된 ID와 상태를 기록합니다. 완료 표시나 ID만으로 요구가 충족됐다고 판단하지 말고 다음을 확인하세요.
 

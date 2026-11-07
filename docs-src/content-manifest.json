@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "7b13cc0d793c3ce8dc0d9048d0e4d919c1834ed2615004c462123ce8a5bf7cde",
-      "page_sha256": "c69f8147108be9882a010f33515d663cb0314defd31759053515c620e784280d"
+      "source_sha256": "b6605e3d7a4d22cf0841079a9263a3a50a9ac1e92a5a6f05dcac4b9ef4287a60",
+      "page_sha256": "c5fcb5560e7f2d5becd777ec79b54d71ca793aebe20234d9f6e70a6511ebe1eb"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -64,13 +64,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "98103327a48961a149cd67e6bc9ee2ee5252555c983f76e925b032d3e61a99f8",
-      "page_sha256": "a7946fc97e11634b284f3d8bbb65116849c3db1e1eec6185a547454679594a3c"
+      "source_sha256": "d70d442b93e446b7bd9239e4309e964fa6fd32be97797301f42b14916bd34808",
+      "page_sha256": "1b683be83d3055dd9c51af60d43665d27a9d486a733bbc64036981c791592a2e"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "4d4d115871153d93ab03503f826b870ce3745a4eba049ee50b67f685a7535386",
-      "page_sha256": "ebff0cc83b93ce144da9dcd9596b73ee9d996636082b4ac75b0fa09692de866d"
+      "source_sha256": "8499f2a2f51fce62409945e28266554757ce26f25f83020a25b7b0b04b2a14a9",
+      "page_sha256": "9416c2b91dc699899fafe4a56ec5f2a8c4009a9ed982f367082bdc6b888093d4"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",
