@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -46,8 +46,28 @@ def verify(root=ROOT):
     for name, expected in manual['files'].items():
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('AI manual file changed: '+name)
+    current_manifest = manifest
+    navigation = json.loads((root/'pending-recovery-navigation.json').read_text())
+    if navigation.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != navigation['manifest_sha256']:
+        raise ValueError('Recovery navigation manifest or pending status changed')
+    if navigation['prior_manifest_sha256'] != '5a7d9f2833de983d8dd2d9e1c3711657634127ae8ce02bbdd0432c3c8d4545a6':
+        raise ValueError('Recovery navigation prior manifest changed')
+    summary = (root/'pending-recovery-navigation-review.md').read_bytes()
+    if sha(summary) != navigation['summary_sha256']: raise ValueError('Recovery navigation summary changed')
+    if set(navigation['pages']) != {'quickstart.md', 'first-run-detail.md'}: raise ValueError('Recovery navigation page set changed')
+    rows = re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|', summary.decode('utf-8'), re.MULTILINE)
+    if len(rows) != len(navigation['pages']) or {row[0] for row in rows} != set(navigation['pages']):
+        raise ValueError('Recovery navigation summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        entry = navigation['pages'][name]['current']
+        if (entry['source_sha256'], entry['page_sha256']) != (source_hash, page_hash) or manifest['pages'].get(name) != entry:
+            raise ValueError('Recovery navigation current metadata mismatch: '+name)
+    manifest = copy.deepcopy(manifest)
+    for name, entry in navigation['pages'].items(): manifest['pages'][name] = entry['prior']
+    if sha((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()) != navigation['prior_manifest_sha256']:
+        raise ValueError('Recovery navigation snapshot chain mismatch')
     ko_venv = json.loads((root/'pending-ko-venv.json').read_text())
-    if ko_venv.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != ko_venv['manifest_sha256']:
+    if ko_venv.get('status') != 'pending' or navigation['prior_manifest_sha256'] != ko_venv['manifest_sha256']:
         raise ValueError('Korean venv manifest or pending status changed')
     if ko_venv['prior_manifest_sha256'] != '263d4ecf1f03cc86d3feccb53ee56a3e75885cce329f41c12d622b6650093da0': raise ValueError('Korean venv prior manifest changed')
     ko_venv_summary=(root/'pending-ko-venv-review.md').read_bytes()
@@ -652,7 +672,7 @@ def verify(root=ROOT):
     locale_evidence = copy.deepcopy(evidence)
     locale_evidence['static_content_sha256']['assets/ouro-theme.js'] = search['files']['content/assets/ouro-theme.js']
     locale_evidence['static_content_sha256']['assets/site.css'] = access['files']['docs-src/content/assets/site.css']
-    verify_content_tree(root/'content', manifest, locale_evidence)
+    verify_content_tree(root/'content', current_manifest, locale_evidence)
     print('Pending summary, manifest and generated bytes match; canonical source is not checked here. Gate remains closed.')
 
 if __name__ == '__main__': verify()

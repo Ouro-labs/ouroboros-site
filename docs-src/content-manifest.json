@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "e8020bc221127186f27ab8fec5bab95c181d638899d9aec24310c3625f511502",
-      "page_sha256": "b63d9b6526ba6ceaa58b46e492632e44cdb4c66f85a85bfcea2d17017ed34324"
+      "source_sha256": "de29474898f5e26d407f281575834b4753ff2fd5e0d4cab75bfb278c7f741a3c",
+      "page_sha256": "a75dac2d402d05faca8a5d915f6c6ae9a0b0031b8569cdb5bb487e10c5e1e1fb"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -174,8 +174,8 @@
     },
     "first-run-detail.md": {
       "source": "content/first-run-detail.md",
-      "source_sha256": "22471977b8e202a19f97b5a480e96112dc40e4115b7bf903b7faf90f434d64a8",
-      "page_sha256": "a2935dcd6cfb5e188e2b87f71f3b966715858e5ef2621304e50ee363222d2771"
+      "source_sha256": "73560ad1e1417ae812c91126608ede50b953c2ded8bce3468fe05a8ef8e039ab",
+      "page_sha256": "571e97027b9f4d72302e1c1a8db150db8f1ad6155287e19884cef00c43995d61"
     },
     "interview-detail.md": {
       "source": "content/interview-detail.md",

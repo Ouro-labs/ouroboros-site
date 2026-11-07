@@ -157,6 +157,12 @@ MCP 서버를 사용할 수 없으면 스킬은 대화의 확인된 요구로 Se
 
 평가가 시작되지 않았거나 실패했거나 결과가 `unverified`라면, 먼저 실제 `session_id`, 원래 Seed, 산출물과 반환된 작업 경로 또는 `worktree_path`를 대조합니다. 이미 평가 job이나 연결된 Ralph job이 있으면 상태와 결과를 확인하고 중복 시작하지 마세요. **연결된 MCP를 사용하는 플러그인 호스트 대화**라면 새 평가가 필요한 경우에 호스트에 `ooo evaluate <실제 session ID> [산출물]`을 요청하고 실제 프로젝트 경로를 알려주세요. `auto_evolve: false`는 이번 평가에서 새 Ralph 후속을 예약하지 않게 할 뿐, 이미 시작된 평가나 chain을 취소하지 않습니다. **독립 CLI 터미널에는 이 호스트 명령을 입력하지 마세요.** 고정 소스 `592c667f`의 CLI에는 별도 평가 재실행 명령이 확인되지 않았습니다. 설치 버전의 `ouroboros --help`와 버전별 안내를 확인하고, 지원 경로를 찾지 못하면 호스트와 MCP가 연결된 경로를 사용하세요. `unverified`는 승인이 아닙니다. 실행 가능한 검사를 추가하거나 확인한 뒤, 결과별 다음 행동은 [평가 상세 안내](/docs/evaluation-evolution-detail/)에서 확인하세요.
 
-상태 조회는 ID의 종류에 따라 다릅니다. [진행 상태](/docs/progress-detail/)에서 받은 ID에 맞는 경로를 확인하세요. 연결 실패나 중단이 생기면 기존 기록을 보존하고 [복구 안내](/docs/recovery-detail/)를 먼저 읽으세요. 작업이 아직 실행 중일 수 있으므로 곧바로 다시 시작하지 않습니다.
+상태 조회는 ID의 종류에 따라 다릅니다. [진행 상태](/docs/progress-detail/)에서 받은 ID에 맞는 경로를 확인하세요. 문제가 생기면 증상에 따라 확인합니다.
+
+- 호스트에서 `ooo` 명령이나 플러그인을 찾지 못하면, 호스트 플러그인 설치·활성화와 새 대화 여부를 확인하세요. 터미널에서 `ouroboros`를 찾지 못한 것은 독립 CLI가 없다는 뜻일 수도 있습니다. [설치·설정 오류 안내](/docs/recovery-detail/#setup-errors)를 참고하세요.
+- MCP 연결에 실패하면 서버가 호스트에서 활성화·연결됐는지와 실제 도구 목록을 확인하고, [MCP 연결 실패 안내](/docs/ai-troubleshooting/#mcp)를 따르세요.
+- 실행이 중단됐거나 응답이 끊겼다면 기존 job·session·execution ID, Seed와 작업 경로를 보존하고 ID 종류에 맞춰 상태를 확인하세요. job ID가 있으면 같은 job ID로 결과도 조회합니다. 실행이 아직 진행 중일 수 있으므로 소유자와 상태를 확인하기 전 재시작하거나 중복 실행하지 마세요. [ID별 첫 상태 조회 안내](/docs/recovery-detail/#first-status-by-id)를 참고하세요.
+
+복구 상세 안내는 구판 소스 `722172ef`를 기준으로 한 설명과 시험을 포함합니다. 제품 main `592c667f`, 공개 릴리스 `0.59.9`, 설치된 플러그인과 MCP 서버가 서로 다를 수 있으므로, 해당 설치의 버전과 도움말을 확인하고 판본 차이를 가정하지 마세요.
 
 다음으로 [Interview 안내](/docs/interview-guide/), [Seed 형식](/docs/seed-guide/), [기존 프로젝트 적용](/docs/existing-project-detail/)을 살펴볼 수 있습니다.

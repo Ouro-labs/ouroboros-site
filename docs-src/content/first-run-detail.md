@@ -64,7 +64,7 @@ if ($LASTEXITCODE -ne 0) { throw "패키지 설치에 실패했습니다." }
 if ($LASTEXITCODE -ne 0) { throw "CLI 확인에 실패했습니다." }
 ```
 
-위 예는 현재 PowerShell 세션의 `$ErrorActionPreference`를 `Stop`으로 바꾸고 새 디렉터리로 이동합니다. 이후 같은 디렉터리에서 CLI를 사용할 때도 `.\.venv\Scripts\python.exe -m ouroboros ...` 형식을 사용하세요. 다른 디렉터리에서는 확인한 가상환경의 실제 Python 경로를 지정합니다. 실행 정책 변경 없이 활성화를 생략한 경로이며, 이 한국어 블록 자체는 실제 Windows에서 시험하지 않았습니다.
+위 예는 현재 PowerShell 세션의 `$ErrorActionPreference`를 `Stop`으로 바꾸고 새 디렉터리로 이동합니다. 이후 같은 디렉터리에서 CLI를 사용할 때도 `.\.venv\Scripts\python.exe -m ouroboros ...` 형식을 사용하세요. 다른 디렉터리에서는 확인한 가상환경의 실제 Python 경로를 지정합니다. 실행 정책 변경 없이 활성화를 생략한 경로이며, 이 블록은 Windows Actions의 PowerShell 파일 실행에서 Python 3.12·3.13과 공개 0.59.9로 확인했지만 사용자 PC나 대화형 붙여넣기는 시험하지 않았습니다.
 
 이 절의 `pip install ouroboros-ai`는 기본 패키지만 설치합니다. 아직 `ouroboros setup`을 실행하지 말고, 먼저 [런타임별 요구사항](/docs/runtime-support-detail/)을 확인해 실행 파일·인증·필요한 extra를 갖춘 뒤 명시적으로 런타임을 선택하세요. 특히 `claude`는 Claude Agent SDK 경로이며 `[claude]` 또는 `[claude-sdk]` extra가 필요합니다. 설치된 Claude CLI만으로 SDK가 설치되지는 않습니다. `claude-cli`는 별도 MCP 2 프로필 경로이고 `[claude-cli]` extra 자체는 비어 있지만 MCP 서버용 `[mcp]` 프로필이 필요합니다. `ouroboros setup`은 자동으로 하나의 감지된 런타임을 선택할 수도 있고 사용자 설정을 변경할 수 있으므로, 런타임 선택과 기존 설정을 검토한 후 진행하세요. 준비 후 `ouroboros status health` 결과를 읽습니다. 정상 표시는 모델 인증·호출 성공을 보장하지 않습니다. 새 터미널에서는 다시 활성화하거나 위 절대 경로를 사용하세요. `deactivate`는 현재 셸에서 가상환경을 벗어납니다. 가상환경은 로컬에 남고 자동 백업되지 않습니다.
 

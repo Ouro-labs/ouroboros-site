@@ -94,7 +94,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
@@ -113,7 +113,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
@@ -146,7 +146,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_diagnostic_summary(self):
         (self.root/'pending-job-diagnostic-review.md').write_text('altered');self.rejected('Diagnostic summary changed')
@@ -168,7 +168,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_package_summary(self):
         (self.root/'pending-package-review.md').write_text('altered');self.rejected('Package summary changed')
@@ -190,7 +190,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_seed_summary(self):
         (self.root/'pending-seed-review.md').write_text('altered');self.rejected('Seed summary changed')
@@ -212,7 +212,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_interview_summary(self):
         (self.root/'pending-interview-review.md').write_text('altered');self.rejected('Interview summary changed')
@@ -234,7 +234,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_seed_version_summary(self):
         (self.root/'pending-seed-version-review.md').write_text('altered');self.rejected('Seed version summary changed')
@@ -256,7 +256,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_runtime_summary(self):
         (self.root/'pending-runtime-review.md').write_text('altered');self.rejected('Runtime summary changed')
@@ -278,7 +278,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_home_summary(self):
         (self.root/'pending-home-review.md').write_text('altered');self.rejected('Home summary changed')
@@ -313,7 +313,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_headings_summary(self):
         (self.root/'pending-headings-review.md').write_text('altered');self.rejected('Headings summary changed')
@@ -333,7 +333,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_headings_hook(self):
         (self.root/'heading_labels.py').write_text('altered');self.rejected('Headings file changed')
@@ -356,7 +356,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_example_config(self):
         (self.root/'mkdocs.yml').write_text('altered');self.rejected('Example file changed')
@@ -378,7 +378,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_worktree_result_summary(self):
         (self.root/'pending-worktree-review-result.md').write_text('altered');self.rejected('Worktree result summary changed')
@@ -395,7 +395,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_seed_verification_summary(self):
         (self.root/'pending-seed-verification-review.md').write_text('altered');self.rejected('Seed verification summary changed')
@@ -411,7 +411,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_browser_example_summary(self):
         (self.root/'pending-browser-example-review.md').write_text('altered');self.rejected('Browser example summary changed')
@@ -426,7 +426,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_initial_commit_summary(self):
         (self.root/'pending-initial-commit-review.md').write_text('altered');self.rejected('Initial commit summary changed')
@@ -440,7 +440,7 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_sidecar_summary(self):
         (self.root/'pending-sidecar-review.md').write_text('altered');self.rejected('Sidecar summary changed')
@@ -453,7 +453,7 @@ class PendingGuidesTest(unittest.TestCase):
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_megacode_claim_summary(self):
         (self.root/'pending-megacode-claim-review.md').write_text('altered');self.rejected('Megacode claim summary changed')
@@ -465,7 +465,7 @@ class PendingGuidesTest(unittest.TestCase):
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Korean venv snapshot chain mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
 
     def test_changed_ai_manual_summary(self):
         (self.root/'pending-ai-manual-review.md').write_text('altered');self.rejected('AI manual summary changed')
@@ -475,6 +475,18 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-ai-manual.json';e=json.loads(p.read_text());e['manifest_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('AI manual manifest chain mismatch')
     def test_changed_ai_manual_discovery_test(self):
         (self.root/'tests/test_ai_manual_discovery.py').write_text('altered');self.rejected('AI manual file changed')
+    def test_recovery_navigation_summary_changed(self):
+        (self.root/'pending-recovery-navigation-review.md').write_text('altered')
+        self.rejected('Recovery navigation summary changed')
+    def test_recovery_navigation_prior_changed(self):
+        p=self.root/'pending-recovery-navigation.json'; e=json.loads(p.read_text()); e['pages']['quickstart.md']['prior']['source_sha256']='a'*64; p.write_text(json.dumps(e))
+        self.rejected('Recovery navigation snapshot chain mismatch')
+    def test_recovery_navigation_evidence_symlink(self):
+        p=self.root/'pending-recovery-navigation.json'; p.unlink(); p.symlink_to(self.root/'pending-ko-venv.json')
+        self.rejected('Evidence input is not a regular non-symlink file')
+    def test_recovery_navigation_source_changed(self):
+        p=self.root/'content/quickstart.md'; p.write_text(p.read_text()+'changed')
+        self.rejected('Content hash does not match: quickstart.md')
     def test_changed_ko_venv_summary(self):
         (self.root/'pending-ko-venv-review.md').write_text('altered');self.rejected('Korean venv summary changed')
     def test_changed_ko_venv_chain(self):
@@ -484,10 +496,10 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='first-run-detail.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Korean venv current metadata mismatch')
+        self.rejected('Recovery navigation manifest or pending status changed')
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Korean venv manifest or pending status changed')
+        self.rejected('Recovery navigation manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):
@@ -498,5 +510,49 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'content/dashboard-guide.md';p.unlink();p.symlink_to(self.root/'content/megacode-guide.md');self.rejected('Symlink in content tree')
     def test_symlink_root(self):
         p=self.root/'content'; other=self.root/'moved';p.rename(other);p.symlink_to(other,target_is_directory=True);self.rejected('Content root is a symlink')
+
+class PriorStageTamperTest(unittest.TestCase):
+    """Run the real lower verifier against the reconstructed preceding snapshot.
+
+    The new outer manifest commitment necessarily rejects mutations before they
+    reach older checks. The fixture removes only that outer stage from an in-memory
+    copy of the verifier, then runs unchanged lower-stage logic against the exact
+    previous manifest. Production verification is never bypassed.
+    """
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)/'docs-src'
+        shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
+        (self.root.parent/'site').mkdir()
+        shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt')
+        shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
+        nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
+        manifest = json.loads((self.root/'content-manifest.json').read_text())
+        for name, entry in nav['pages'].items(): manifest['pages'][name] = entry['prior']
+        raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), nav['prior_manifest_sha256'])
+        (self.root/'content-manifest.json').write_bytes(raw)
+        code = (ROOT/'verify-pending-guides.py').read_text()
+        start = code.index('    current_manifest = manifest\n')
+        end = code.index("    ko_venv = json.loads(", start)
+        code = code[:start] + '    current_manifest = manifest\n' + code[end:]
+        old = "navigation['prior_manifest_sha256'] != ko_venv['manifest_sha256']"
+        self.assertEqual(code.count(old), 1)
+        code = code.replace(old, "sha((root/'content-manifest.json').read_bytes()) != ko_venv['manifest_sha256']")
+        namespace = {'__file__': str(ROOT/'verify-pending-guides.py'), '__name__': 'prior_stage_fixture'}
+        exec(compile(code, str(ROOT/'verify-pending-guides.py'), 'exec'), namespace)
+        self.verify_prior = namespace['verify']
+    def rejected(self, _outer_expected):
+        expected = ('Korean venv current metadata mismatch' if self._testMethodName == 'test_forged_ko_venv_source_hash'
+                    else 'Korean venv manifest or pending status changed' if self._testMethodName == 'test_changed_manifest'
+                    else 'Korean venv snapshot chain mismatch')
+        with self.assertRaisesRegex(ValueError, expected): self.verify_prior(self.root)
+
+# Repeat every original forged-manifest case at the old lower boundary, while
+# retaining its current end-to-end outer rejection test in PendingGuidesTest.
+for _name in dir(PendingGuidesTest):
+    if _name.startswith('test_forged_') or _name == 'test_changed_manifest':
+        setattr(PriorStageTamperTest, _name, getattr(PendingGuidesTest, _name))
 
 if __name__ == '__main__': unittest.main()
