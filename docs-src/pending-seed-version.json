@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "cba82169c5fffef75de469b8e3722016ece8551b0067c4906d6154efa9642bb8",
+  "prior_manifest_sha256": "25c8aa5b5a2adbea5ed1abcc278b142dacf2681b3deb30953744c12b3c9053f3",
+  "summary_sha256": "94b8302f8fffddeae451f6713ace228987b76f98442b34f77be781cd35bcb427",
+  "pages": {
+    "seed-guide.md": {
+      "current": {
+        "source": "content/seed-guide.md",
+        "source_sha256": "d4590aeb8c82b5c1af3256ba3fcacbcc8bb5d93e00bec030d01f6118cdf7ea83",
+        "page_sha256": "21812b500bd19fa71e2f7f41ed8ef269cf530455c92c48bc2f76410462ed10cd"
+      },
+      "prior": {
+        "source": "content/seed-guide.md",
+        "source_sha256": "f02b2e5a69fe3e9cfdd789d763702ea594638a2864f2263c4dc1197af0561b63",
+        "page_sha256": "fe036c0edd1fb4a1e4390dc7bb1d8c0ce7b38e6e45f6dbe2aa51407db81875b7"
+      }
+    }
+  }
+}
