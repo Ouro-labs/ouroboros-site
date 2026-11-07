@@ -227,6 +227,10 @@ Windows PowerShell（项目目录中）：
 
 **操作顺序：**先阅读下方检查和警告 → 运行已检查的 Seed → 保存实际返回的 ID 与工作路径 → 检查文件、测试和评估结果 → 遇到问题时查看[故障排除](/docs/zh/troubleshooting/#recovery)。
 
+如果这是刚初始化的 Git 仓库，且普通 MCP 后台运行将使用默认的受管理 worktree 设置，请在项目目录运行 `git rev-parse --verify HEAD` 检查是否已有初始提交。如果因没有提交而失败，请先检查文件，并由你自己决定是否以及提交哪些内容，再重试；不要让代理自动创建提交。此检查只针对默认受管理 worktree 路径：非 Git 目录、`orchestrator.use_worktrees: false`，以及独立的 `dispatch_mode="plugin"` OpenCode Task 路径可能有不同表现。在针对候选版本 `965c1d94` 的一次隔离试验中，对执行过 `git init` 但尚无提交的仓库返回了 `launch_workspace_unavailable`；该观察不能推广到所有宿主或分派模式。请参阅固定版本的 [main worktree 基准检查](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385)、[默认 worktree 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780)及对应的 [release `0.59.9` worktree 源码](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385)。
+
+普通 MCP 后台运行中，`orchestrator.use_worktrees` 默认开启；工作目录位于 Git 仓库内时，才有条件创建独立 worktree，但创建也可能失败。工作目录不在 Git 仓库内或该设置关闭时，可能不使用 worktree，而直接在指定的工作目录中执行。如果返回了 `worktree_path` 和 `worktree_branch`，请核对它们；否则请确认实际选用的工作目录。`dispatch_mode="plugin"` 是委派给 OpenCode 子 Task 的路径，与普通插件安装不同：它没有 job ID 或受管理的 worktree，应在 Task 窗格中追踪。运行完成后通常会启动正式评估。普通 MCP 评估 job 中，当 `auto_evolve` 开启且 `final_approved` 为 `false` 时，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
+
 在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。Windows PowerShell 中，请将实际路径放在双引号内并运行：
 
 ```powershell
@@ -234,10 +238,6 @@ Windows PowerShell（项目目录中）：
 ```
 
 执行过程可能会更改代码和文件，并启动命令及模型调用。
-
-如果这是刚初始化的 Git 仓库，且普通 MCP 后台运行将使用默认的受管理 worktree 设置，请在项目目录运行 `git rev-parse --verify HEAD` 检查是否已有初始提交。如果因没有提交而失败，请先检查文件，并由你自己决定是否以及提交哪些内容，再重试；不要让代理自动创建提交。此检查只针对默认受管理 worktree 路径：非 Git 目录、`orchestrator.use_worktrees: false`，以及独立的 `dispatch_mode="plugin"` OpenCode Task 路径可能有不同表现。在针对候选版本 `965c1d94` 的一次隔离试验中，对执行过 `git init` 但尚无提交的仓库返回了 `launch_workspace_unavailable`；该观察不能推广到所有宿主或分派模式。请参阅固定版本的 [main worktree 基准检查](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L374-L385)、[默认 worktree 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/models.py#L775-L780)及对应的 [release `0.59.9` worktree 源码](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py#L374-L385)。
-
-普通 MCP 后台运行中，`orchestrator.use_worktrees` 默认开启；工作目录位于 Git 仓库内时，才有条件创建独立 worktree，但创建也可能失败。工作目录不在 Git 仓库内或该设置关闭时，可能不使用 worktree，而直接在指定的工作目录中执行。如果返回了 `worktree_path` 和 `worktree_branch`，请核对它们；否则请确认实际选用的工作目录。`dispatch_mode="plugin"` 是委派给 OpenCode 子 Task 的路径，与普通插件安装不同：它没有 job ID 或受管理的 worktree，应在 Task 窗格中追踪。运行完成后通常会启动正式评估。普通 MCP 评估 job 中，当 `auto_evolve` 开启且 `final_approved` 为 `false` 时，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
 
 运行过程中，请记录实际返回的 ID 和状态。仅凭完成提示或 ID 不能证明需求已满足。请检查以下内容：
 
