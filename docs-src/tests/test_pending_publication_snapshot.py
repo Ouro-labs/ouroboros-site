@@ -30,6 +30,9 @@ class SnapshotTest(unittest.TestCase):
         (self.root/'docs-src/link-review-evidence.json').write_text(json.dumps(evidence))
         for name in ('site/llms.txt','site/index.html','docs-src/overrides/main.html','docs-src/mkdocs.yml','.github/workflows/pages.yml'):
             (self.root/name).write_text(name)
+        shortcut=self.root/'docs-src/content/assets/ouro-search-shortcut.js'
+        shortcut.parent.mkdir(parents=True);shortcut.write_text('synthetic shortcut')
+        (self.root/'docs-src/pending-search-shortcut.json').write_text(json.dumps({'status':'pending','files':{'docs-src/content/assets/ouro-search-shortcut.js':mod.digest(shortcut.read_bytes())}}))
         self.snapshot=mod.create(self.root,self.generator)
     def rejected(self, text):
         with self.assertRaisesRegex((ValueError,OSError),text):mod.verify(self.root,self.snapshot,self.generator)

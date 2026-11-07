@@ -104,3 +104,4 @@ extra_css:
   - assets/site.css
 extra_javascript:
   - assets/ouro-theme.js
+  - assets/ouro-search-shortcut.js

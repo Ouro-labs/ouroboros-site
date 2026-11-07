@@ -131,6 +131,15 @@ def check_manifest(root, files):
         safe_relative(name)
         if not SHA.fullmatch(str(expected)) or 'docs-src/content/'+name not in files:
             raise ValueError('Static content missing or legacy hash malformed: '+name)
+    shortcut = load_json(regular(root, 'docs-src/pending-search-shortcut.json'))
+    shortcut_files = shortcut.get('files', {})
+    shortcut_path = 'docs-src/content/assets/ouro-search-shortcut.js'
+    if shortcut.get('status') != 'pending' or not isinstance(shortcut_files, dict) or shortcut_files.get(shortcut_path) != files.get(shortcut_path):
+        raise ValueError('Search shortcut input missing or changed')
+    if 'assets/ouro-search-shortcut.js' in set(pages) | set(assets) | set(static):
+        raise ValueError('Search shortcut content overlaps')
+    static = dict(static)
+    static['assets/ouro-search-shortcut.js'] = shortcut_files[shortcut_path]
     actual_content = {name.removeprefix('docs-src/content/') for name in files if name.startswith('docs-src/content/')}
     if actual_content != set(pages) | set(assets) | set(static):
         raise ValueError('Content file set differs from manifest and static inputs')
