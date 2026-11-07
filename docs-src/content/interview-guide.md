@@ -2,7 +2,12 @@
 
 이 안내는 요구가 아직 모호하거나 완료 기준이 정해지지 않은 작업을 시작할 때 사용합니다. 목적은 질문을 많이 하는 것이 아니라, AI가 대신 정해 버리면 결과가 달라지는 결정을 당신과 확인하는 것입니다. 이미 검토된 Seed가 있거나 명확한 작은 수정이라면 [기존 Seed 실행](/docs/seed-guide/#run-reviewed-seed) 또는 일반 작업 요청으로 시작해도 됩니다.
 
-**판본:** 제품 공개 `main` `592c667f076c3dad7ef68d7844e91480d80135d0`의 [interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md), [seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md), [인터뷰 MCP 도구](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py)를 대조했습니다. 공개 사이트의 기존 [Interview 장](https://ouroboros.page/learn/interview/)은 2026-08-14에 확인한 `0.51.5` / `d103058fe` 판본입니다. 그 할 일 앱 예제 흐름은 이어받되 현재 명령과 기능의 근거로 삼지 않습니다. `main`, PyPI release, 호스트 plugin과 실제 MCP 서버는 서로 같은 판본이라고 가정할 수 없습니다. 설치된 host·server가 다르면 실제 응답과 해당 버전 도움말을 우선하세요. 세부 조건은 [기존 인터뷰 참조](/docs/interview-detail/), [판본 및 확인 범위](/docs/version-guide/#version-scope)에 있습니다.
+**판본:** 이 안내는 공개 제품 `main` `592c667f076c3dad7ef68d7844e91480d80135d0`을 기준으로 합니다. 기존 공개 [Interview 장](https://ouroboros.page/learn/interview/)은 2026-08-14에 확인한 구판 `0.51.5`이며 예제 흐름만 참고하세요. 설치된 CLI·host plugin·MCP 서버는 서로 다른 판본일 수 있으므로 실제 응답과 설치 버전의 도움말을 우선하고, [판본 및 확인 범위](/docs/version-guide/#version-scope)를 확인하세요.
+
+<details>
+<summary>판본을 대조한 소스와 구판 예제의 범위</summary>
+<p>현재 안내의 기능 근거는 제품 main의 <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md">interview skill</a>, <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md">seed skill</a>, <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py">인터뷰 MCP 도구</a>입니다. 구판 <a href="https://ouroboros.page/learn/interview/">사이트 Interview 장</a>은 2026-08-14에 확인한 `0.51.5` / <code>d103058fe</code> 판본입니다. 그 할 일 앱 흐름은 참고할 수 있지만 현재 명령과 기능의 근거로 삼지 않습니다. 제품 main, PyPI release, 호스트 plugin 및 실제 연결된 MCP 서버가 같은 판본이라고 가정하지 마세요. 설치 경로에 따른 세부 조건은 <a href="/docs/interview-detail/">기존 인터뷰 참조</a>와 <a href="/docs/version-guide/#version-scope">판본 및 확인 범위</a>에 있습니다.</p>
+</details>
 
 ## 어디에 입력하나요?
 
