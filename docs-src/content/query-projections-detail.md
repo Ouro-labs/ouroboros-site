@@ -24,6 +24,8 @@ flowchart TD
 
 ## 1. 특정 세션의 이벤트 살펴보기
 
+**표시 범위:** 고정 `722172ef`, 개발 소스 `592c667f`, 공개 릴리스 `0.59.9`의 `ouroboros_query_events` 텍스트 응답은 각 이벤트의 `data`를 문자열로 바꾼 뒤 길면 앞 100자와 말줄임표만 표시한다. 응답의 페이지 메타데이터도 전체 payload를 제공하지 않는다. 같은 세 소스에서 `ouroboros status execution <execution_id> --events`는 시각·이벤트 유형·상태를 표로 보여 주며 전체 payload는 표시하지 않는다. 따라서 표시 내용만으로 뒤에 생략된 세부사항이나 외부 효과의 부재를 판단하지 않는다. 설치된 호스트·서버의 실제 출력은 해당 버전에서 확인한다. [이벤트 표시 722](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/tools/query_handlers.py#L570-L581) · [개발 소스](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/query_handlers.py#L570-L581) · [릴리스](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/query_handlers.py#L570-L581) · [CLI 표시 722](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/status.py#L609-L619) · [개발 소스](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/status.py#L609-L619) · [릴리스](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/status.py#L609-L619).
+
 실제 `session_id`를 알고 있을 때 연결된 서버에서 다음과 같은 인자를 `ouroboros_query_events`에 전달한다. 값을 임의로 만들거나 다른 종류의 ID를 대입하지 않는다.
 
 ```json

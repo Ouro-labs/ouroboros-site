@@ -199,8 +199,8 @@
     },
     "query-projections-detail.md": {
       "source": "content/query-projections-detail.md",
-      "source_sha256": "b5a179421ab457b82c8e79af28c5768b9f0ad594edc9e1c486f3994a7a4c36da",
-      "page_sha256": "26d6a3297d1c6be84c67780fb495332a2ab274575d5934ed5b71ec845dac1ee2"
+      "source_sha256": "46117c18a607344d7bab3ee93a7ccf429fd8887c84bc45751ce1561085a7b08a",
+      "page_sha256": "368c036b6c2be1733398a6fb62e575989a6f25fd02d752cc55f5ebbeb4b25eed"
     },
     "architecture-detail.md": {
       "source": "content/architecture-detail.md",
