@@ -152,6 +152,9 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. 描述目标并检查 Seed
 
+!!! warning "运行前检查受管理 worktree 路径"
+    使用 worktree 的执行在准备时，如果 `<worktree_root>/<仓库名称>/<durable_id>` 已存在但未在目标仓库注册为 Git worktree，可能尝试递归删除该路径。默认 root 为 `~/.ouroboros/worktrees`。开始或恢复前，包括 `init start` 的执行选择前，请检查实际 root、预期路径、Git 注册状态及需要保留的数据。如果无法确认，请暂缓执行；不要擅自删除或覆盖不确定的路径。此说明仅适用于 worktree 准备条件，不代表所有路径都能删除成功。 [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357)
+
 **插件：**在新的 Claude Code 或 Codex 会话中打开任务目录，然后在宿主的**对话中**输入以下命令。
 
 ```text

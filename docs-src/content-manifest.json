@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "aef7c7dfef0381aa1e67463566e25fa904212f9374e99101efde5e122e40eb20",
-      "page_sha256": "fd0293346e41961f80e8c7716ec81610976da481369a23459b4eb783ec6b6b50"
+      "source_sha256": "7649f0dbe2d2b6612023a5737a90417ebb90b127f558e5c7bdaa9d82c8371461",
+      "page_sha256": "15ebfbf441cd631c1564d1969bf5894e7b95be392f4c31d2fb0cd4d0ae7a7101"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -64,13 +64,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "4a6f0ea576c757826d127223ab26b85de16308b8f84484f7f8b7b022a0046fac",
-      "page_sha256": "5f8180f35c84439ebe5b411997b931bd462464716658062b65f82c2c93c9c6f3"
+      "source_sha256": "9a5f5824d1ab4b88d6463fa15153ad849909ea07fc236dcaa196d1bb02ddf955",
+      "page_sha256": "ccbd4b0c5d9738faaa70e7b9533a8565c5e1adda58dcaadb70ffde83382527ab"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "99e537ed2a6c777ce1a7bda7ab90ad374a1b9af6ce541edc0478c2102a1b3ebc",
-      "page_sha256": "80f6e6518446aa883525bdd41eceb078a7c4583868df1088ff7ebdb0425be85a"
+      "source_sha256": "e96b80e659f8dba1f14f8358501df32d2188353300edb1540b81ab7fc4dafb07",
+      "page_sha256": "a2aa4cbcb942a8ed9b5c10038ad9b15ace5dde51e860568c9756c6d88388f126"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",
@@ -189,8 +189,8 @@
     },
     "existing-project-detail.md": {
       "source": "content/existing-project-detail.md",
-      "source_sha256": "905a7f3928ad590e9be9f8598058cbb2210f8aebaedc62a5cd27dff9b19b4e7c",
-      "page_sha256": "985c2ca20478bc7e9f1cdcdbc3e790961900dc0b36c044480380ef8c7d86bf7d"
+      "source_sha256": "3431c182994c761d43dde55ffeb77015ad85a90424944d63edad87921bd087bf",
+      "page_sha256": "67105e0c7cd370530a95c05628e46c1c8f5033c19e756f12f627c423892a869a"
     },
     "progress-detail.md": {
       "source": "content/progress-detail.md",

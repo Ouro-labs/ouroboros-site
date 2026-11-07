@@ -43,6 +43,16 @@ class SnapshotTest(unittest.TestCase):
     def test_llms_change_with_unchanged_manifest_rejected(self):
         before=(self.root/'docs-src/content-manifest.json').read_bytes();(self.root/'site/llms.txt').write_text('altered')
         self.assertEqual(before,(self.root/'docs-src/content-manifest.json').read_bytes());self.rejected('Input file changed')
+    def test_only_tool_test_bytecode_is_excluded(self):
+        for name in ('docs-src/__pycache__','docs-src/tests/__pycache__'):
+            p=self.root/name;p.mkdir(parents=True,exist_ok=True);(p/'local.pyc').write_bytes(b'bytecode')
+        self.assertGreater(mod.verify(self.root,self.snapshot,self.generator),63)
+        for name in ('site/__pycache__','docs-src/content/__pycache__'):
+            p=self.root/name;p.mkdir();(p/'local.pyc').write_bytes(b'bytecode')
+            try:self.rejected('Input file set differs')
+            finally:(p/'local.pyc').unlink();p.rmdir()
+    def test_test_cache_directory_symlink_rejected(self):
+        p=self.root/'docs-src/tests/__pycache__';p.parent.mkdir();p.symlink_to(self.root/'site',target_is_directory=True);self.rejected('Symlink rejected')
     def test_extra_and_missing_files(self):
         extra=self.root/'site/new.txt';extra.write_text('new');self.rejected('Input file set differs');extra.unlink()
         (self.root/'docs-src/content/p0.md').unlink();self.rejected('Input file set differs')

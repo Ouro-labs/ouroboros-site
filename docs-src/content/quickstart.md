@@ -123,6 +123,9 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. 목표를 이야기하고 Seed 검토하기
 
+!!! warning "실행 전 관리 worktree 경로 확인"
+    worktree를 사용하는 실행의 준비 과정은 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 해당 경로의 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. `init start`의 실행 선택을 포함해 시작·재개 전에 실제 root와 예상 경로, Git 등록 상태와 보존할 자료를 확인하세요. 확인할 수 없다면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 이는 worktree 준비 조건에 한정되며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357)
+
 **플러그인:** 새 Claude Code 또는 Codex 세션에서 작업 폴더를 열고, 호스트 **대화에** 입력합니다.
 
 ```text

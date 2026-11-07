@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SNAPSHOT = 'docs-src/pending-publication-snapshot.json'
 TREES = ('site', 'docs-src', '.github/workflows')
 GENERATED = 'site/docs'
-CACHE = 'docs-src/__pycache__'
+# Python bytecode under the tool and its test directory is not a Pages input.
+# Do not ignore caches under content or site: those can be published.
+CACHES = ('docs-src/__pycache__', 'docs-src/tests/__pycache__')
 SHA = re.compile(r'^[0-9a-f]{64}$')
 
 
@@ -83,7 +85,7 @@ def collect(root):
                 p = Path(current)/name
                 rel = p.relative_to(root).as_posix()
                 if p.is_symlink(): raise ValueError('Symlink rejected: '+rel)
-                if rel in (GENERATED, CACHE): dirs.remove(name)
+                if rel == GENERATED or rel in CACHES: dirs.remove(name)
             for name in files:
                 p = Path(current)/name
                 rel = p.relative_to(root).as_posix()

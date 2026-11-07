@@ -152,6 +152,9 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. Describe Your Goal and Review the Seed
 
+!!! warning "Check the managed worktree path before execution"
+    When an execution uses worktrees, preparation may attempt recursive deletion of `<worktree_root>/<repository name>/<durable_id>` if that path already exists but is not registered as a Git worktree of the target repository. The default root is `~/.ouroboros/worktrees`. Before starting or resuming, including the execution choice in `init start`, check the actual root, expected path, Git registration, and data to preserve. If you cannot verify them, defer execution; do not delete or overwrite an uncertain path. This applies only when worktree preparation is used and does not imply deletion succeeds for every path. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357)
+
 **Plugin:** Open the task folder in a new Claude Code or Codex session, then enter these commands in the host's **conversation**.
 
 ```text
