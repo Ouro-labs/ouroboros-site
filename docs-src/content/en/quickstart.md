@@ -157,13 +157,15 @@ ouroboros setup --runtime codex</code></pre>
 !!! warning "Check the managed worktree path before execution"
     When an execution uses worktrees, preparation may attempt recursive deletion if `<worktree_root>/<repository name>/<durable_id>` already exists but is not registered as a Git worktree of the target repository. The default root is `~/.ouroboros/worktrees`. A new CLI run and a normal MCP run without a separately supplied ID generate the ID during execution, so the exact new path is not known beforehand. Before starting, check the actual managed root and repository directory, Git worktree registrations with `git worktree list --porcelain` in the target repository, active work, and data to preserve. For a resume, also compare the actual session ID and saved workspace path when available. If you cannot check these, defer execution; do not delete or overwrite an uncertain path. Concurrent changes can still create risk after inspection, and deletion does not necessarily succeed for every path. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
-**Plugin:** Open the task folder in a new Claude Code or Codex session, then enter these commands in the host's **conversation**.
+**Claude Code plugin:** Open the task folder in a new session and request setup in the host's **conversation**.
 
 ```text
 ooo setup
 ```
 
-Answer the setup questions and finish setup, then send the Interview request as the next message.
+Answer the setup questions and finish. **Codex plugin:** Open the task folder in a new Codex session and check that the installed plugin and MCP tools are connected. If not, see the [MCP troubleshooting guide](/docs/en/ai-troubleshooting/). Standalone Codex CLI setup is a separate path.
+
+Once ready, send the Interview request as the next message in the host conversation.
 
 ```text
 ooo interview "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."

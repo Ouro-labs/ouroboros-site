@@ -1,14 +1,10 @@
 import re
 import unittest
 from pathlib import Path
-
 ROOT = Path(__file__).resolve().parents[1]
-
 class SetupInterviewSplitTest(unittest.TestCase):
-    def test_separate_conversation_messages(self):
-        phrases = {'quickstart.md': '설정 질문에 답해 설정을 마친 다음, 다음 메시지로 Interview를 요청합니다.', 'en/quickstart.md': 'Answer the setup questions and finish setup, then send the Interview request as the next message.', 'zh/quickstart.md': '回答设置问题并完成设置，然后在下一条消息中发送 Interview 请求。'}
-        for name, phrase in phrases.items():
+    def test_host_setup_is_scoped_and_interview_separate(self):
+        phrases={'quickstart.md':('Claude Code 플러그인','Codex 플러그인','다음 메시지로 Interview'), 'en/quickstart.md':('Claude Code plugin','Codex plugin','next message in the host conversation'), 'zh/quickstart.md':('Claude Code 插件','Codex 插件','下一条消息中发送 Interview')}
+        for name,(claude,codex,bridge) in phrases.items():
             with self.subTest(page=name):
-                text=(ROOT/'content'/name).read_text()
-                pattern=r'```text\nooo setup\n```\n\n'+re.escape(phrase)+r'\n\n```text\nooo interview "[^\n]+"\n```'
-                self.assertRegex(text,pattern)
+                text=(ROOT/'content'/name).read_text();a=text.index(claude);b=text.index('```text\nooo setup\n```',a);c=text.index(codex,b);d=text.index(bridge,c);e=text.index('```text\nooo interview ',d);self.assertTrue(a<b<c<d<e);self.assertIn('MCP',text[c:d])
