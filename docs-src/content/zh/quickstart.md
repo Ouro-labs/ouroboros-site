@@ -11,8 +11,17 @@
 - 检查网络连接、所选宿主或 Python 环境，以及计划使用的模型所需的认证和费用条件。模型调用可能需要时间，也可能产生费用。
 - 执行过程可能创建或修改文件并运行命令。首次练习请使用一个与现有工作隔离的新目录，并在宿主中打开该目录。
 - 安装和设置可能会更改软件包或配置文件。请先阅读每个提示再继续。查看[设置指南](/docs/config-reference-detail/)，确认使用统计设置是否适用于你安装的版本和服务器进程。
-- **信任与隔离：**新工作目录不是安全边界。在所引用的源码中，未显式传入权限模式时，部分基于 CLI 的 Interview 路径（包括 Codex）可能选择 `bypassPermissions`；部分备用运行时重试和验证路径也会请求该模式。此外，`OrchestratorRunner` 初始化会强制把传入 adapter 的权限设为该运行时的 native bypass 模式，因此不要假设原有 sandbox 设置仍然生效。对 Codex 而言，bypass 会同时取消审批门和 sandbox。这是特定路径的行为，并非每个宿主操作都会如此。不要直接在不可信代码库或敏感环境中运行。如确需继续，请使用独立隔离的操作系统、虚拟机或容器，并先检查其文件访问范围和网络策略。[main Interview 权限解析](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/factory.py#L113-L143) · [Codex 权限映射](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/codex_permissions.py#L26-L50) · [Runner adapter 权限强制](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L879-L879) · [native bypass 设置](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L5190-L5208) · [重试路径](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/parallel_executor.py#L7068-L7074) · [验证路径](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/server/adapter.py#L2150-L2158) · [release `v0.59.9` 对应源码路径](https://github.com/Q00/ouroboros/tree/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros)
-- **调用与费用：**MCP 请求中的 `model_tier=small` 表示请求 `frugal` 执行 tier，但不保证实际运行某个特定模型。显式模型 pin、backend 的 tier ladder 支持、native model override 支持和配置会影响路由是否生效及实际模型。可信的分解子任务可能降低一个 tier；部分失败重试会升到更强 tier，验证等独立角色也可能额外调用模型。`small` 不是总调用次数或总费用上限。开始前请检查模型提供方的费用条款和用量控制。[MCP tier 参数](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1116-L1125) · [tier 路由条件](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/model_routing.py#L360-L399) · [重试 tier 路由](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/model_routing.py#L503-L529) · [验证模型调用](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/server/adapter.py#L2150-L2162) · [release `v0.59.9` 对应源码路径](https://github.com/Q00/ouroboros/tree/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros)
+- **安全：**不要直接在不可信代码库或敏感环境中运行。通过 `OrchestratorRunner` 的 Codex 执行路径可能强制使用 native bypass，从而关闭审批和 sandbox。继续前，请先确认独立操作系统、虚拟机或容器的文件与网络隔离。
+- **费用：**`small` 不是总调用次数或总费用上限。重试可能升到更高 tier，验证等独立角色也可能增加调用。请检查提供方费用和用量控制。
+
+<details>
+<summary>源码条件与路由细节</summary>
+
+<p><strong>信任与隔离：</strong> 新工作目录不是安全边界。在所引用的源码中，未显式传入权限模式时，部分基于 CLI 的 Interview 路径（包括 Codex）可能选择 <code>bypassPermissions</code>；部分备用运行时重试和验证路径也会请求该模式。此外，<code>OrchestratorRunner</code> 初始化会强制把传入 adapter 的权限设为该运行时的 native bypass 模式，因此不要假设原有 sandbox 设置仍然生效。对 Codex 而言，bypass 会同时取消审批门和 sandbox。这是特定路径的行为，并非每个宿主操作都会如此。不要直接在不可信代码库或敏感环境中运行。如确需继续，请使用独立隔离的操作系统、虚拟机或容器，并先检查其文件访问范围和网络策略。<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/factory.py#L113-L143">main Interview 权限解析</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/codex_permissions.py#L26-L50">Codex 权限映射</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L879-L879">Runner adapter 权限强制</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/runner.py#L5190-L5208">native bypass 设置</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/parallel_executor.py#L7068-L7074">重试路径</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/server/adapter.py#L2150-L2158">验证路径</a> · <a href="https://github.com/Q00/ouroboros/tree/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros">release <code>v0.59.9</code> 对应源码路径</a></p>
+
+<p><strong>调用与费用：</strong> MCP 请求中的 <code>model_tier=small</code> 表示请求 <code>frugal</code> 执行 tier，但不保证实际运行某个特定模型。显式模型 pin、backend 的 tier ladder 支持、native model override 支持和配置会影响路由是否生效及实际模型。可信的分解子任务可能降低一个 tier；部分失败重试会升到更强 tier，验证等独立角色也可能额外调用模型。<code>small</code> 不是总调用次数或总费用上限。开始前请检查模型提供方的费用条款和用量控制。<a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1116-L1125">MCP tier 参数</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/model_routing.py#L360-L399">tier 路由条件</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/model_routing.py#L503-L529">重试 tier 路由</a> · <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/server/adapter.py#L2150-L2162">验证模型调用</a> · <a href="https://github.com/Q00/ouroboros/tree/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros">release <code>v0.59.9</code> 对应源码路径</a></p>
+
+</details>
 
 ## 1. 选择安装方式
 
@@ -105,7 +114,7 @@ ooo interview "构建一个简单的网页应用，让我可以添加今天的�
 ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
-Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。运行前请检查完整 Seed YAML，确认其中的验收标准要求项目 README 说明该项目的依赖安装、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。如果项目没有测试套件，标准可以要求 README 明确说明这一点。如果缺少标准或与目标不符，请先修改并重新检查 Seed。这里描述的是所要求的结果，不表示 README 已生成、内容准确或测试已通过。
+Interview 可能会询问任务存储方式、如何标记为完成等需要决定的问题。请回答这些问题。例如，你可以决定刷新页面后待办是否仍应保留。这句话是**说明性示例**，不是实际输出。运行前请检查完整 Seed YAML，确认其中的验收标准要求项目 README 说明该项目的依赖安装、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。如果项目没有测试套件，标准可以要求 README 明确说明这一点。如果缺少标准或与目标不符，请直接编辑已经生成的 Seed YAML 文件并重新检查完整内容。不要重新生成并覆盖已成功创建的 Seed。这里描述的是所要求的结果，不表示 README 已生成、内容准确或测试已通过。
 
 Seed 是整理目标、约束和完成条件的规格说明。不同使用路径检查实际 Seed 的方式有所不同。
 
@@ -113,13 +122,13 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 
 上述源码中的 Interview skill 会在提问和检查完成后再次确认目标，然后提出创建 Seed。**不要因为 Interview 已结束就认定 Seed 已经创建。**确认目标后，请在同一对话中请求 `ooo seed`。如果你收到了 interview session ID，需要指定目标时可以使用 `ooo seed <实际 session ID>`。
 
-成功生成后，请检查**完整的 Seed YAML**，而不只是完成提示。阅读目标、项目/目标路径、约束和可验证的完成条件，并与对话中达成一致的内容核对。尤其要确认 README 验收标准涵盖依赖安装、应用启动、实际地址和端口、停止方法以及测试命令和范围。缺少任何要求时，请先修改或重新生成并检查 Seed，再执行。skill 还会提供 QA 意见，但仅凭分数无法证明内容正确。如果看不到 YAML 或实际保存路径，或者生成失败、被中断，请勿运行它；请在同一会话中再次请求生成，或查看恢复指南。如果没有显示路径，不要猜测文件已经保存；请让宿主确认 Seed 内容及其是否已保存。
+成功生成后，请检查**完整的 Seed YAML**，而不只是完成提示。阅读目标、项目/目标路径、约束和可验证的完成条件，并与对话中达成一致的内容核对。尤其要确认 README 验收标准涵盖依赖安装、应用启动、实际地址和端口、停止方法以及测试命令和范围。缺少任何要求时，请直接编辑已生成的 YAML 文件并重新检查完整内容；不要重新生成并覆盖已成功创建的 Seed。skill 还会提供 QA 意见，但仅凭分数无法证明内容正确。如果没有返回 YAML 结果（包括生成失败或中断），请勿运行；只有这种情况才请求恢复生成或索取原始 Seed 产物。如果 YAML 已返回但没有保存文件或路径，不要仅因文件缺失而重新生成：请先检查返回的 YAML，将它保存到合适的新 Seed 文件中，再核对实际路径和保存内容。覆盖现有文件前先检查其内容。
 
 如果 MCP 服务器不可用，skill 会使用备用路径，根据对话中已确认的需求创建 Seed，并可能说明如何配置服务器连接。即使如此，也要检查实际显示的 YAML，并区分它与已确认保存的文件。上面的产品指南分别介绍了 Claude Code 和 Codex 的插件安装方式，但实际界面和 skill 调用方式仍需根据已安装的宿主和版本确认。[Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
 
 ### 在独立 CLI 中检查 Seed
 
-终端中的交互式 Interview 会询问是否创建 Seed。批准创建后，请检查实际显示的 Seed 文件路径及文件内容。如果出现 `Start workflow now?`，默认答案是“是”。如需先检查再执行，请选择 `n`。确认 README 验收标准涵盖安装、启动、实际地址和端口、停止方法及测试；若有遗漏，请先修改或重新生成并检查 Seed，再运行。如果创建失败或被中断，不要假设文件已经存在。此行为依据上述源码；请以已安装版本的实际界面为准。
+终端中的交互式 Interview 会询问是否创建 Seed。批准创建后，请检查实际显示的 Seed 文件路径及文件内容。如果出现 `Start workflow now?`，默认答案是“是”。如需先检查再执行，请选择 `n`。确认 README 验收标准涵盖安装、启动、实际地址和端口、停止方法及测试；若有遗漏，请直接编辑已生成的 YAML 文件并重新检查；不要重新生成并覆盖已成功创建的 Seed。先检查终端输出。如果 YAML 已返回但没有保存文件或路径，请检查该 YAML，将它保存到合适的新 Seed 文件中，并核对实际路径和内容；不要仅因文件缺失而重新生成。只有没有返回 YAML 结果时，才请求恢复生成或索取原始 Seed 产物。此行为依据上述源码；请以已安装版本的实际界面为准。
 
 ## 3. 运行任务并检查结果
 

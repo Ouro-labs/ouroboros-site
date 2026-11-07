@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,8 +22,26 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    seed = json.loads((root/'pending-seed.json').read_text())
+    if seed.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != seed['manifest_sha256']:
+        raise ValueError('Seed manifest or pending status changed')
+    if seed['prior_manifest_sha256'] != 'b095ccfea3e380c3a330ebc46bda00703f61cd8ab591acfd2979f8465a908164': raise ValueError('Seed prior manifest changed')
+    seed_summary=(root/'pending-seed-review.md').read_bytes()
+    if sha(seed_summary) != seed['summary_sha256']: raise ValueError('Seed summary changed')
+    seed_names={'quickstart.md','en/quickstart.md','zh/quickstart.md','seed-guide.md'}
+    if set(seed['pages']) != seed_names: raise ValueError('Seed page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',seed_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(seed_names) or {x[0] for x in rows}!=seed_names: raise ValueError('Seed summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=seed['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Seed current metadata mismatch: '+name)
+    seed_restored=copy.deepcopy(manifest)
+    for name in seed_names: seed_restored['pages'][name]=seed['pages'][name]['prior']
+    if sha((json.dumps(seed_restored,ensure_ascii=False,indent=2)+'\n').encode())!=seed['prior_manifest_sha256']:
+        raise ValueError('Seed snapshot chain mismatch')
     package = json.loads((root/'pending-package.json').read_text())
-    if package.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != package['manifest_sha256']:
+    if package.get('status') != 'pending' or seed['prior_manifest_sha256'] != package['manifest_sha256']:
         raise ValueError('Package manifest or pending status changed')
     if package['prior_manifest_sha256'] != '0c103b41bad9c41bafd7e0d6713520d49386a225c300ecfc31e35d8f347bf5a6': raise ValueError('Package prior manifest changed')
     package_summary=(root/'pending-package-review.md').read_bytes()
@@ -34,9 +52,9 @@ def verify(root=ROOT):
     if len(rows)!=len(package_names) or {x[0] for x in rows}!=package_names: raise ValueError('Package summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=package['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or seed_restored['pages'].get(name)!=page:
             raise ValueError('Package current metadata mismatch: '+name)
-    package_restored=copy.deepcopy(manifest)
+    package_restored=copy.deepcopy(seed_restored)
     for name in package_names: package_restored['pages'][name]=package['pages'][name]['prior']
     if sha((json.dumps(package_restored,ensure_ascii=False,indent=2)+'\n').encode())!=package['prior_manifest_sha256']:
         raise ValueError('Package snapshot chain mismatch')

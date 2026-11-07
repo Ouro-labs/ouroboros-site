@@ -2,7 +2,7 @@
 
 Seed는 목표, 제약, 완료 기준을 작업 전에 정리한 명세입니다. 실행이 시작되면 해당 실행은 Seed를 기준으로 움직입니다. Seed가 생성됐다는 사실이나 높은 등급은 사용자의 요구와 맞다는 증거가 아니므로, 실행 전에 내용을 직접 확인하고 승인하세요.
 
-**판본:** 제품 공개 `main` `592c667f076c3dad7ef68d7844e91480d80135d0`의 [seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md), [interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md), [Seed 모델](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py), [Seed 생성 MCP 도구](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py)를 대조했습니다. 기존 공개 [Seed 장](https://ouroboros.page/learn/seed/)은 `0.51.5` / `d103058fe` 판본의 할 일 앱 예제를 설명합니다. 이 페이지는 예제의 연속성은 유지하지만 새 판본의 동작을 옛 출력이나 용어로 단정하지 않습니다. 제품 main, `v0.59.9` 배포 패키지, host skill 및 MCP 서버는 같은 판본으로 간주할 수 없습니다. 이 페이지의 세부 스키마 및 합성 시험은 [Seed 형식 참조](/docs/seed-format-detail/), [판본 및 확인 범위](/docs/version-guide/#version-scope)를 보세요.
+**판본:** 제품 공개 `main` `592c667f076c3dad7ef68d7844e91480d80135d0`의 [seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md), [interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md), [Seed 모델](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py), [Seed 생성 MCP 도구](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py)를 대조했습니다. YAML의 `acceptance_criteria` 형식과 기준 설명 필드는 release `v0.59.9`의 [seed skill](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/seed/SKILL.md#L73-L82) 및 [Seed 모델](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/seed.py#L583-L614)에서도 확인했습니다. 기존 공개 [Seed 장](https://ouroboros.page/learn/seed/)은 `0.51.5` / `d103058fe` 판본의 할 일 앱 예제를 설명합니다. 이 페이지는 예제의 연속성은 유지하지만 새 판본의 동작을 옛 출력이나 용어로 단정하지 않습니다. 제품 main, `v0.59.9` 배포 패키지, host skill 및 MCP 서버는 같은 판본으로 간주할 수 없습니다. 이 페이지의 세부 스키마 및 합성 시험은 [Seed 형식 참조](/docs/seed-format-detail/), [판본 및 확인 범위](/docs/version-guide/#version-scope)를 보세요.
 
 ## Seed 만들기
 
@@ -23,7 +23,7 @@ ooo seed
 아래 YAML은 기존 `/learn/`의 할 일 앱을 이어가는 **합성 형식 예시**입니다. 실제 인터뷰 결과·제품 생성 출력·실행 기록이 아닙니다.
 
 ```yaml
-goal: "한 사람이 오늘의 할 일을 추가하고 완료 상태를 표시하는 웹앱을 만든다"
+goal: "오늘의 할 일을 추가하고 완료 표시할 수 있는 웹앱과, 그 프로젝트의 설치·실행·접속·종료·테스트 방법을 설명하는 README를 만든다"
 constraints:
   - "한 사람이 한 기기에서 사용한다"
   - "브라우저를 새로고침해도 작업이 남는다"
@@ -32,6 +32,8 @@ acceptance_criteria:
   - description: "제목을 입력하고 추가하면 해당 작업이 목록에 나타난다"
   - description: "제목이 비어 있으면 새 작업이 추가되지 않는다"
   - description: "완료 표시를 켜고 새로고침한 뒤에도 완료 상태가 보인다"
+  - description: "README에 프로젝트에서 확인한 의존성 설치 명령과 출처, 앱 실행·종료 방법, 실제 접속 URL과 포트가 기록된다"
+  - description: "README에 테스트 명령과 검증 범위가 기록되며 테스트가 없으면 그 사실이 적혀 있다"
 ontology_schema:
   name: "TodoList"
   description: "할 일 목록에서 다루는 작업과 완료 상태"
@@ -47,7 +49,7 @@ metadata:
   ambiguity_score: 0.15
 ```
 
-위 예제는 설명을 위한 **합성 Seed**입니다. `metadata`는 Seed 모델에서 필수인 최상위 필드이므로 YAML에서도 생략할 수 없습니다. `ambiguity_score`는 메타데이터 내부에서 선택값이며, 위 값은 형식 예시일 뿐 실제 인터뷰 점수나 검증 결과가 아닙니다. 손으로 작성한 Seed라면 `metadata: {}`도 모델 기본값으로 구성되지만, 예제에서는 의미를 보이도록 점수를 명시했습니다. 실제 생성은 제품이 생성 시각·ID 등 메타데이터를 채웁니다.
+위 예제는 설명을 위한 **합성 Seed**입니다. 앞의 세 기준은 할 일 앱 동작을, 마지막 두 기준은 같은 프로젝트 README의 설치·실행·접속·종료·테스트 안내를 다룹니다. 생성 뒤 사용자는 실제 README를 읽고 앱을 시작해 기록된 URL로 접속하여 결과를 확인할 수 있습니다. 이는 확인할 결과의 예시일 뿐, 실제 README·앱·테스트 성공을 뜻하지 않습니다. `metadata`는 Seed 모델에서 필수인 최상위 필드이므로 YAML에서도 생략할 수 없습니다. `ambiguity_score`는 메타데이터 내부에서 선택값이며, 위 값은 형식 예시일 뿐 실제 인터뷰 점수나 검증 결과가 아닙니다. 손으로 작성한 Seed라면 `metadata: {}`도 모델 기본값으로 구성되지만, 예제에서는 의미를 보이도록 점수를 명시했습니다. 실제 생성은 제품이 생성 시각·ID 등 메타데이터를 채웁니다.
 
 ## 각 부분에서 확인할 것
 
