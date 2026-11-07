@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "5a7d9f2833de983d8dd2d9e1c3711657634127ae8ce02bbdd0432c3c8d4545a6",
+  "prior_manifest_sha256": "263d4ecf1f03cc86d3feccb53ee56a3e75885cce329f41c12d622b6650093da0",
+  "summary_sha256": "12f3d0f8359c4106b35fbcb0d244261bfcc04f02ec55894428546ab56e2f53ef",
+  "pages": {
+    "first-run-detail.md": {
+      "current": {
+        "source": "content/first-run-detail.md",
+        "source_sha256": "22471977b8e202a19f97b5a480e96112dc40e4115b7bf903b7faf90f434d64a8",
+        "page_sha256": "a2935dcd6cfb5e188e2b87f71f3b966715858e5ef2621304e50ee363222d2771"
+      },
+      "prior": {
+        "source": "content/first-run-detail.md",
+        "source_sha256": "e19b0e23c3d273dece9d7e752d3b2acc261f8e038edf25155701923da5fe8a33",
+        "page_sha256": "5bab8436bd983678a665ad28e605ceef93aeaff9a55ea0a634fcdfbcdc617d88"
+      }
+    }
+  }
+}

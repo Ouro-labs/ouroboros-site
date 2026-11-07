@@ -32,7 +32,7 @@
 
 ### 독립 CLI를 가상환경에 설치하기 {#cli-venv}
 
-터미널에서 `python3 --version`으로 Python 3.12 이상인지 먼저 확인하세요. `python3`이 더 낮은 버전을 가리키면 아래 명령의 `python3`을 설치된 3.12 이상 실행 파일로 바꿉니다. Python의 `venv` 기능도 필요합니다. 운영체제에서 별도 패키지로 제공한다면 해당 OS의 안내에 따라 설치하세요.
+macOS·Linux·WSL 터미널에서는 `python3 --version`으로 Python 3.12 이상인지 먼저 확인하세요. `python3`이 더 낮은 버전을 가리키면 아래 명령의 `python3`을 설치된 3.12 이상 실행 파일로 바꿉니다. Python의 `venv` 기능도 필요합니다. 운영체제에서 별도 패키지로 제공한다면 해당 OS의 안내에 따라 설치하세요.
 
 다음은 **새 디렉터리**에 공개 패키지를 설치하는 예입니다. 첫 `mkdir`은 같은 이름이 이미 있으면 실패하며, `&&`로 이어진 나머지 명령도 실행되지 않습니다. 기존 환경을 사용하거나 덮어쓰지 말고 다른 새 이름을 고르세요. 설치에는 인터넷 연결이 필요합니다.
 
@@ -43,7 +43,30 @@ python3 -m venv ~/ouroboros-cli-env/.venv &&
 ~/ouroboros-cli-env/.venv/bin/ouroboros --version
 ```
 
-설치가 성공하면 같은 터미널에서 `. ~/ouroboros-cli-env/.venv/bin/activate`를 실행하고 `command -v ouroboros`가 이 가상환경의 실행 파일을 가리키는지 확인합니다. 이 절의 `pip install ouroboros-ai`는 기본 패키지만 설치합니다. 아직 `ouroboros setup`을 실행하지 말고, 먼저 [런타임별 요구사항](/docs/runtime-support-detail/)을 확인해 실행 파일·인증·필요한 extra를 갖춘 뒤 명시적으로 런타임을 선택하세요. 특히 `claude`는 Claude Agent SDK 경로이며 `[claude]` 또는 `[claude-sdk]` extra가 필요합니다. 설치된 Claude CLI만으로 SDK가 설치되지는 않습니다. `claude-cli`는 별도 MCP 2 프로필 경로이고 `[claude-cli]` extra 자체는 비어 있지만 MCP 서버용 `[mcp]` 프로필이 필요합니다. `ouroboros setup`은 자동으로 하나의 감지된 런타임을 선택할 수도 있고 사용자 설정을 변경할 수 있으므로, 런타임 선택과 기존 설정을 검토한 후 진행하세요. 준비 후 `ouroboros status health` 결과를 읽습니다. 정상 표시는 모델 인증·호출 성공을 보장하지 않습니다. 새 터미널에서는 다시 활성화하거나 위 절대 경로를 사용하세요. `deactivate`는 현재 셸에서 가상환경을 벗어납니다. 가상환경은 로컬에 남고 자동 백업되지 않습니다.
+macOS·Linux·WSL에서 설치가 성공하면 같은 터미널에서 `. ~/ouroboros-cli-env/.venv/bin/activate`를 실행하고 `command -v ouroboros`가 이 가상환경의 실행 파일을 가리키는지 확인합니다.
+
+Windows PowerShell에서는 작업할 위치를 먼저 확인한 뒤 아래 예를 실행하세요. 현재 디렉터리에 `ouroboros-cli-env`가 이미 있으면 중단하고 다른 새 이름을 선택합니다. Python Launcher가 선택한 Python 3.12 이상과 인터넷 연결이 필요합니다. 이 예제는 가상환경의 Python을 직접 호출하므로 활성화 스크립트나 실행 정책 변경이 필요하지 않습니다.
+
+```powershell
+$ErrorActionPreference = "Stop"
+py -3 --version
+if ($LASTEXITCODE -ne 0) { throw "Python 3.12 이상을 Python Launcher에 설치 또는 등록하세요." }
+py -3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 12) else 1)"
+if ($LASTEXITCODE -ne 0) { throw "선택된 Python이 3.12보다 낮습니다." }
+if (Test-Path .\ouroboros-cli-env) { throw "이미 존재하는 경로입니다. 다른 새 폴더를 선택하세요." }
+New-Item -ItemType Directory -Path .\ouroboros-cli-env | Out-Null
+Set-Location .\ouroboros-cli-env
+py -3 -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "가상환경 생성에 실패했습니다." }
+.\.venv\Scripts\python.exe -m pip install ouroboros-ai
+if ($LASTEXITCODE -ne 0) { throw "패키지 설치에 실패했습니다." }
+.\.venv\Scripts\python.exe -m ouroboros --version
+if ($LASTEXITCODE -ne 0) { throw "CLI 확인에 실패했습니다." }
+```
+
+위 예는 현재 PowerShell 세션의 `$ErrorActionPreference`를 `Stop`으로 바꾸고 새 디렉터리로 이동합니다. 이후 같은 디렉터리에서 CLI를 사용할 때도 `.\.venv\Scripts\python.exe -m ouroboros ...` 형식을 사용하세요. 다른 디렉터리에서는 확인한 가상환경의 실제 Python 경로를 지정합니다. 실행 정책 변경 없이 활성화를 생략한 경로이며, 이 한국어 블록 자체는 실제 Windows에서 시험하지 않았습니다.
+
+이 절의 `pip install ouroboros-ai`는 기본 패키지만 설치합니다. 아직 `ouroboros setup`을 실행하지 말고, 먼저 [런타임별 요구사항](/docs/runtime-support-detail/)을 확인해 실행 파일·인증·필요한 extra를 갖춘 뒤 명시적으로 런타임을 선택하세요. 특히 `claude`는 Claude Agent SDK 경로이며 `[claude]` 또는 `[claude-sdk]` extra가 필요합니다. 설치된 Claude CLI만으로 SDK가 설치되지는 않습니다. `claude-cli`는 별도 MCP 2 프로필 경로이고 `[claude-cli]` extra 자체는 비어 있지만 MCP 서버용 `[mcp]` 프로필이 필요합니다. `ouroboros setup`은 자동으로 하나의 감지된 런타임을 선택할 수도 있고 사용자 설정을 변경할 수 있으므로, 런타임 선택과 기존 설정을 검토한 후 진행하세요. 준비 후 `ouroboros status health` 결과를 읽습니다. 정상 표시는 모델 인증·호출 성공을 보장하지 않습니다. 새 터미널에서는 다시 활성화하거나 위 절대 경로를 사용하세요. `deactivate`는 현재 셸에서 가상환경을 벗어납니다. 가상환경은 로컬에 남고 자동 백업되지 않습니다.
 
 설치 중 오류가 나면 출력의 마지막 오류와 선택한 Python 버전을 확인하세요. 가상환경 생성이나 설치가 중간에 실패했다면 일부 파일이 남을 수 있으므로, 기존 디렉터리를 자동으로 지우지 말고 확인 후 새 이름으로 다시 시도합니다. 이 경로는 공개 배포물을 설치하므로 아래 고정 커밋과 동일하다고 가정하지 않습니다. 공개 `0.59.9`의 신규 가상환경 설치와 초기 진단은 시험했지만, 이 명령으로 설치되는 미래 버전과 실제 모델 인증·첫 작업은 시험하지 않았습니다.
 

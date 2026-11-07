@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -46,9 +46,30 @@ def verify(root=ROOT):
     for name, expected in manual['files'].items():
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('AI manual file changed: '+name)
+    ko_venv = json.loads((root/'pending-ko-venv.json').read_text())
+    if ko_venv.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != ko_venv['manifest_sha256']:
+        raise ValueError('Korean venv manifest or pending status changed')
+    if ko_venv['prior_manifest_sha256'] != '263d4ecf1f03cc86d3feccb53ee56a3e75885cce329f41c12d622b6650093da0': raise ValueError('Korean venv prior manifest changed')
+    ko_venv_summary=(root/'pending-ko-venv-review.md').read_bytes()
+    if sha(ko_venv_summary) != ko_venv['summary_sha256']: raise ValueError('Korean venv summary changed')
+    ko_venv_names={'first-run-detail.md'}
+    if set(ko_venv['pages']) != ko_venv_names: raise ValueError('Korean venv page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',ko_venv_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(ko_venv_names) or {x[0] for x in rows}!=ko_venv_names: raise ValueError('Korean venv summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=ko_venv['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Korean venv current metadata mismatch: '+name)
+    ko_venv_restored=copy.deepcopy(manifest)
+    for name in ko_venv_names:
+        prior=ko_venv['pages'][name]['prior']
+        if prior is None: del ko_venv_restored['pages'][name]
+        else: ko_venv_restored['pages'][name]=prior
+    if sha((json.dumps(ko_venv_restored,ensure_ascii=False,indent=2)+'\n').encode())!=ko_venv['prior_manifest_sha256']:
+        raise ValueError('Korean venv snapshot chain mismatch')
     megacode_claim = json.loads((root/'pending-megacode-claim.json').read_text())
-    if manual.get('manifest_sha256') != megacode_claim.get('manifest_sha256'): raise ValueError('AI manual manifest chain mismatch')
-    if megacode_claim.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != megacode_claim['manifest_sha256']:
+    if manual.get('manifest_sha256') != ko_venv.get('prior_manifest_sha256') or manual.get('manifest_sha256') != megacode_claim.get('manifest_sha256'): raise ValueError('AI manual manifest chain mismatch')
+    if megacode_claim.get('status') != 'pending' or ko_venv['prior_manifest_sha256'] != megacode_claim['manifest_sha256']:
         raise ValueError('Megacode claim manifest or pending status changed')
     if megacode_claim['prior_manifest_sha256'] != '079bf2deb6f23de29c939d49785aacb812a1fa8f4af4282412832caeed281af5': raise ValueError('Megacode claim prior manifest changed')
     megacode_claim_summary=(root/'pending-megacode-claim-review.md').read_bytes()
@@ -59,9 +80,9 @@ def verify(root=ROOT):
     if len(rows)!=len(megacode_claim_names) or {x[0] for x in rows}!=megacode_claim_names: raise ValueError('Megacode claim summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=megacode_claim['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or ko_venv_restored['pages'].get(name)!=page:
             raise ValueError('Megacode claim current metadata mismatch: '+name)
-    megacode_claim_restored=copy.deepcopy(manifest)
+    megacode_claim_restored=copy.deepcopy(ko_venv_restored)
     for name in megacode_claim_names:
         prior=megacode_claim['pages'][name]['prior']
         if prior is None: del megacode_claim_restored['pages'][name]
