@@ -104,3 +104,6 @@ html[data-theme=dark] .md-footer-meta .md-copyright__highlight { color: #b4c8bd;
 /* Keep keyboard-selected Material search results visible in both themes. */
 .md-search-result__link:focus-visible { outline: 3px solid #145d57; outline-offset: -3px; }
 html[data-theme="dark"] .md-search-result__link:focus-visible { outline-color: #a9f2cb; }
+
+/* A closed search overlay must not intercept clicks during its fade-out. */
+[data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__overlay { pointer-events: none; }
