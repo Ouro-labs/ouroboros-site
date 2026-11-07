@@ -10,7 +10,7 @@
 
 - 检查网络连接、所选宿主或 Python 环境，以及计划使用的模型所需的认证和费用条件。模型调用可能需要时间，也可能产生费用。
 - 执行过程可能创建或修改文件并运行命令。首次练习请使用一个与现有工作隔离的新目录，并在宿主中打开该目录。
-- 安装和设置可能会更改软件包或配置文件。请先阅读每个提示再继续。查看[设置指南](/docs/config-reference-detail/)，确认使用统计设置是否适用于你安装的版本和服务器进程。
+- 安装和设置可能会更改软件包或配置文件。请先阅读每个提示再继续。查看[设置指南（韩文）](/docs/config-reference-detail/)，确认使用统计设置是否适用于你安装的版本和服务器进程。
 - **安全：**不要直接在不可信代码库或敏感环境中运行。通过 `OrchestratorRunner` 的 Codex 执行路径可能强制使用 native bypass，从而关闭审批和 sandbox。继续前，请先确认独立操作系统、虚拟机或容器的文件与网络隔离。
 - **费用：**`small` 不是总调用次数或总费用上限。重试可能升到更高 tier，验证等独立角色也可能增加调用。请检查提供方费用和用量控制。
 
@@ -153,8 +153,8 @@ Seed 是整理目标、约束和完成条件的规格说明。不同使用路径
 
 这个请求示例并未验证应用是否确实能够运行。请确认回答符合项目和环境，并在继续之前检查命令、来源、端口及费用。
 
-如果评估尚未启动、失败，或结果为 `unverified`，先核对实际 `session_id`、原始 Seed、产物以及返回的工作目录或 `worktree_path`。启动新评估前，先检查现有评估 job 和关联 Ralph job 的状态及结果；不要重复启动仍在运行的链。**如果是在连接了 MCP 的插件宿主对话中**，确需重新评估时，可请求宿主运行 `ooo evaluate <实际 session ID> [产物]`，并提供实际项目路径。`auto_evolve: false`只阻止本次评估安排新的 Ralph 后续任务，不会取消已经启动的评估或链。**不要在独立 CLI 终端输入这个宿主命令。**固定源码 `592c667f` 中没有单独的 CLI 评估重跑命令。请查看已安装版本的 `ouroboros --help` 和对应版本的指南；如果找不到受支持的方式，请使用连接了 MCP 的宿主。`unverified`不代表通过：补充或确认可执行检查，再按[评估详细指南](/docs/zh/troubleshooting/#evaluation)中的结果对应步骤处理。
+如果评估尚未启动、失败，或结果为 `unverified`，先核对实际 `session_id`、原始 Seed、产物以及返回的工作目录或 `worktree_path`。启动新评估前，先检查现有评估 job 和关联 Ralph job 的状态及结果；不要重复启动仍在运行的链。**如果是在连接了 MCP 的插件宿主对话中**，确需重新评估时，可请求宿主运行 `ooo evaluate <实际 session ID> [产物]`，并提供实际项目路径。`auto_evolve: false`只阻止本次评估安排新的 Ralph 后续任务，不会取消已经启动的评估或链。**不要在独立 CLI 终端输入这个宿主命令。**固定源码 `592c667f` 中没有单独的 CLI 评估重跑命令。请查看已安装版本的 `ouroboros --help` 和对应版本的指南；如果找不到受支持的方式，请使用连接了 MCP 的宿主。`unverified`不代表通过：补充或确认可执行检查，再按照[评估简要指南](/docs/zh/troubleshooting/#evaluation)中的结果对应步骤处理。
 
-状态查询方式取决于 ID 的类型。请在[进度与状态](/docs/zh/troubleshooting/#status)中查找对应路径。如果连接失败或任务中断，请保留现有记录，并先阅读[恢复指南](/docs/zh/troubleshooting/#recovery)。任务可能仍在运行，因此不要立即重新启动。
+状态查询方式取决于 ID 的类型。请在[状态简要指南](/docs/zh/troubleshooting/#status)中查找对应路径。如果连接失败或任务中断，请保留现有记录，并先阅读[恢复简要指南](/docs/zh/troubleshooting/#recovery)。任务可能仍在运行，因此不要立即重新启动。
 
-接下来可以阅读 [Interview 指南](/docs/interview-guide/)、[Seed 格式](/docs/seed-guide/)和[在现有项目中使用 Ouroboros](/docs/existing-project-detail/)。
+接下来可以阅读 [Interview 指南（韩文）](/docs/interview-guide/)、[Seed 格式（韩文）](/docs/seed-guide/)和[在现有项目中使用 Ouroboros（韩文）](/docs/existing-project-detail/)。

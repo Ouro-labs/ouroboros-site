@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -35,8 +35,33 @@ def verify(root=ROOT):
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
     if home['prior_home_sha256'] != '3f53646153e3023e81d452e751b5a65649e98e33ce9e69f7c5b89c611dbbff99': raise ValueError('Home prior homepage changed')
+    headings = json.loads((root/'pending-headings.json').read_text())
+    if headings.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != headings['manifest_sha256']:
+        raise ValueError('Headings manifest or pending status changed')
+    if headings['prior_manifest_sha256'] != '3297ffe6a21e153264a25aecdeff2e9692f67cd067bcbdd6f42cfb3d59fafe0b': raise ValueError('Headings prior manifest changed')
+    headings_summary=(root/'pending-headings-review.md').read_bytes()
+    if sha(headings_summary) != headings['summary_sha256']: raise ValueError('Headings summary changed')
+    headings_names={'en/quickstart.md','zh/quickstart.md'}
+    if set(headings['pages']) != headings_names: raise ValueError('Headings page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',headings_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(headings_names) or {x[0] for x in rows}!=headings_names: raise ValueError('Headings summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=headings['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Headings current metadata mismatch: '+name)
+    headings_restored=copy.deepcopy(manifest)
+    for name in headings_names: headings_restored['pages'][name]=headings['pages'][name]['prior']
+    if sha((json.dumps(headings_restored,ensure_ascii=False,indent=2)+'\n').encode())!=headings['prior_manifest_sha256']:
+        raise ValueError('Headings snapshot chain mismatch')
+    heading_files={'docs-src/mkdocs.yml','docs-src/heading_labels.py','docs-src/tests/test_heading_labels.py'}
+    if set(headings.get('files', {})) != heading_files: raise ValueError('Headings file set changed')
+    file_rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',headings_summary.decode('utf-8'),re.MULTILINE)
+    if len(file_rows)!=len(heading_files) or dict(file_rows)!=headings['files']: raise ValueError('Headings file rows mismatch')
+    for name, expected in headings['files'].items():
+        path=root.parent/name
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes()) != expected: raise ValueError('Headings file changed: '+name)
     session = json.loads((root/'pending-session.json').read_text())
-    if session.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != session['manifest_sha256']:
+    if session.get('status') != 'pending' or headings['prior_manifest_sha256'] != session['manifest_sha256']:
         raise ValueError('Session manifest or pending status changed')
     if session['prior_manifest_sha256'] != 'ea59b6a439e9af819e1915035f6bd14fcac6581e37ab211d1aed8f006506a69f': raise ValueError('Session prior manifest changed')
     session_summary=(root/'pending-session-review.md').read_bytes()
@@ -47,9 +72,9 @@ def verify(root=ROOT):
     if len(rows)!=len(session_names) or {x[0] for x in rows}!=session_names: raise ValueError('Session summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=session['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or headings_restored['pages'].get(name)!=page:
             raise ValueError('Session current metadata mismatch: '+name)
-    session_restored=copy.deepcopy(manifest)
+    session_restored=copy.deepcopy(headings_restored)
     for name in session_names: session_restored['pages'][name]=session['pages'][name]['prior']
     if sha((json.dumps(session_restored,ensure_ascii=False,indent=2)+'\n').encode())!=session['prior_manifest_sha256']:
         raise ValueError('Session snapshot chain mismatch')

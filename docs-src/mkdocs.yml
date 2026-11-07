@@ -3,6 +3,8 @@ site_url: https://ouroboros.page/docs/
 docs_dir: content
 site_dir: ../site/docs
 strict: true
+hooks:
+  - heading_labels.py
 theme:
   name: material
   custom_dir: overrides

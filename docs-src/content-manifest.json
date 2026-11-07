@@ -59,13 +59,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "1ddcb4a1552c07337498fa7659440ebe8282711b8ae1b7f1e131e2188963be93",
-      "page_sha256": "d9ef2f1e4265485ec04931f04719f40bd3d5ee6c1ce664d17cb8c3064afaa663"
+      "source_sha256": "0c7aa4c9c17b87e2fd2b2f5226e7b1e9dc2fcfa5de0538737f59d43e030d10dd",
+      "page_sha256": "60c99927b71f62df88e63dfabf6dad1828cd160975b594f9922bf06a908c2bb9"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "289dcc27ff8f9461a728cebaeb340afb057eaf5ba47281a2333ccc9af98d6118",
-      "page_sha256": "23dd942ec8d29aae09625dd78ba2f8d71825576ec720e6b63584f176b4374fdc"
+      "source_sha256": "6ed5d5ae4373653f17570f5f334c1dd3bbc5b55f19f8392beee162ac60ec4635",
+      "page_sha256": "d24624f6cb2782ef043c51956e3882b6abf758b28d18a32ffc80bc013f41479d"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",

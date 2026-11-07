@@ -1,0 +1,37 @@
+{
+  "status": "pending",
+  "manifest_sha256": "127beeeb9185648456340df79a40485d2e2dcc7388f944072d905a15c395132c",
+  "prior_manifest_sha256": "3297ffe6a21e153264a25aecdeff2e9692f67cd067bcbdd6f42cfb3d59fafe0b",
+  "summary_sha256": "3f8e71c2c646047c6c0773bfec01d3e16c66cfca5ca7f25cbd6bb3a4949b05c1",
+  "files": {
+    "docs-src/mkdocs.yml": "c356db9ce5d0df8187a3498a5e4f00c96ff0b241035150e5d0f34749fc02759a",
+    "docs-src/heading_labels.py": "2df3ab2fee982a952d2a914af25f6ddb63515e26f949b101af68e2ed6768b0a8",
+    "docs-src/tests/test_heading_labels.py": "8cfe5ab6fc3be65a72485d5972fefd005b82fb8e1d80b94186151e0ac2f0c723"
+  },
+  "pages": {
+    "en/quickstart.md": {
+      "current": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "0c7aa4c9c17b87e2fd2b2f5226e7b1e9dc2fcfa5de0538737f59d43e030d10dd",
+        "page_sha256": "60c99927b71f62df88e63dfabf6dad1828cd160975b594f9922bf06a908c2bb9"
+      },
+      "prior": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "1ddcb4a1552c07337498fa7659440ebe8282711b8ae1b7f1e131e2188963be93",
+        "page_sha256": "d9ef2f1e4265485ec04931f04719f40bd3d5ee6c1ce664d17cb8c3064afaa663"
+      }
+    },
+    "zh/quickstart.md": {
+      "current": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "6ed5d5ae4373653f17570f5f334c1dd3bbc5b55f19f8392beee162ac60ec4635",
+        "page_sha256": "d24624f6cb2782ef043c51956e3882b6abf758b28d18a32ffc80bc013f41479d"
+      },
+      "prior": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "289dcc27ff8f9461a728cebaeb340afb057eaf5ba47281a2333ccc9af98d6118",
+        "page_sha256": "23dd942ec8d29aae09625dd78ba2f8d71825576ec720e6b63584f176b4374fdc"
+      }
+    }
+  }
+}
