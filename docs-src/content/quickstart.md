@@ -31,12 +31,14 @@ description: "첫 작업을 인터뷰, Seed 작성, 실행, 결과 확인까지 
 
 | 사용하는 환경 | 준비와 설치 입력 위치 | 첫 작업 입력 위치 |
 | --- | --- | --- |
-| Claude Code 플러그인 | Claude Code와 `uv`가 필요합니다. 아래 설치 명령은 **터미널**에 입력합니다. | 새 Claude Code 세션의 대화 |
-| Codex 플러그인 | 로그인된 Codex CLI와 `uvx`가 필요합니다. 아래 설치 명령은 **터미널**에 입력합니다. | 새 Codex 세션의 대화 |
-| 독립 CLI | Python 3.12 이상과 사용할 런타임·인증이 필요합니다. 별도 가상환경에서 설치합니다. | **터미널** |
+| [Claude Code 플러그인](#install-claude) | Claude Code와 `uv`가 필요합니다. 아래 설치 명령은 **터미널**에 입력합니다. | [새 Claude Code 세션의 대화](#worktree-first-task) |
+| [Codex 플러그인](#install-codex) | 로그인된 Codex CLI와 `uvx`가 필요합니다. 아래 설치 명령은 **터미널**에 입력합니다. | [새 Codex 세션의 대화](#worktree-first-task) |
+| [독립 CLI](#install-cli) | Python 3.12 이상과 사용할 런타임·인증이 필요합니다. 별도 가상환경에서 설치합니다. | [**터미널**](#worktree-first-task) |
 
-**한 경로만 고르세요.** Claude Code 또는 Codex 플러그인은 사용할 호스트 하나의 설치 명령을 실행한 뒤 호스트 대화에 첫 작업을 입력합니다. 독립 CLI는 별도 경로입니다. 관련 설치·MCP 단계를 보려면 아래 내용을 펼치고 명령은 터미널에 입력하세요.
+**한 경로만 고르세요.** Claude Code 또는 Codex 플러그인은 사용할 호스트 하나의 설치 명령을 실행한 뒤 호스트 대화에 첫 작업을 입력합니다. 독립 CLI는 별도 경로입니다. Claude와 Codex 설치 명령은 아래에 바로 표시됩니다. 독립 CLI의 설치·MCP 단계는 해당 항목을 펼쳐 확인하고 명령은 터미널에 입력하세요.
 
+
+<span id="install-claude"></span>
 
 ### Claude Code
 
@@ -47,6 +49,8 @@ claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros
 ```
 
+<span id="install-codex"></span>
+
 ### Codex
 
 터미널에서:
@@ -55,6 +59,8 @@ claude plugin install ouroboros@ouroboros
 codex plugin marketplace add Q00/ouroboros
 codex plugin add ouroboros@ouroboros
 ```
+
+<span id="install-cli"></span>
 
 ### 독립 CLI
 
@@ -125,16 +131,18 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. 목표를 이야기하고 Seed 검토하기
 
+<span id="worktree-first-task"></span>
+
 !!! warning "실행 전 관리 worktree 경로 확인"
     worktree를 사용하는 실행은 관리 경로 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. 새 CLI 실행과 ID가 별도 제공되지 않은 일반 MCP 실행은 ID를 실행 중 생성하므로 정확한 새 경로를 미리 알 수 없습니다. 시작 전에 실제 관리 root와 저장소별 디렉터리, 대상 저장소에서 `git worktree list --porcelain`으로 등록을 확인하고 진행 중 작업과 보존 자료를 살펴보세요. 재개는 실제 세션 ID와 저장된 workspace 경로가 있으면 그 기록도 대조하세요. 확인할 수 없으면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 확인 후에도 동시 변경에 따른 위험은 남으며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
-**Claude Code 플러그인:** 새 세션에서 작업 폴더를 열고 호스트 **대화에** 설정을 요청합니다.
+<span id="plugin-first-task"></span>**Claude Code 플러그인:** 새 세션에서 작업 폴더를 열고 호스트 **대화에** 설정을 요청합니다.
 
 ```text
 ooo setup
 ```
 
-설정 질문에 답해 완료하세요. **Codex 플러그인:** 새 Codex 세션에서 작업 폴더를 열고 설치된 플러그인과 MCP 도구 연결을 확인하세요. 연결되지 않았다면 [진단 안내](/docs/ai-troubleshooting/#mcp)를 먼저 확인합니다. Codex용 독립 CLI 설정은 별도 경로입니다.
+설정 질문에 답해 완료하세요. <span id="codex-first-task"></span>**Codex 플러그인:** 새 Codex 세션에서 작업 폴더를 열고 설치된 플러그인과 MCP 도구 연결을 확인하세요. 연결되지 않았다면 [진단 안내](/docs/ai-troubleshooting/#mcp)를 먼저 확인합니다. Codex용 독립 CLI 설정은 별도 경로입니다.
 
 준비가 끝나면 호스트 대화의 다음 메시지로 Interview를 요청합니다.
 
@@ -142,7 +150,7 @@ ooo setup
 ooo interview "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
 ```
 
-**독립 CLI:** 작업 폴더의 **터미널에** 입력합니다.
+<span id="cli-first-task"></span>**독립 CLI:** 작업 폴더의 **터미널에** 입력합니다.
 
 ```bash
 ouroboros init start "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
@@ -183,6 +191,8 @@ MCP 서버를 사용할 수 없으면 스킬은 대화에서 확인한 요구로
 - **YAML이 없거나 생성이 실패·중단됨:** 실행하지 마세요. 이 경우에만 생성 재개를 요청하거나 원본 Seed 산출물을 제공받으세요.
 
 ## 3. 실행하고 결과 확인하기
+
+**진행 순서:** 아래 사전 확인과 경고를 읽고 → 검토한 Seed를 실행하고 → 반환된 ID와 작업 경로를 저장하고 → 파일·테스트·평가 결과를 확인한 뒤 → 문제가 있으면 [문제 해결](/docs/recovery-detail/)로 이동하세요.
 
 실행 전에 선택한 작업 폴더가 Git 저장소라면 그 폴더의 터미널에서 `git rev-parse --verify HEAD`를 실행해 초기 커밋이 있는지 확인하세요. Git 저장소인데 이 확인이 실패해 커밋이 없다면 사용자가 파일과 보존할 변경을 먼저 검토하고 초기 커밋을 만들지 직접 결정한 뒤 진행합니다. 명령을 무조건 커밋으로 이어가거나 기존 파일을 임의로 변경하지 마세요. 고정 main `592c667f`와 release `0.59.9`의 일반 MCP worktree 활성 경로에서 커밋 없는 저장소는 작업 공간 준비에 실패해 `launch_workspace_unavailable`이 보고될 수 있습니다. Git 저장소가 아닌 폴더는 해당 구현에서 worktree를 만들지 않고 넘어가는 별도 경우이며 같은 격리가 보장되지 않습니다. OpenCode의 `dispatch_mode="plugin"` 위임이나 worktree 비활성 경로에도 이 결과를 일반화하지 마세요. [main 작업 공간 준비](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py) · [release 작업 공간 준비](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py).
 

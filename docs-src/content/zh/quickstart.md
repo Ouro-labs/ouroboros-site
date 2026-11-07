@@ -33,12 +33,14 @@ description: "本草稿用合成待办应用示例介绍从 Interview、Seed 到
 
 | 使用环境 | 准备事项与安装命令的输入位置 | 第一个任务的输入位置 |
 | --- | --- | --- |
-| Claude Code 插件 | 需要 Claude Code 和 `uv`。请在**终端**中输入下方安装命令。 | 新 Claude Code 会话的对话 |
-| Codex 插件 | 需要已登录的 Codex CLI 和 `uvx`。请在**终端**中输入下方安装命令。 | 新 Codex 会话的对话 |
-| 独立 CLI | 需要 Python 3.12 或更高版本，以及计划使用的运行时和认证方式。请在单独的虚拟环境中安装。 | **终端** |
+| [Claude Code 插件](#install-claude) | 需要 Claude Code 和 `uv`。请在**终端**中输入下方安装命令。 | [新 Claude Code 会话的对话](#worktree-first-task) |
+| [Codex 插件](#install-codex) | 需要已登录的 Codex CLI 和 `uvx`。请在**终端**中输入下方安装命令。 | [新 Codex 会话的对话](#worktree-first-task) |
+| [独立 CLI](#install-cli) | 需要 Python 3.12 或更高版本，以及计划使用的运行时和认证方式。请在单独的虚拟环境中安装。 | [**终端**](#worktree-first-task) |
 
-**请选择一种使用路径。**使用 Claude Code 或 Codex 插件时，只执行计划使用的那个宿主对应的安装命令，然后在宿主对话中输入第一个任务。独立 CLI 是另一条路径；展开下方内容查看设置细节，并在终端中输入命令。
+**请选择一种使用路径。**使用 Claude Code 或 Codex 插件时，只执行计划使用的那个宿主对应的安装命令，然后在宿主对话中输入第一个任务。独立 CLI 是另一条路径；Claude 和 Codex 安装命令直接显示在下方；独立 CLI 的安装与 MCP 步骤需要展开对应内容，并在终端中输入命令。
 
+
+<span id="install-claude"></span>
 
 ### Claude Code
 
@@ -49,6 +51,8 @@ claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros
 ```
 
+<span id="install-codex"></span>
+
 ### Codex
 
 在终端中运行：
@@ -57,6 +61,8 @@ claude plugin install ouroboros@ouroboros
 codex plugin marketplace add Q00/ouroboros
 codex plugin add ouroboros@ouroboros
 ```
+
+<span id="install-cli"></span>
 
 ### 独立 CLI
 
@@ -154,16 +160,18 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. 描述目标并检查 Seed
 
+<span id="worktree-first-task"></span>
+
 !!! warning "运行前检查受管理 worktree 路径"
     使用 worktree 的执行在准备时，如果 `<worktree_root>/<仓库名称>/<durable_id>` 已存在但未在目标仓库注册为 Git worktree，可能尝试递归删除该路径。默认 root 为 `~/.ouroboros/worktrees`。新的 CLI 执行以及未另行提供 ID 的普通 MCP 执行会在运行中生成 ID，因此无法事先知道精确的新路径。开始前请检查实际管理 root、仓库对应目录、在目标仓库用 `git worktree list --porcelain` 检查 Git worktree 注册，以及进行中的工作和需要保留的数据。恢复时，如有实际 session ID 和已保存的 workspace 路径，也请核对这些记录。若无法确认，请暂缓执行，不要擅自删除或覆盖不确定的路径。检查后仍可能发生并发变化；这也不代表所有路径都能删除成功。 [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
-**Claude Code 插件：**在新会话中打开任务目录，然后在宿主的**对话中**请求设置。
+<span id="plugin-first-task"></span>**Claude Code 插件：**在新会话中打开任务目录，然后在宿主的**对话中**请求设置。
 
 ```text
 ooo setup
 ```
 
-回答设置问题并完成设置。**Codex 插件：**在新的 Codex 会话中打开任务目录，确认已安装的插件和 MCP 工具已连接；如未连接，请先查看 [MCP 诊断指南（韩文）](/docs/ai-troubleshooting/#mcp)。独立 Codex CLI 设置是另一条路径。
+回答设置问题并完成设置。<span id="codex-first-task"></span>**Codex 插件：**在新的 Codex 会话中打开任务目录，确认已安装的插件和 MCP 工具已连接；如未连接，请先查看 [MCP 诊断指南（韩文）](/docs/ai-troubleshooting/#mcp)。独立 Codex CLI 设置是另一条路径。
 
 准备好后，在宿主对话的下一条消息中发送 Interview 请求。
 
@@ -171,7 +179,7 @@ ooo setup
 ooo interview "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
-**独立 CLI：**在任务目录的**终端**中输入：
+<span id="cli-first-task"></span>**独立 CLI：**在任务目录的**终端**中输入：
 
 ```bash
 ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
@@ -212,6 +220,8 @@ Interview skill 会重新确认目标并提出创建 Seed。同意目标后，�
 - **没有 YAML，或生成失败、中断：**不要运行。只有此时才请求恢复生成或索取原始 Seed 产物。
 
 ## 3. 运行任务并检查结果
+
+**操作顺序：**先阅读下方检查和警告 → 运行已检查的 Seed → 保存实际返回的 ID 与工作路径 → 检查文件、测试和评估结果 → 遇到问题时查看[故障排除](/docs/zh/troubleshooting/#recovery)。
 
 在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。Windows PowerShell 中，请将实际路径放在双引号内并运行：
 

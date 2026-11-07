@@ -33,12 +33,14 @@ This draft is checked against the installation guide at product source [`592c667
 
 | Environment | Prerequisites and where to enter installation commands | Where to enter your first task |
 | --- | --- | --- |
-| Claude Code plugin | Claude Code and `uv` are required. Enter the commands below in a **terminal**. | A new Claude Code session's conversation |
-| Codex plugin | A signed-in Codex CLI and `uvx` are required. Enter the commands below in a **terminal**. | A new Codex session's conversation |
-| Standalone CLI | Python 3.12 or later and the runtime and authentication you plan to use are required. Install in a separate virtual environment. | **Terminal** |
+| [Claude Code plugin](#install-claude) | Claude Code and `uv` are required. Enter the commands below in a **terminal**. | [A new Claude Code session's conversation](#worktree-first-task) |
+| [Codex plugin](#install-codex) | A signed-in Codex CLI and `uvx` are required. Enter the commands below in a **terminal**. | [A new Codex session's conversation](#worktree-first-task) |
+| [Standalone CLI](#install-cli) | Python 3.12 or later and the runtime and authentication you plan to use are required. Install in a separate virtual environment. | [**Terminal**](#worktree-first-task) |
 
-**Choose one path.** For a Claude Code or Codex plugin, use the installation commands for the host you plan to use, then enter your first task in that host conversation. The standalone CLI is a separate path. Expand its setup details below and enter those commands in a terminal.
+**Choose one path.** For a Claude Code or Codex plugin, use the installation commands for the host you plan to use, then enter your first task in that host conversation. The standalone CLI is a separate path. The Claude and Codex installation commands are visible below. Expand the standalone CLI details for its installation and MCP steps; enter those commands in a terminal.
 
+
+<span id="install-claude"></span>
 
 ### Claude Code
 
@@ -49,6 +51,8 @@ claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros
 ```
 
+<span id="install-codex"></span>
+
 ### Codex
 
 In a terminal:
@@ -57,6 +61,8 @@ In a terminal:
 codex plugin marketplace add Q00/ouroboros
 codex plugin add ouroboros@ouroboros
 ```
+
+<span id="install-cli"></span>
 
 ### Standalone CLI
 
@@ -154,16 +160,18 @@ ouroboros setup --runtime codex</code></pre>
 
 ## 2. Describe Your Goal and Review the Seed
 
+<span id="worktree-first-task"></span>
+
 !!! warning "Check the managed worktree path before execution"
     When an execution uses worktrees, preparation may attempt recursive deletion if `<worktree_root>/<repository name>/<durable_id>` already exists but is not registered as a Git worktree of the target repository. The default root is `~/.ouroboros/worktrees`. A new CLI run and a normal MCP run without a separately supplied ID generate the ID during execution, so the exact new path is not known beforehand. Before starting, check the actual managed root and repository directory, Git worktree registrations with `git worktree list --porcelain` in the target repository, active work, and data to preserve. For a resume, also compare the actual session ID and saved workspace path when available. If you cannot check these, defer execution; do not delete or overwrite an uncertain path. Concurrent changes can still create risk after inspection, and deletion does not necessarily succeed for every path. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
-**Claude Code plugin:** Open the task folder in a new session and request setup in the host's **conversation**.
+<span id="plugin-first-task"></span>**Claude Code plugin:** Open the task folder in a new session and request setup in the host's **conversation**.
 
 ```text
 ooo setup
 ```
 
-Answer the setup questions and finish. **Codex plugin:** Open the task folder in a new Codex session and check that the installed plugin and MCP tools are connected. If not, see the [MCP troubleshooting guide](/docs/en/ai-troubleshooting/). Standalone Codex CLI setup is a separate path.
+Answer the setup questions and finish. <span id="codex-first-task"></span>**Codex plugin:** Open the task folder in a new Codex session and check that the installed plugin and MCP tools are connected. If not, see the [MCP troubleshooting guide](/docs/en/ai-troubleshooting/). Standalone Codex CLI setup is a separate path.
 
 Once ready, send the Interview request as the next message in the host conversation.
 
@@ -171,7 +179,7 @@ Once ready, send the Interview request as the next message in the host conversat
 ooo interview "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
 ```
 
-**Standalone CLI:** Enter this command in a **terminal** opened in the task folder.
+<span id="cli-first-task"></span>**Standalone CLI:** Enter this command in a **terminal** opened in the task folder.
 
 ```bash
 ouroboros init start "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
@@ -212,6 +220,8 @@ Approve Seed creation in the terminal Interview, then check the actual displayed
 - **No YAML, or generation failed or was interrupted:** do not run. Only then request generation recovery or the original Seed artifact.
 
 ## 3. Run the Task and Review the Results
+
+**Sequence:** Read the checks and warnings below → run the reviewed Seed → save the returned IDs and working path → inspect files, tests and evaluation results → use [troubleshooting](/docs/en/troubleshooting/#recovery) if needed.
 
 In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. In Windows PowerShell, quote the actual path and run:
 
