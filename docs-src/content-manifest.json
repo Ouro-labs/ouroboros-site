@@ -39,13 +39,13 @@
     },
     "index.md": {
       "source": "content/guide-home.md",
-      "source_sha256": "61130ae56e228b376811fbc89685ba0edc5bfe89a3b595f5d8fa0fb8824cf6fd",
-      "page_sha256": "a4ed2a652fc9008dab7d0ab34c8bc61c9a6c82339ad86b46d9fac05993e6514d"
+      "source_sha256": "a36b681abede2104607828b05599eeb14cbb386993112f85ade18d7e422d60eb",
+      "page_sha256": "f8abb0065ff1d9694b7dab9c2ca03ac54aff1dbbb3a01cb61b7ef19133c67f05"
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "de29474898f5e26d407f281575834b4753ff2fd5e0d4cab75bfb278c7f741a3c",
-      "page_sha256": "a75dac2d402d05faca8a5d915f6c6ae9a0b0031b8569cdb5bb487e10c5e1e1fb"
+      "source_sha256": "023bdf684a59d225b28ee5f7a1454e8d1fd3915a9915b41a6679adb5118d7edd",
+      "page_sha256": "b5e7c351c2be1112f47eca51c0252d62e9a1f79a01c7b7854953fced320e220a"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",

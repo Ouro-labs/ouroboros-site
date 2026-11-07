@@ -21,8 +21,15 @@ class PendingGuidesTest(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
+        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Preflight manifest or pending status changed'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_preflight_summary_tamper(self):
+        (self.root/'pending-preflight-review.md').write_text('changed');self.rejected('Preflight summary changed')
+    def test_preflight_prior_tamper(self):
+        p=self.root/'pending-preflight.json';e=json.loads(p.read_text());e['pages']['index.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Preflight snapshot chain mismatch')
+    def test_preflight_evidence_symlink(self):
+        p=self.root/'pending-preflight.json';p.unlink();p.symlink_to(self.root/'pending-translated-recovery.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_changed_worktree_summary(self):
         (self.root/'pending-worktree-review.md').write_text('altered');self.rejected('Worktree summary changed')
     def test_changed_worktree_chain(self):
@@ -554,6 +561,32 @@ class PendingGuidesTest(unittest.TestCase):
     def test_symlink_root(self):
         p=self.root/'content'; other=self.root/'moved';p.rename(other);p.symlink_to(other,target_is_directory=True);self.rejected('Content root is a symlink')
 
+class TranslatedPriorTamperTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
+        self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
+        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
+        manifest=json.loads((self.root/'content-manifest.json').read_text())
+        preflight=json.loads((self.root/'pending-preflight.json').read_text())
+        for name,entry in preflight['pages'].items(): manifest['pages'][name]=entry['prior']
+        raw=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
+        (self.root/'content-manifest.json').write_bytes(raw)
+        code=(ROOT/'verify-pending-guides.py').read_text()
+        start=code.index("    preflight = json.loads(")
+        end=code.index("    translated = json.loads(",start)
+        code=code[:start]+code[end:]
+        code=code.replace("preflight['prior_manifest_sha256'] != translated['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != translated['manifest_sha256']")
+        namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'translated_prior_fixture'}
+        exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
+        self.prior_verify=namespace['verify']
+    def test_translated_forgery_prior_boundary(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-translated-recovery.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='en/troubleshooting.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
+        with self.assertRaisesRegex(ValueError,'Translated recovery current metadata mismatch'): self.prior_verify(self.root)
+
 class PriorStageTamperTest(unittest.TestCase):
     """Run the real lower verifier against the reconstructed preceding snapshot.
 
@@ -572,6 +605,10 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        preflight = json.loads((self.root/'pending-preflight.json').read_text())
+        for name, entry in preflight['pages'].items(): manifest['pages'][name] = entry['prior']
+        preflight_raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
+        self.assertEqual(hashlib.sha256(preflight_raw).hexdigest(), preflight['prior_manifest_sha256'])
         translated = json.loads((self.root/'pending-translated-recovery.json').read_text())
         for name, entry in translated['pages'].items(): manifest['pages'][name] = entry['prior']
         translated_raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
