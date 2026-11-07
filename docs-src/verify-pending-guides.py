@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,8 +22,26 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    diagnostic = json.loads((root/'pending-job-diagnostic.json').read_text())
+    if diagnostic.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != diagnostic['manifest_sha256']:
+        raise ValueError('Diagnostic manifest or pending status changed')
+    if diagnostic['prior_manifest_sha256'] != 'b62efecbb144f3f7a1f6af1df1e82dccece51a8e427ecb59bce2171b32c2eee3': raise ValueError('Diagnostic prior manifest changed')
+    diagnostic_summary=(root/'pending-job-diagnostic-review.md').read_bytes()
+    if sha(diagnostic_summary) != diagnostic['summary_sha256']: raise ValueError('Diagnostic summary changed')
+    diagnostic_names={'recovery-detail.md','ai-troubleshooting.md','en/ai-troubleshooting.md'}
+    if set(diagnostic['pages']) != diagnostic_names: raise ValueError('Diagnostic page set changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',diagnostic_summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(diagnostic_names) or {x[0] for x in rows}!=diagnostic_names: raise ValueError('Diagnostic summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        page=diagnostic['pages'][name]['current']
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+            raise ValueError('Diagnostic current metadata mismatch: '+name)
+    diagnostic_restored=copy.deepcopy(manifest)
+    for name in diagnostic_names: diagnostic_restored['pages'][name]=diagnostic['pages'][name]['prior']
+    if sha((json.dumps(diagnostic_restored,ensure_ascii=False,indent=2)+'\n').encode())!=diagnostic['prior_manifest_sha256']:
+        raise ValueError('Diagnostic snapshot chain mismatch')
     permissions = json.loads((root/'pending-permissions.json').read_text())
-    if permissions.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != permissions['manifest_sha256']:
+    if permissions.get('status') != 'pending' or diagnostic['prior_manifest_sha256'] != permissions['manifest_sha256']:
         raise ValueError('Permissions manifest or pending status changed')
     if permissions['prior_manifest_sha256'] != '3aa371fb502fd0debf74365b9168a792a1b2e1290c346d6e625bb51f05976b3e': raise ValueError('Permissions prior manifest changed')
     permissions_summary=(root/'pending-permissions-review.md').read_bytes()
@@ -34,10 +52,10 @@ def verify(root=ROOT):
     if len(rows)!=len(permissions_names) or {x[0] for x in rows}!=permissions_names: raise ValueError('Permissions summary rows mismatch')
     for name, source_hash, page_hash in rows:
         page=permissions['pages'][name]['current']
-        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or manifest['pages'].get(name)!=page:
+        if (page['source_sha256'],page['page_sha256']) != (source_hash,page_hash) or diagnostic_restored['pages'].get(name)!=page:
             raise ValueError('Permissions current metadata mismatch: '+name)
     if permissions.get('mid_manifest_sha256') != '6afa1dc4983a9407a24df1ca3d2c5f0589a307891d664d62d2df196e3f1dd4f2': raise ValueError('Permissions intermediate snapshot changed')
-    permissions_restored=copy.deepcopy(manifest)
+    permissions_restored=copy.deepcopy(diagnostic_restored)
     for level, expected in (('mid',permissions['mid_manifest_sha256']),('prior',permissions['prior_manifest_sha256'])):
         for name in permissions_names: permissions_restored['pages'][name]=permissions['pages'][name][level]
         if sha((json.dumps(permissions_restored,ensure_ascii=False,indent=2)+'\n').encode())!=expected:

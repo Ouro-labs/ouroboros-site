@@ -80,20 +80,17 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_install_chain(self):
         p=self.root/'pending-install.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Installation snapshot chain mismatch: mid')
     def test_forged_install_source_hash(self):
-        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-permissions.json'
-        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='quickstart.md'
-        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-job-diagnostic.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['quickstart.md']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Permissions current metadata mismatch')
-
+        self.rejected('Diagnostic snapshot chain mismatch')
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
     def test_forged_latest_source_hash(self):
-        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-permissions.json'
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-job-diagnostic.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['cli-reference-guide.md']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Permissions snapshot chain mismatch: mid')
-
+        self.rejected('Diagnostic snapshot chain mismatch')
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
     def test_changed_journey_summary(self):
@@ -103,7 +100,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md','pending-job-diagnostic.json','pending-job-diagnostic-review.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -111,14 +108,23 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_prior_evidence(self):
         (self.root/'review-evidence/groups-before.md').write_text('altered'); self.rejected('Prior public evidence changed')
     def test_forged_source_hash_in_both_records(self):
-        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-permissions.json'
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-job-diagnostic.json'
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());m['pages']['dashboard-guide.md']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Permissions snapshot chain mismatch: mid')
-
+        self.rejected('Diagnostic snapshot chain mismatch')
+    def test_changed_diagnostic_summary(self):
+        (self.root/'pending-job-diagnostic-review.md').write_text('altered');self.rejected('Diagnostic summary changed')
+    def test_changed_diagnostic_chain(self):
+        p=self.root/'pending-job-diagnostic.json';e=json.loads(p.read_text());e['pages']['recovery-detail.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Diagnostic snapshot chain mismatch')
+    def test_forged_diagnostic_source_hash(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-job-diagnostic.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='ai-troubleshooting.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
+        self.rejected('Diagnostic current metadata mismatch')
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Permissions manifest or pending status changed')
+        self.rejected('Diagnostic manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):
