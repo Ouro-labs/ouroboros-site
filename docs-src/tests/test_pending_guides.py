@@ -87,7 +87,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
@@ -99,7 +100,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
@@ -110,7 +112,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_changed_summary(self):
         (self.root/'pending-new-guides-review.md').write_text('altered'); self.rejected('Summary changed')
     def test_evidence_input_symlinks(self):
-        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md','pending-job-diagnostic.json','pending-job-diagnostic-review.md','pending-package.json','pending-package-review.md','pending-seed.json','pending-seed-review.md','pending-interview.json','pending-interview-review.md','pending-seed-version.json','pending-seed-version-review.md','pending-runtime.json','pending-runtime-review.md','pending-home.json','pending-home-review.md','pending-session.json','pending-session-review.md','pending-headings.json','pending-headings-review.md','pending-example.json','pending-example-review.md','pending-interview-search.json','pending-interview-search-review.md'):
+        for name in ('content-manifest.json','link-review-evidence.json','pending-new-guides.json','pending-new-guides-review.md','pending-journey.json','pending-journey-review.md','pending-latest.json','pending-latest-review.md','pending-install.json','pending-install-review.md','pending-locale.json','pending-locale-review.md','pending-search.json','pending-search-review.md','pending-worktree.json','pending-worktree-review.md','pending-discovery.json','pending-discovery-review.md','pending-evaluation.json','pending-evaluation-review.md','pending-accessibility.json','pending-accessibility-review.md','pending-details.json','pending-details-review.md','pending-permissions.json','pending-permissions-review.md','pending-job-diagnostic.json','pending-job-diagnostic-review.md','pending-package.json','pending-package-review.md','pending-seed.json','pending-seed-review.md','pending-interview.json','pending-interview-review.md','pending-seed-version.json','pending-seed-version-review.md','pending-runtime.json','pending-runtime-review.md','pending-home.json','pending-home-review.md','pending-session.json','pending-session-review.md','pending-headings.json','pending-headings-review.md','pending-example.json','pending-example-review.md','pending-interview-search.json','pending-interview-search-review.md','pending-worktree-result.json','pending-worktree-review-result.md'):
             with self.subTest(name=name):
                 path=self.root/name; saved=self.root/(name+'.saved'); path.rename(saved); path.symlink_to(saved)
                 try: self.rejected('Evidence input is not a regular non-symlink file')
@@ -125,7 +127,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_diagnostic_summary(self):
         (self.root/'pending-job-diagnostic-review.md').write_text('altered');self.rejected('Diagnostic summary changed')
@@ -140,7 +143,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_package_summary(self):
         (self.root/'pending-package-review.md').write_text('altered');self.rejected('Package summary changed')
@@ -155,7 +159,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_seed_summary(self):
         (self.root/'pending-seed-review.md').write_text('altered');self.rejected('Seed summary changed')
@@ -170,7 +175,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_interview_summary(self):
         (self.root/'pending-interview-review.md').write_text('altered');self.rejected('Interview summary changed')
@@ -185,7 +191,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_seed_version_summary(self):
         (self.root/'pending-seed-version-review.md').write_text('altered');self.rejected('Seed version summary changed')
@@ -200,7 +207,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_runtime_summary(self):
         (self.root/'pending-runtime-review.md').write_text('altered');self.rejected('Runtime summary changed')
@@ -215,7 +223,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_home_summary(self):
         (self.root/'pending-home-review.md').write_text('altered');self.rejected('Home summary changed')
@@ -243,7 +252,8 @@ class PendingGuidesTest(unittest.TestCase):
         zpath=self.root/'pending-headings.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_headings_summary(self):
         (self.root/'pending-headings-review.md').write_text('altered');self.rejected('Headings summary changed')
@@ -256,7 +266,8 @@ class PendingGuidesTest(unittest.TestCase):
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         xpath=self.root/'pending-example.json';x=json.loads(xpath.read_text());x['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();xpath.write_text(json.dumps(x))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_headings_hook(self):
         (self.root/'heading_labels.py').write_text('altered');self.rejected('Headings file changed')
@@ -272,7 +283,8 @@ class PendingGuidesTest(unittest.TestCase):
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         ypath=self.root/'pending-interview-search.json';y=json.loads(ypath.read_text());y['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ypath.write_text(json.dumps(y))
-        self.rejected('Interview search snapshot chain mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
 
     def test_changed_example_config(self):
         (self.root/'mkdocs.yml').write_text('altered');self.rejected('Example file changed')
@@ -287,10 +299,22 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='en/ai-troubleshooting.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Interview search current metadata mismatch')
+        wpath=self.root/'pending-worktree-result.json';w=json.loads(wpath.read_text());w['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();wpath.write_text(json.dumps(w))
+        self.rejected('Worktree result snapshot chain mismatch')
+
+    def test_changed_worktree_result_summary(self):
+        (self.root/'pending-worktree-review-result.md').write_text('altered');self.rejected('Worktree result summary changed')
+    def test_changed_worktree_result_chain(self):
+        p=self.root/'pending-worktree-result.json';e=json.loads(p.read_text());e['pages']['existing-project-detail.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Worktree result snapshot chain mismatch')
+    def test_forged_worktree_result_source_hash(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-worktree-result.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='existing-project-detail.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
+        self.rejected('Worktree result current metadata mismatch')
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Interview search manifest or pending status changed')
+        self.rejected('Worktree result manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):

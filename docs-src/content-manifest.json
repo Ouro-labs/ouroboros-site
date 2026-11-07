@@ -189,8 +189,8 @@
     },
     "existing-project-detail.md": {
       "source": "content/existing-project-detail.md",
-      "source_sha256": "00d5f55074179a3218803efe18de2a0f9c0c64e606ffcbe1ad7a20ce193bb922",
-      "page_sha256": "83fad53766c612935a6eead8c9005b10ff04b3d698aee40d5014fd62d160d1a0"
+      "source_sha256": "7a39975be4a529d6999c97ac34782d69fb177bb638a74cdc318e95911907c240",
+      "page_sha256": "60630edb54013a0d12077ab84a6c236fe3ceb80910b44dd4889f0b2227287708"
     },
     "progress-detail.md": {
       "source": "content/progress-detail.md",

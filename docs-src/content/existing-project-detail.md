@@ -61,6 +61,38 @@ Codex 또는 Claude Code에서 대상 프로젝트 폴더를 열고 현재 변�
 
 Seed의 작업 경로가 의도한 저장소인지, 완료 조건에 유지할 동작과 새 회귀 테스트가 있는지 읽으세요. `mechanical.toml`의 각 명령이 이 프로젝트에서 실제로 실행 가능한지 확인하고, 실행 뒤에는 변경 파일·테스트 결과·기존 변경 보존 여부를 대조하세요. 설정 파일이 비었거나 생성되지 않았다면 검증 범위가 빠졌는지 점검합니다.
 
+## 별도 작업 결과를 원래 프로젝트에 반영하기 {#review-worktree-result}
+
+작업이 성공했다고 표시되어도 변경이 원래 브랜치에 자동으로 들어갔다고 가정하지 마세요. 호스트·설정에 따라 별도 worktree가 없을 수 있습니다. 먼저 실제 응답의 `worktree_path`와 `worktree_branch`, 또는 독립 CLI의 `Task worktree`·`Task branch`가 있는지 확인합니다. 이 필드가 없다면 결과에서 실제 작업 위치를 확인하고 추측한 경로를 사용하지 마세요. 제품 main `592c667f`와 release `v0.59.9`의 worktree 경로는 [공간 준비 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py), [CLI 반환 경로](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py)와 [release 공간 준비 구현](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/core/worktree.py)을 참고하세요. 실제 연결된 호스트와 설치 버전은 다를 수 있습니다.
+
+1. **원래 작업을 먼저 보존합니다.** 원래 프로젝트에서 `git status --short`와 `git branch --show-current`를 확인하고, 사용자가 작업 중인 수정·새 파일을 기록합니다. 필요하면 소유자와 별도 보존 방법을 정합니다. 다른 사람의 변경을 임의로 커밋·덮어쓰기·삭제하거나 `reset --hard`, `clean`을 실행하지 마세요.
+2. **반환된 작업 위치를 확인합니다.** 해당 경로에서 아래 읽기 전용 명령을 실행합니다. 이 경로가 의도한 저장소의 등록된 worktree인지 원래 프로젝트의 `git worktree list --porcelain`과 대조합니다. `HEAD`와 브랜치가 반환 정보와 다른 경우 또는 detached HEAD라면 그대로 기록하고 먼저 원인을 확인하세요.
+
+    ```sh
+    git status --short
+    git branch --show-current
+    git rev-parse HEAD
+    git diff --stat
+    git diff
+    git diff --cached
+    git ls-files --others --exclude-standard
+    ```
+
+    `git diff`는 추적 중인 미스테이징 변경, `git diff --cached`는 스테이징 변경을 보여 줍니다. 새 미추적 파일은 목록에만 나오므로 내용을 별도로 읽어야 합니다. Git이 무시하는 파일과 하위 저장소의 내부 변경은 이 목록만으로 완전히 확인할 수 없습니다. 비밀·개인정보는 공유하거나 커밋하기 전에 제외합니다.
+3. **커밋된 변경도 확인합니다.** 실행 시작 시 기록한 기준 커밋과 위에서 확인한 작업 `HEAD`를 비교합니다. 아래 `<기준-커밋>` 자리표시자를 실제 확인한 기준 커밋 ID로 바꿉니다. `HEAD`는 현재 작업 위치의 확인된 커밋을 뜻합니다. 기준을 모르면 시작 기록·브랜치 이력을 먼저 살피고 임의로 확정하지 마세요.
+
+    ```sh
+    git log --oneline <기준-커밋>..HEAD
+    git diff --stat <기준-커밋> HEAD
+    git diff <기준-커밋> HEAD
+    ```
+
+    이 비교는 커밋된 차이만 보여 주므로 앞 단계의 미커밋·미추적 결과도 함께 검토합니다. 원래 브랜치가 진행된 경우 기준 이후 양쪽의 변경과 충돌 가능성을 확인하고, 파일·테스트 결과가 Seed의 각 기준에 맞는지 검토하세요. 상태 `complete`나 평가 결과만으로 실제 프로젝트에 안전하게 적용됐다고 판단하지 않습니다.
+4. **사용자가 검토하고 통합 방법을 결정합니다.** 미커밋 결과가 있으면 소유자와 함께 무엇을 보존하고 커밋할지 먼저 결정합니다. 대상 브랜치·변경 범위·충돌·기존 사용자 변경을 확인한 뒤에만 적절한 PR 또는 통합 방법을 선택합니다. 승인 전에 merge하지 마세요. 이 문서는 자동 통합이나 충돌 없는 적용을 보장하지 않습니다.
+5. **정리 전 결과를 보존합니다.** 필요한 파일·커밋·브랜치와 테스트 근거가 실제로 보존되고 원래 변경이 안전한지 확인하기 전에는 worktree나 브랜치를 삭제하지 마세요. 미추적·무시 파일과 별도 작업자의 결과도 확인합니다. 정리 동작의 조건은 [정리 안내](/docs/cleanup-detail/)를 참조하세요.
+
+위 Git 조회 명령은 임시 합성 저장소에서만 검증한 읽기 예시이며 실제 호스트의 자동 커밋이나 모든 worktree 동작을 보장하지 않습니다.
+
 ## 다음 행동
 
 대상과 검증 명령이 맞으면 [진행상태 확인](/docs/progress-detail/)에서 같은 실행을 추적합니다. 테스트나 실행이 실패하면 [실패 복구](/docs/recovery-detail/)로 이동하세요. 작업 범위가 잘못됐다면 실행 전에 Seed와 검증 명령을 수정합니다.
