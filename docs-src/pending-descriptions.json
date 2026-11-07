@@ -1,0 +1,81 @@
+{
+  "status": "pending",
+  "manifest_sha256": "fb49f42ca9573b0f43fe7ce5e97d158fb4221fad4c541564b92e21e3f10e71c7",
+  "prior_manifest_sha256": "82621bf4e7aa65a9b2ae47e2cc6e26bacead10109ad667e47dd0f8b00081f432",
+  "summary_sha256": "c35b234ac6d0cfe0be1b4530c0a74bdd9d855899534c1e11ba6b34c422e802ba",
+  "generator_sha256": "f5bb3851a9c835da6dba7358dec79fb59ec01b185f6c40614ec93cfa48d29963",
+  "pages": {
+    "index.md": {
+      "prior": {
+        "source": "content/guide-home.md",
+        "source_sha256": "a36b681abede2104607828b05599eeb14cbb386993112f85ade18d7e422d60eb",
+        "page_sha256": "f8abb0065ff1d9694b7dab9c2ca03ac54aff1dbbb3a01cb61b7ef19133c67f05"
+      },
+      "current": {
+        "source": "content/guide-home.md",
+        "source_sha256": "dffb3a525446d78bb60b600fcfb2fb6d8511349a6726cbc8148b8b27e801d7e2",
+        "page_sha256": "56e6d3924d595ea13608fbbd2c3bf26fba104eec393c74228e28750bed3905d0"
+      }
+    },
+    "quickstart.md": {
+      "prior": {
+        "source": "content/quickstart.md",
+        "source_sha256": "023bdf684a59d225b28ee5f7a1454e8d1fd3915a9915b41a6679adb5118d7edd",
+        "page_sha256": "b5e7c351c2be1112f47eca51c0252d62e9a1f79a01c7b7854953fced320e220a"
+      },
+      "current": {
+        "source": "content/quickstart.md",
+        "source_sha256": "7b13cc0d793c3ce8dc0d9048d0e4d919c1834ed2615004c462123ce8a5bf7cde",
+        "page_sha256": "c69f8147108be9882a010f33515d663cb0314defd31759053515c620e784280d"
+      }
+    },
+    "en/quickstart.md": {
+      "prior": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "3a7dd68c77e7f61b9e92353782300fbc19b0c5dcaf1d8b3ce692c29528373130",
+        "page_sha256": "962582687539824817044ea46c99b0cbd0e6fad90291aef71700b741a2c069a1"
+      },
+      "current": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "98103327a48961a149cd67e6bc9ee2ee5252555c983f76e925b032d3e61a99f8",
+        "page_sha256": "a7946fc97e11634b284f3d8bbb65116849c3db1e1eec6185a547454679594a3c"
+      }
+    },
+    "zh/quickstart.md": {
+      "prior": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "5eb4c81cf17294a199ef7d33b9fb2bdcb442bf6ee8ad278be6fea97d204f6735",
+        "page_sha256": "50a3974a88c696d216201525c7b58cdc7cf4c91e6c6ec7496cc26f9dc61bed48"
+      },
+      "current": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "4d4d115871153d93ab03503f826b870ce3745a4eba049ee50b67f685a7535386",
+        "page_sha256": "ebff0cc83b93ce144da9dcd9596b73ee9d996636082b4ac75b0fa09692de866d"
+      }
+    },
+    "ai-troubleshooting.md": {
+      "prior": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "d17b266b2e47a95622211a6740f549298ff9f0917849d850a794722873599bb0",
+        "page_sha256": "bb885592d901f9536bd1681b29ecff13ae3287bdaafd51401ff9d478989e3251"
+      },
+      "current": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "8d6193974b30479974d46276c17b19cfd2d0e71f37f6003da3a406780404688b",
+        "page_sha256": "1eecea2db464df22887257c031b4ce8017f99d3d29be5257e435163cc3c663ad"
+      }
+    },
+    "existing-project-detail.md": {
+      "prior": {
+        "source": "content/existing-project-detail.md",
+        "source_sha256": "3b173ab78ada0c70529b5073f5f6b57dd36f146cbfefa9788c300e6e383d5911",
+        "page_sha256": "0bf3f2caf6b39a4afbc8ff6374256abfde6d4c75ced1920934561482ab7eea3c"
+      },
+      "current": {
+        "source": "content/existing-project-detail.md",
+        "source_sha256": "905a7f3928ad590e9be9f8598058cbb2210f8aebaedc62a5cd27dff9b19b4e7c",
+        "page_sha256": "985c2ca20478bc7e9f1cdcdbc3e790961900dc0b36c044480380ef8c7d86bf7d"
+      }
+    }
+  }
+}

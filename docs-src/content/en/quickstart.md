@@ -1,3 +1,7 @@
+---
+description: "A draft first-run guide from interview and Seed through execution and review, using a synthetic todo app. Based on product main 592; real-host coverage is unverified."
+---
+
 # Start Your First Task
 
 > **Partial translation:** This quickstart is a draft. Brief status, evaluation and recovery guidance is available in English; broader detailed guidance is currently in Korean.

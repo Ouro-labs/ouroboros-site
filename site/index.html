@@ -62,10 +62,10 @@
 <div class="top-inner">
 <a class="brand" href="/"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
 <nav aria-label="Main menu">
-<a href="/docs/en/quickstart/">Quickstart (draft)</a>
+<a href="/docs/quickstart/" lang="ko">빠른 시작</a>
+<a href="/docs/en/quickstart/" lang="en">Quickstart</a>
+<a href="/docs/zh/quickstart/" lang="zh-Hans">快速入门</a>
 <a href="/roadmap/">Roadmap</a>
-<a href="/learn/">한국어</a>
-<a href="/learn/zh/">中文</a>
 <a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
 <button class="theme" data-theme-toggle type="button">Theme</button>
 </nav>
@@ -90,11 +90,11 @@
 <p>Choose the installation path for your coding environment. The example below uses Claude Code; the <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">product getting-started guide</a> also covers Codex and the standalone CLI.</p>
 <ol>
 <li><a href="#install">Install the Claude Code plugin</a> and its prerequisites, then open a Claude Code session.</li>
-<li>Run <code>ooo setup</code> in that session, then start with <code>ooo interview "Build a task management CLI"</code>.</li>
-<li>Answer the questions and review the resulting Seed and its acceptance criteria before execution.</li>
-<li>After execution, inspect the work and evaluation against your goal. A completed run or evaluation is evidence to review, not a substitute for your own judgment.</li>
+<li>Run <code>ooo setup</code>, then request <code>ooo interview</code> for a simple to-do web app that adds items and marks them complete.</li>
+<li>Answer the questions, request <code>ooo seed</code>, and review the Seed YAML and its acceptance criteria before asking for <code>ooo run</code>.</li>
+<li>Inspect the generated work and evaluation; check that the app can add an item and mark it complete. A completed run is evidence to review, not a substitute for your own judgment.</li>
 </ol>
-<p>For the first task, read the <a href="/docs/en/quickstart/">English quickstart draft</a> and its <a href="/docs/en/troubleshooting/">partial troubleshooting guide</a>. These drafts refer to product source <code>592c667f</code>; check your installed version and host. The earlier <a href="/learn/en/troubleshooting/">0.51.5 troubleshooting chapter</a> remains available, as do <a href="https://github.com/Q00/ouroboros/issues">product issues</a>.</p>
+<p>Follow the quickstart draft in <a href="/docs/quickstart/" lang="ko">한국어</a>, <a href="/docs/en/quickstart/" lang="en">English</a>, or <a href="/docs/zh/quickstart/" lang="zh-Hans">中文</a>. For more help, see the <a href="/docs/en/troubleshooting/">partial troubleshooting guide</a>. These drafts refer to product source <code>592c667f</code>; check your installed version and host. The earlier <a href="/learn/en/troubleshooting/">0.51.5 troubleshooting chapter</a> remains available, as do <a href="https://github.com/Q00/ouroboros/issues">product issues</a>.</p>
 </div>
 
 <p class="demo-lead"><b>Four separate runs, four hosts.</b> Different tasks on purpose — the engine is what is shared, not the prompt.</p>
@@ -119,13 +119,15 @@ claude plugin install ouroboros@ouroboros</code></pre>
 <figure class="diagram"><img src="/assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
 
 <h2 id="docs">Documentation</h2>
-<p>The English quickstart and partial troubleshooting drafts refer to product source <code>592c667f</code>. The earlier learning guides describe 0.51.5. Check your installed version and host for applicable commands and behavior.</p>
+<p>The three quickstart drafts and the partial English troubleshooting guide refer to product source <code>592c667f</code>. The earlier Korean and English learning guides describe 0.51.5; the Chinese learning guide is historical and its exact baseline is unconfirmed. Check your installed version and host for applicable commands and behavior.</p>
 <div class="cards">
-<a href="/docs/"><strong>한국어 작업 문서</strong><span>빠른 시작, Interview, Seed와 문제 해결.</span></a>
-<a href="/docs/en/quickstart/"><strong>English quickstart draft</strong><span>Installation choices and a first task, based on source 592c667f.</span></a>
+<a href="/docs/quickstart/" lang="ko"><strong>한국어 빠른 시작 (초안)</strong><span>설치부터 첫 작업과 결과 확인까지.</span></a>
+<a href="/docs/en/quickstart/" lang="en"><strong>English quickstart draft</strong><span>Installation choices and a first task, based on source 592c667f.</span></a>
+<a href="/docs/zh/quickstart/" lang="zh-Hans"><strong>中文快速入门（草稿）</strong><span>选择安装方式并完成首个任务。</span></a>
+<a href="/docs/"><strong>한국어 작업 문서</strong><span>Interview, Seed와 문제 해결.</span></a>
 <a href="/learn/en/"><strong>English learning guide (0.51.5)</strong><span>Earlier chapters from Interview to Ralph.</span></a>
-<a href="/learn/"><strong>한국어 가이드</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
-<a href="/learn/zh/"><strong>中文指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
+<a href="/learn/"><strong>한국어 이전 가이드 (0.51.5)</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
+<a href="/learn/zh/"><strong>中文旧版指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
 <a href="/roadmap/"><strong>GTM Roadmap</strong><span>Evidence gates, proposed joint validation, and conditional enterprise horizons.</span></a>
 <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md"><strong>Getting started</strong><span>Product installation and first workflow.</span></a>
 <a href="/docs/en/troubleshooting/"><strong>English troubleshooting draft</strong><span>Partial first-task status, evaluation and recovery guidance, based on source 592c667f.</span></a>

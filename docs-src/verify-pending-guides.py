@@ -14,7 +14,7 @@ BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md', 'pending-translated-recovery.json', 'pending-translated-recovery-review.md', 'pending-search-focus.json', 'pending-search-focus-review.md', 'pending-preflight.json', 'pending-preflight-review.md', 'pending-worktree-input.json', 'pending-worktree-input-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md', 'pending-translated-recovery.json', 'pending-translated-recovery-review.md', 'pending-search-focus.json', 'pending-search-focus-review.md', 'pending-preflight.json', 'pending-preflight-review.md', 'pending-worktree-input.json', 'pending-worktree-input-review.md', 'pending-landing.json', 'pending-landing-review.md', 'pending-descriptions.json', 'pending-descriptions-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
@@ -22,6 +22,17 @@ def verify(root=ROOT):
     pending = json.loads((root/'pending-new-guides.json').read_text())
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
         raise ValueError('Pending extension requires closed gate')
+    landing = json.loads((root/'pending-landing.json').read_text())
+    if landing.get('status') != 'pending': raise ValueError('Landing pending status changed')
+    landing_files={'site/index.html','docs-src/tests/test_landing_quickstarts.py'}
+    if set(landing.get('files',{})) != landing_files: raise ValueError('Landing file set changed')
+    summary=(root/'pending-landing-review.md').read_bytes()
+    if sha(summary)!=landing['summary_sha256']: raise ValueError('Landing summary changed')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(landing_files) or dict(rows)!=landing['files']: raise ValueError('Landing summary rows mismatch')
+    for name, expected in landing['files'].items():
+        path=root.parent/name
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
     home = json.loads((root/'pending-home.json').read_text())
     if home.get('status') != 'pending':
         raise ValueError('Home manifest or pending status changed')
@@ -33,7 +44,9 @@ def verify(root=ROOT):
     if len(home_rows)!=len(home_files) or dict(home_rows)!=home['files']: raise ValueError('Home summary rows mismatch')
     for name, expected in home['files'].items():
         path=root.parent/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
+        if name == 'site/index.html':
+            if expected != landing['prior_home_sha256']: raise ValueError('Landing prior home mismatch')
+        elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Home file changed: '+name)
     if home['prior_home_sha256'] != '3f53646153e3023e81d452e751b5a65649e98e33ce9e69f7c5b89c611dbbff99': raise ValueError('Home prior homepage changed')
     manual = json.loads((root/'pending-ai-manual.json').read_text())
     if manual.get('status') != 'pending': raise ValueError('AI manual pending status changed')
@@ -58,8 +71,24 @@ def verify(root=ROOT):
         path=root.parent/name
         if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
     current_manifest = manifest
+    descriptions = json.loads((root/'pending-descriptions.json').read_text())
+    if descriptions.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != descriptions['manifest_sha256']:
+        raise ValueError('Descriptions manifest or pending status changed')
+    summary=(root/'pending-descriptions-review.md').read_bytes()
+    if sha(summary)!=descriptions['summary_sha256']: raise ValueError('Descriptions summary changed')
+    names={'index.md','quickstart.md','en/quickstart.md','zh/quickstart.md','ai-troubleshooting.md','existing-project-detail.md'}
+    if set(descriptions['pages']) != names: raise ValueError('Descriptions page set changed')
+    if not re.fullmatch(r'[0-9a-f]{64}',str(descriptions.get('generator_sha256',''))): raise ValueError('Descriptions generator hash missing')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \| ([0-9a-f]{64}) \|',summary.decode('utf-8'),re.MULTILINE)
+    if len(rows)!=len(names) or {x[0] for x in rows}!=names: raise ValueError('Descriptions summary rows mismatch')
+    for name, source_hash, page_hash in rows:
+        entry=descriptions['pages'][name]['current']
+        if (source_hash,page_hash)!=(entry['source_sha256'],entry['page_sha256']) or manifest['pages'].get(name)!=entry: raise ValueError('Descriptions current metadata mismatch: '+name)
+    manifest=copy.deepcopy(manifest)
+    for name,entry in descriptions['pages'].items(): manifest['pages'][name]=entry['prior']
+    if sha((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode())!=descriptions['prior_manifest_sha256']: raise ValueError('Descriptions snapshot chain mismatch')
     worktree_input = json.loads((root/'pending-worktree-input.json').read_text())
-    if worktree_input.get('status') != 'pending' or sha((root/'content-manifest.json').read_bytes()) != worktree_input['manifest_sha256']:
+    if worktree_input.get('status') != 'pending' or descriptions['prior_manifest_sha256'] != worktree_input['manifest_sha256']:
         raise ValueError('Worktree input manifest or pending status changed')
     summary=(root/'pending-worktree-input-review.md').read_bytes()
     if sha(summary)!=worktree_input['summary_sha256']: raise ValueError('Worktree input summary changed')
