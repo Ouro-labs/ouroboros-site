@@ -21,9 +21,57 @@ class PendingGuidesTest(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
-        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Event display manifest or pending status changed'
+        outer_boundary_tests = {
+            'test_changed_manifest',
+            'test_forged_browser_example_source_hash',
+            'test_forged_diagnostic_source_hash',
+            'test_forged_example_source_hash',
+            'test_forged_headings_source_hash',
+            'test_forged_initial_commit_source_hash',
+            'test_forged_install_source_hash',
+            'test_forged_interview_search_source_hash',
+            'test_forged_interview_source_hash',
+            'test_forged_ko_venv_source_hash',
+            'test_forged_latest_source_hash',
+            'test_forged_megacode_claim_source_hash',
+            'test_forged_package_source_hash',
+            'test_forged_runtime_source_hash',
+            'test_forged_seed_source_hash',
+            'test_forged_seed_verification_source_hash',
+            'test_forged_seed_version_source_hash',
+            'test_forged_session_source_hash',
+            'test_forged_sidecar_source_hash',
+            'test_forged_source_hash_in_both_records',
+            'test_forged_worktree_result_source_hash',
+            'test_seed_order_forged_current_source',
+            'test_worktree_input_forged_current_source',
+            'test_translated_recovery_forged_hash',
+        }
+        if self._testMethodName in outer_boundary_tests:
+            message = 'Quickstart evaluation manifest or pending status changed'
+        elif self._testMethodName == 'test_quickstart_eval_current_tamper':
+            message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_quickstart_eval_summary_tamper(self):
+        (self.root/'pending-quickstart-eval-review.md').write_text('changed'); self.rejected('Quickstart evaluation summary changed')
+    def test_quickstart_eval_summary_hash_forgery(self):
+        summary_path=self.root/'pending-quickstart-eval-review.md'; summary=summary_path.read_text()
+        summary=summary.replace('d55a6e9bfc692237a42cee474251eb77546c2019633bc6ee8aa32a22f0bb1e00','a'*64); summary_path.write_text(summary)
+        p=self.root/'pending-quickstart-eval.json'; e=json.loads(p.read_text()); e['summary_sha256']=hashlib.sha256(summary_path.read_bytes()).hexdigest(); p.write_text(json.dumps(e,ensure_ascii=False,indent=2)+'\n')
+        self.rejected('Quickstart evaluation summary hash mismatch: en/quickstart.md')
+    def test_quickstart_eval_prior_tamper(self):
+        p=self.root/'pending-quickstart-eval.json'; e=json.loads(p.read_text()); prior_source=e['pages']['quickstart.md']['prior']['source_sha256']; e['pages']['quickstart.md']['prior']['source_sha256']='a'*64
+        summary_path=self.root/'pending-quickstart-eval-review.md'; summary=summary_path.read_text()
+        summary=summary.replace(prior_source,'a'*64); summary_path.write_text(summary)
+        e['summary_sha256']=hashlib.sha256(summary_path.read_bytes()).hexdigest(); p.write_text(json.dumps(e,ensure_ascii=False,indent=2)+'\n')
+        self.rejected('Quickstart evaluation snapshot chain mismatch')
+    def test_quickstart_eval_current_tamper(self):
+        p=self.root/'pending-quickstart-eval.json'; e=json.loads(p.read_text()); e['pages']['en/quickstart.md']['current']['page_sha256']='a'*64; p.write_text(json.dumps(e)); self.rejected('Quickstart evaluation current metadata mismatch: en/quickstart.md')
+    def test_quickstart_eval_missing_page(self):
+        p=self.root/'pending-quickstart-eval.json'; e=json.loads(p.read_text()); del e['pages']['zh/quickstart.md']; p.write_text(json.dumps(e)); self.rejected('Quickstart evaluation page set changed')
+    def test_quickstart_eval_symlink(self):
+        p=self.root/'pending-quickstart-eval.json'; p.unlink(); p.symlink_to(self.root/'pending-ai-entry.json'); self.rejected('Evidence input is not a regular non-symlink file')
     def test_event_display_summary_tamper(self):
         (self.root/'pending-event-display-review.md').write_text('changed'); self.rejected('Event display summary changed')
     def test_event_display_prior_tamper(self):
@@ -743,7 +791,10 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());nav=json.loads((root/'pending-quick-nav.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
+            for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
+            nav=json.loads((root/'pending-quick-nav.json').read_text())
             m['pages']['query-projections-detail.md']=json.loads((root/'pending-event-display.json').read_text())['pages']['query-projections-detail.md']['prior']
             m['pages']['index.md']=json.loads((root/'pending-ai-entry.json').read_text())['pages']['index.md']['prior']
             for name,entry in nav['pages'].items():m['pages'][name]=entry['prior']
@@ -814,7 +865,7 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
             outer=json.loads((root/'pending-megacode-warning.json').read_text())
             for name,entry in outer['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),outer['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    event_display = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    quick_eval = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("megacode_warning['prior_manifest_sha256'] != seed_order['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != seed_order['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'seed_order_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-seed-order.json';p=json.loads(ppath.read_text());name='seed-guide.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -826,7 +877,10 @@ class WorktreePriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());nav=json.loads((root/'pending-quick-nav.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
+            for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
+            nav=json.loads((root/'pending-quick-nav.json').read_text())
             m['pages']['query-projections-detail.md']=json.loads((root/'pending-event-display.json').read_text())['pages']['query-projections-detail.md']['prior']
             m['pages']['index.md']=json.loads((root/'pending-ai-entry.json').read_text())['pages']['index.md']['prior']
             for name,entry in nav['pages'].items():m['pages'][name]=entry['prior']
@@ -903,7 +957,7 @@ class WorktreePriorTamperTest(unittest.TestCase):
             descriptions=json.loads((root/'pending-descriptions.json').read_text())
             for name,entry in descriptions['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),descriptions['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    event_display = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    quick_eval = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("descriptions['prior_manifest_sha256'] != worktree_input['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != worktree_input['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'worktree_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-worktree-input.json';p=json.loads(ppath.read_text());name='existing-project-detail.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -916,6 +970,9 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
         manifest=json.loads((self.root/'content-manifest.json').read_text())
+        quick_eval=json.loads((self.root/'pending-quickstart-eval.json').read_text())
+        for name,entry in quick_eval['pages'].items(): manifest['pages'][name]=entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
         manifest['pages']['query-projections-detail.md']=json.loads((self.root/'pending-event-display.json').read_text())['pages']['query-projections-detail.md']['prior']
         manifest['pages']['index.md']=json.loads((self.root/'pending-ai-entry.json').read_text())['pages']['index.md']['prior']
         quick = json.loads((self.root/'pending-quick-nav.json').read_text())
@@ -1002,7 +1059,7 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
         code=(ROOT/'verify-pending-guides.py').read_text()
-        start=code.index("    event_display = json.loads(")
+        start=code.index("    quick_eval = json.loads(")
         end=code.index("    translated = json.loads(",start)
         code=code[:start]+code[end:]
         code=code.replace("preflight['prior_manifest_sha256'] != translated['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != translated['manifest_sha256']")
@@ -1034,6 +1091,9 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        quick_eval = json.loads((self.root/'pending-quickstart-eval.json').read_text())
+        for name, entry in quick_eval['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), quick_eval['prior_manifest_sha256'])
         manifest['pages']['query-projections-detail.md']=json.loads((self.root/'pending-event-display.json').read_text())['pages']['query-projections-detail.md']['prior']
         manifest['pages']['index.md']=json.loads((self.root/'pending-ai-entry.json').read_text())['pages']['index.md']['prior']
         quick = json.loads((self.root/'pending-quick-nav.json').read_text())
