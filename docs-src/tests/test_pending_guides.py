@@ -13,6 +13,22 @@ spec = importlib.util.spec_from_file_location('pending_guides', ROOT/'verify-pen
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
+def strip_latest_wait_stage(code):
+    start=code.index('    # Bind this newest translated-wait clarification')
+    end=code.index("    landing = json.loads(",start)
+    return code[:start]+'    current_manifest = manifest\n'+code[end:]
+
+def restore_latest_wait_manifest(root, manifest):
+    record=json.loads((root/'pending-job-wait-clarification.json').read_text())
+    for name, entry in record['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']:
+            raise AssertionError('Latest wait current metadata mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    restored=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
+    if hashlib.sha256(restored).hexdigest()!=record['prior_manifest_sha256']:
+        raise AssertionError('Latest wait prior snapshot mismatch')
+    return manifest
+
 class PendingGuidesTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -48,11 +64,24 @@ class PendingGuidesTest(unittest.TestCase):
             'test_translated_recovery_forged_hash',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'Quickstart evaluation manifest or pending status changed'
+            message = 'Job wait clarification manifest or pending status changed'
+        elif self._testMethodName == 'test_changed_manifest':
+            message = 'Job wait clarification manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_job_wait_outer_manifest_tamper(self):
+        p=self.root/'content-manifest.json'; m=json.loads(p.read_text()); m['pages']['zh/troubleshooting.md']['page_sha256']='a'*64
+        p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+        self.rejected('Job wait clarification manifest or pending status changed')
+    def test_job_wait_outer_summary_tamper(self):
+        (self.root/'pending-job-wait-clarification-review.md').write_text('altered')
+        self.rejected('Job wait clarification summary changed')
+    def test_job_wait_outer_previous_snapshot_tamper(self):
+        p=self.root/'pending-job-wait-clarification.json'; r=json.loads(p.read_text()); r['prior_manifest_sha256']='a'*64
+        p.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+        self.rejected('Job wait clarification snapshot chain mismatch')
     def test_quickstart_eval_summary_tamper(self):
         (self.root/'pending-quickstart-eval-review.md').write_text('changed'); self.rejected('Quickstart evaluation summary changed')
     def test_quickstart_eval_summary_hash_forgery(self):
@@ -791,7 +820,7 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
+            mpath=root/'content-manifest.json';m=restore_latest_wait_manifest(root,json.loads(mpath.read_text()));quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
             for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
             nav=json.loads((root/'pending-quick-nav.json').read_text())
@@ -865,7 +894,7 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
             outer=json.loads((root/'pending-megacode-warning.json').read_text())
             for name,entry in outer['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),outer['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    quick_eval = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
+            code=strip_latest_wait_stage((ROOT/'verify-pending-guides.py').read_text());start=code.index("    quick_eval = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("megacode_warning['prior_manifest_sha256'] != seed_order['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != seed_order['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'seed_order_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-seed-order.json';p=json.loads(ppath.read_text());name='seed-guide.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -877,7 +906,7 @@ class WorktreePriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
+            mpath=root/'content-manifest.json';m=restore_latest_wait_manifest(root,json.loads(mpath.read_text()));quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
             for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
             nav=json.loads((root/'pending-quick-nav.json').read_text())
@@ -957,7 +986,7 @@ class WorktreePriorTamperTest(unittest.TestCase):
             descriptions=json.loads((root/'pending-descriptions.json').read_text())
             for name,entry in descriptions['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),descriptions['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    quick_eval = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
+            code=strip_latest_wait_stage((ROOT/'verify-pending-guides.py').read_text());start=code.index("    quick_eval = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("descriptions['prior_manifest_sha256'] != worktree_input['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != worktree_input['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'worktree_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-worktree-input.json';p=json.loads(ppath.read_text());name='existing-project-detail.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -969,7 +998,7 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
-        manifest=json.loads((self.root/'content-manifest.json').read_text())
+        manifest=restore_latest_wait_manifest(self.root,json.loads((self.root/'content-manifest.json').read_text()))
         quick_eval=json.loads((self.root/'pending-quickstart-eval.json').read_text())
         for name,entry in quick_eval['pages'].items(): manifest['pages'][name]=entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
@@ -1059,6 +1088,7 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
         code=(ROOT/'verify-pending-guides.py').read_text()
+        code=strip_latest_wait_stage(code)
         start=code.index("    quick_eval = json.loads(")
         end=code.index("    translated = json.loads(",start)
         code=code[:start]+code[end:]
@@ -1091,6 +1121,7 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        manifest = restore_latest_wait_manifest(self.root,json.loads((self.root/'content-manifest.json').read_text()))
         quick_eval = json.loads((self.root/'pending-quickstart-eval.json').read_text())
         for name, entry in quick_eval['pages'].items(): manifest['pages'][name] = entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), quick_eval['prior_manifest_sha256'])
@@ -1186,7 +1217,7 @@ class PriorStageTamperTest(unittest.TestCase):
         raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), nav['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
-        code = (ROOT/'verify-pending-guides.py').read_text()
+        code = strip_latest_wait_stage((ROOT/'verify-pending-guides.py').read_text())
         start = code.index('    current_manifest = manifest\n')
         end = code.index("    ko_venv = json.loads(", start)
         code = code[:start] + '    current_manifest = manifest\n' + code[end:]

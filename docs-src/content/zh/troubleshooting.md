@@ -24,7 +24,7 @@ ID 前缀只能作提示；以启动结果中的字段名为准。不要把 `job
 
 | 启动结果中的字段 | 表示什么 | 如何继续查询 |
 | --- | --- | --- |
-| `job_id` | 后台工作的状态与结果 | CLI：`ouroboros job status <JOB_ID>`；变化等待：`ouroboros job wait <JOB_ID>`；终止后：`ouroboros job result <JOB_ID>`。宿主 MCP 则使用服务器实际提供的 `ouroboros_job_status`、`ouroboros_job_wait`、`ouroboros_job_result`。 |
+| `job_id` | 后台工作的状态与结果 | CLI：`ouroboros job status <JOB_ID>`；默认立即返回快照的 `ouroboros job wait <JOB_ID>`；终止后：`ouroboros job result <JOB_ID>`。宿主 MCP 则使用服务器实际提供的 `ouroboros_job_status`、`ouroboros_job_wait`、`ouroboros_job_result`。 |
 | `ouroboros_interview` 返回的 `session_id` | Interview 保存记录 ID（`interview_id`），不是执行会话 | 在原宿主会话中用同一宿主/服务器调用 `ouroboros_interview`，传入同一 ID 和用户对当前问题的实际回答；这会继续访谈，不是只读查询。 |
 | 执行启动操作返回的 `session_id` | 编排器执行会话 | CLI：`ouroboros status run --session-id <SESSION_ID>`；如果宿主提供执行会话状态工具，可用该实际工具查询。 |
 | `execution_id` | 执行事件与状态记录 | CLI：`ouroboros status execution <EXECUTION_ID> --events`。 |
@@ -38,7 +38,7 @@ ID 前缀只能作提示；以启动结果中的字段名为准。不要把 `job
 
 使用下面的命令前，请先阅读上方[“先保存这些信息”中的 ID 区分表](#_2)，确认实际返回的 ID 类型。不要把 Interview 返回的 `session_id` 当作执行会话 ID 传给执行会话命令或工具。
 
-如果有 `job_id`，用同一个 ID 查询。工作仍为 `running` 时继续等待同一个 job；若显示 `acceptance_pending`，持久接收状态尚未确认，也用同一 job ID 重新查询，不要另起工作；到达终止状态后，再读取同一个 job 的结果。状态查询成功只表示查询完成，不能证明任务成功。空列表或“找不到”也不证明任务不存在：你可能在错误的项目、用户环境、数据库或宿主中查询，也可能拿错 ID 类型。
+如果有 `job_id`，用同一个 ID 查询。CLI 的 `ouroboros job wait` 默认 `--timeout-seconds 0`，只返回一次即时快照，不会一直等到状态改变。先用 `ouroboros job status <JOB_ID>` 获取状态和 cursor；要短暂等待变化时，把该状态或上次 wait 返回的 cursor 传给 `ouroboros job wait <JOB_ID> --cursor <CURSOR> --timeout-seconds 5`。五秒到期仍可能是 `running` 或 `acceptance_pending`，这不代表任务已完成；继续用同一个 job ID 和最新 cursor 查询，不要另起工作。终止后再读取同一个 job 的结果。MCP `ouroboros_job_wait` 也默认立即快照；只有调用方传入正的 `timeout_seconds` 才请求短暂长轮询。`ouroboros job events --since <ROWID>` 的 `--since` 是事件分页用的 EventStore rowid cursor，不是 wait 返回的 job progress cursor，不能互换。状态查询成功只表示查询完成，不能证明任务成功。空列表或“找不到”也不证明任务不存在：你可能在错误的项目、用户环境、数据库或宿主中查询，也可能拿错 ID 类型。
 
 独立 CLI 可用以下命令查找记录：
 
