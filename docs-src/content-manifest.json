@@ -94,13 +94,13 @@
     },
     "mcp-reference-guide.md": {
       "source": "content/mcp-reference-guide.md",
-      "source_sha256": "91a0c16d8554a983dc24fcc1b1957028310fe5242647bff8b682e9776e05b9aa",
-      "page_sha256": "64d0f32c2b469306c0428359415926b35cbb5e9744a9c2c0d1ee3b8b10be78ac"
+      "source_sha256": "f4e4aef9b6fa060ee60d898dbfee3aa33bd1dacac71680c37d73d8f5e9fef799",
+      "page_sha256": "53ffaa416fb2cb8d93fd88be8c14b17db740653753b91b177b86324f1d1292b6"
     },
     "config-reference-guide.md": {
       "source": "content/config-reference-guide.md",
-      "source_sha256": "f0a51a811e236dad8f9624aa5eb66bb20d7c106020b209c64c5b52879bfd3ef3",
-      "page_sha256": "b0b0708176dd4002404caa69ff8d5335cd4414c1d3f9eece4cb57bc7651c534a"
+      "source_sha256": "6ded05d27548f468ff40ca79944c8ddece198e5de55af819e290002cd52e56e2",
+      "page_sha256": "9b1ecf4c5001824510aa31af102fed57e455ebfa245edc0919cf67eb65588b0b"
     },
     "version-guide.md": {
       "source": "content/version-guide.md",
@@ -144,8 +144,8 @@
     },
     "qa-detail.md": {
       "source": "content/qa-detail.md",
-      "source_sha256": "ea1177822bcfcaf708cf6573171cc0b1b3263f9b524977ce9a9b20711ce004e1",
-      "page_sha256": "45ff07b8204615a38d79f928b2f18e1248092d51aa1d901aaa5209f3e67a0589"
+      "source_sha256": "ff0fd5824fb78701aa88bd05f9b33af1b0615cf267eca016736525f7384d991e",
+      "page_sha256": "6b250a61e5a3bfa71aaaffd48c330d7b21fa65a411f81d5b18df506c889e8f36"
     },
     "workflow-ir-detail.md": {
       "source": "content/workflow-ir-detail.md",
@@ -214,8 +214,8 @@
     },
     "operations-detail.md": {
       "source": "content/operations-detail.md",
-      "source_sha256": "41d984358dd9549e07630e54f33ccf81e65b5de9c8030da85dcecdb075f56411",
-      "page_sha256": "8af9311f25a9516a8fcf86b63bc0d29c9310a0667a1448d889b61734285aab27"
+      "source_sha256": "1cfb951a4440e7cfd501c72ac7ba29ad6ee8ab705a2f59e043ba2dcb91f14567",
+      "page_sha256": "9cff210ee79dfbb33ff03274f784ba56eb301d083d2c050c1054c421b0e6cc1e"
     },
     "runtime-support-detail.md": {
       "source": "content/runtime-support-detail.md",

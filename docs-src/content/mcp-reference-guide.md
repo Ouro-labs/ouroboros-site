@@ -15,6 +15,8 @@ MCP 도구는 호스트 또는 MCP 클라이언트가 서버에 호출합니다.
 
 [AI 진단 안내](/docs/ai-troubleshooting/)에는 MCP 실패와 복구 순서가 있습니다. [기존 MCP 색인](/docs/mcp-reference-detail/)과 [스키마 캡처](/docs/mcp-schema-snapshot-detail/)는 이전 고정 소스 `722172ef` 및 특정 환경 기준입니다. 현재 서버의 도구 목록이나 전체 호스트의 실사용 검증으로 취급하지 마세요.
 
+직접 `ouroboros_qa` MCP·자동화 호출 전 `pass_threshold`가 유한한 0~1 숫자인지 확인하세요. 고정 main `592c667f`는 이를 검증하지만 release `0.59.9`는 float 변환 후 범위를 검증하지 않고 점수와 비교합니다. 잘못된 threshold로 나온 PASS를 신뢰하지 마세요. [QA 판본과 입력 경계](/docs/qa-detail/) · [main 검증](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/qa.py#L696-L706) · [release 비교](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/qa.py#L820-L827)
+
 ## 이벤트 이력 조회 {#query-events}
 
 `ouroboros_query_events`는 연결된 MCP 서버의 이벤트 저장소에서 기록을 조회하는 **도구**입니다. 터미널 명령이 아닙니다. 아래 입력은 설명용이며 `session_id`에는 실제 실행에서 확인한 오케스트레이터 세션 ID를 넣습니다. Interview ID나 job ID를 같은 값으로 가정하지 마세요.
