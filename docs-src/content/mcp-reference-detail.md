@@ -212,6 +212,8 @@ Wait briefly for a background job to change state. Useful for conversational pol
 | `stream` | string | 아니요 | 'progress' (default) watches job/execution progress; 'linked' also streams linked session, lineage, and subagent events. |
 | `wait_for` | string | 아니요 | 'raw' (default) returns on any job event, preserving existing behavior; 'ac_change' waits for AC/Sub-AC/phase progress or terminal status; 'attention_or_ac_change' additionally wakes for Synapse delivery status; 'phase_change' waits for phase transitions or terminal status; 'terminal' waits only for terminal status. |
 
+**시간 제한 해석:** 위 영문은 722판 스키마의 설명입니다. 고정 722·main `592c667f`·release `0.59.9` 구현에서 `timeout_seconds=0`은 **앞으로의 상태 변화를 기다리지 않는다**는 뜻이며, snapshot·DB 조회 응답시간의 상한이 아닙니다. 이 경우 양수 대기용 guard를 적용하지 않으므로 클라이언트가 먼저 timeout할 수 있습니다. 양수 요청의 guard가 snapshot을 만들기 전에 시간 초과되면 `wait_timed_out: true`, `result_available: false` 응답이 나올 수 있습니다. 이는 작업의 종료나 취소가 아닙니다. 같은 실제 job ID와 소유자·서버를 확인하고 기존 작업 상태를 조회하며, 응답 지연만으로 중복 실행하지 마세요. 이 설명은 고정 소스의 정적 대조이며 실제 DB·호스트 시간은 검증하지 않았습니다. [722 guard](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/mcp/tools/job_wait_guard.py#L112-L133) · [main guard](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/job_wait_guard.py#L112-L133) · [release guard](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/job_wait_guard.py#L77-L98) · [release timeout 응답](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/job_handlers.py#L208-L237)
+
 ## `ouroboros_job_result`
 
 Get the final output for a completed background job.

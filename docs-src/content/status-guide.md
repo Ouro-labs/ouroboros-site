@@ -57,6 +57,8 @@ MCP 호스트에서는 도구 이름을 서버의 실제 `list_tools`와 대조�
 3. **실패·취소·불명확이면** 실행/세션 이벤트, Seed 경로, 작업 branch·파일, 외부 도구가 이미 수행한 효과를 살펴봅니다. failure 표시만으로 외부 변경이 모두 되돌아갔다고 가정하지 않습니다.
 4. **ID가 없으면** 우선 올바른 사용자/DB와 호스트 연결인지, 원래 start 응답이 어느 필드로 ID를 줬는지 확인합니다. `status executions`, `resume --list`, Auto 상태는 서로 다른 기록 범위를 보므로 한 목록의 빈 결과로 다른 기록도 없다고 결론 내리지 마세요. 조회 오류도 “없음”과 구분합니다.
 
+`ouroboros_job_wait`의 `timeout_seconds=0`은 미래 변화를 기다리지 않을 뿐 snapshot·DB 응답시간을 제한하지 않습니다. 클라이언트 timeout이나 양수 대기의 `wait_timed_out`은 job 종료가 아닙니다. 같은 job ID·서버·소유자를 확인하고 중복 실행하지 마세요. [대기 입력과 판본별 guard](/docs/mcp-reference-detail/#ouroboros_job_wait)
+
 예를 들어 `ouroboros_job_wait`가 `running`을 반환하면 동일 job을 계속 관찰합니다. `completed`면 같은 job의 result를 확인합니다. `failed`면 오류 원인과 남은 파일·외부 효과를 검토하고, 재시도는 이전 작업이 여전히 실행 중이지 않으며 반복 효과를 안전하게 처리할 수 있음을 확인한 뒤 별도 판단합니다. 이 예시는 사용 절차이며 실제 결과를 나타내는 샘플 출력이 아닙니다.
 
 ## 재개와 취소는 별도 결정

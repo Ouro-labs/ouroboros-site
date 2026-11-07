@@ -1,0 +1,32 @@
+{
+  "status": "pending",
+  "manifest_sha256": "5f7c60514b4e82fbc84c95bc4f26fb96c85c12bbf8503195f71395be51b91849",
+  "prior_manifest_sha256": "9b9fad7f06bf4f91b142cf5a4825222fa0e05e130adae7f77c564dd0f7714191",
+  "summary_sha256": "d7b54ee1ebee724441b3e52d665c2914033763dccb74e44ddae46c68efd358e5",
+  "pages": {
+    "mcp-reference-detail.md": {
+      "prior": {
+        "source": "content/mcp-reference-detail.md",
+        "source_sha256": "1da27eb7c3828a376bb55eb1b6136ef392aa3517cdfdb5dd65781748079dfc68",
+        "page_sha256": "7fba9e36e852c2793b92368efc77a956794a6228cdee8024e1279c24b6d9c4f1"
+      },
+      "current": {
+        "source": "content/mcp-reference-detail.md",
+        "source_sha256": "09d2638bff9f62a3a327e46281276dc7f5049d102b97d6636357d906e7f064d6",
+        "page_sha256": "cee5dea8a207f2e25eb57403097cefa976ce4a70455240406a3a87175a0147f8"
+      }
+    },
+    "status-guide.md": {
+      "prior": {
+        "source": "content/status-guide.md",
+        "source_sha256": "a606bb17b77c12931b49a47218be4c1384355b19fe76f808e49d462f00897335",
+        "page_sha256": "2966f82bd7d31c53fdc8ab674a0ce3acffc84fc6b6867781a77750db62e2b753"
+      },
+      "current": {
+        "source": "content/status-guide.md",
+        "source_sha256": "ec014a99f831e83c7490289d4154b8f4a26b03250059c9cd96e97900dcec355a",
+        "page_sha256": "a106cf632bcd0d8df4186d07b5160b81816dc53b88449269211514722debdad5"
+      }
+    }
+  }
+}
