@@ -59,8 +59,8 @@
     },
     "ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting.md",
-      "source_sha256": "4689f1ad7d3c2be2e70da0cf790b0df39b25767510bd63b5d89c17e5289c4177",
-      "page_sha256": "6c764e5b3726c5cb40128c862cbe775a140dc9c9153fb55ef5a778787d9c3866"
+      "source_sha256": "9d1c7a9eb46a5fd2071794ca51253192609c96179f4dd9e8047970bc409d491f",
+      "page_sha256": "84e9c6aeda20b5189cf5cdf61ba6ff88fc6ac33e096ddf435f8aaaed648c114d"
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
@@ -84,8 +84,8 @@
     },
     "en/ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting-en.md",
-      "source_sha256": "d4306d2d79167a3474e89ac0d3a2e3d25f09496fd5152719ccc41297a5f7dd70",
-      "page_sha256": "d4306d2d79167a3474e89ac0d3a2e3d25f09496fd5152719ccc41297a5f7dd70"
+      "source_sha256": "cecbeaeb50863cbfa00e27c5e9bd12db36888bbaa6d2a86185eab044a6fd361a",
+      "page_sha256": "cecbeaeb50863cbfa00e27c5e9bd12db36888bbaa6d2a86185eab044a6fd361a"
     },
     "cli-reference-guide.md": {
       "source": "content/cli-reference-guide.md",
