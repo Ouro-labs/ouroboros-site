@@ -13,16 +13,16 @@ Ouroboros는 AI 코딩 작업의 목표와 완료 조건을 정리하고, 실행
 | 목적 | 안내 |
 | --- | --- |
 | 설치하고 첫 작업을 시작하기 | [빠른 시작](/docs/quickstart/) |
-| Interview와 Seed 이해하기 | [핵심 개념](/docs/concepts-detail/) · [Interview 안내](/docs/interview-guide/) · [Seed 안내](/docs/seed-guide/) · [Seed 형식 참조](/docs/seed-format-detail/) |
-| 기존 프로젝트에 적용하기 | [기존 프로젝트](/docs/existing-project-detail/) |
+| Interview와 Seed 이해하기 | [핵심 개념 (이전 소스 기준)](/docs/concepts-detail/) · [Interview 안내](/docs/interview-guide/) · [Seed 안내](/docs/seed-guide/) · [Seed 형식 참조 (이전 소스 기준)](/docs/seed-format-detail/) |
+| 기존 프로젝트에 적용하기 | [기존 프로젝트 (이전 소스 기준)](/docs/existing-project-detail/) |
 | 현재 작업 상태와 실제 반환 ID 확인하기 | [상태와 ID 안내 (개발 소스 기준)](/docs/status-guide/) |
 | 작업 중단·실패를 진단하고 안전한 다음 행동 정하기 | [AI 진단의 상태·복구 안내 (개발 소스 기준)](/docs/ai-troubleshooting/#recovery) |
 | 구판 CLI 진행 상태·복구 상세 확인하기 | [진행 상태 상세 (이전 소스 기준)](/docs/progress-detail/) · [복구 상세 (이전 소스 기준)](/docs/recovery-detail/) |
-| 결과를 평가하고 개선하기 | [평가와 진화](/docs/evaluation-evolution-detail/) |
+| 결과를 평가하고 개선하기 | [평가와 진화 (이전 소스 기준)](/docs/evaluation-evolution-detail/) |
 | MCP 연결 오류를 진단하기 | [AI 진단 안내](/docs/ai-troubleshooting/#mcp) |
 | 설치된 판본과 문서의 차이 확인하기 | [판본 안내](/docs/version-guide/) |
-| 정확한 명령과 입력 찾기 | [CLI 참조 (개발 소스 기준)](/docs/cli-reference-guide/) · [CLI 상세 색인 (이전 소스 기준)](/docs/cli-reference-detail/) · [MCP 도구](/docs/mcp-reference-detail/) · [설정](/docs/config-reference-detail/) |
-| 구조와 구현 살펴보기 | [아키텍처](/docs/architecture-detail/) · [코드 영역 지도](/docs/architecture-map-public/) |
+| 정확한 명령과 입력 찾기 | [CLI 참조 (개발 소스 기준)](/docs/cli-reference-guide/) · [CLI 상세 색인 (이전 소스 기준)](/docs/cli-reference-detail/) · [MCP 도구 (이전 소스 기준)](/docs/mcp-reference-detail/) · [설정 (이전 소스 기준)](/docs/config-reference-detail/) |
+| 구조와 구현 살펴보기 | [아키텍처 (이전 소스 기준)](/docs/architecture-detail/) · [코드 영역 지도 (이전 소스 기준)](/docs/architecture-map-public/) |
 
 기존 학습 가이드는 [한국어](https://ouroboros.page/learn/), [English](https://ouroboros.page/learn/en/), [中文](https://ouroboros.page/learn/zh/)으로 볼 수 있습니다. 한국어 가이드의 Interview부터 반복 수정까지는 같은 할 일 앱 예제를 이어갑니다. 각 언어의 번역 범위와 판본을 확인하세요.
 

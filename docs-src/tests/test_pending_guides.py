@@ -21,7 +21,7 @@ class PendingGuidesTest(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
-        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Seed flow manifest or pending status changed'
+        if self._testMethodName.startswith('test_forged_') or self._testMethodName in ('test_changed_manifest','test_translated_recovery_forged_hash'): message = 'Home source labels manifest or pending status changed'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
     def test_landing_summary_tamper(self):
@@ -30,6 +30,12 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-landing.json';e=json.loads(p.read_text());e['prior_home_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Landing prior home mismatch')
     def test_landing_evidence_symlink(self):
         p=self.root/'pending-landing.json';p.unlink();p.symlink_to(self.root/'pending-home.json');self.rejected('Evidence input is not a regular non-symlink file')
+    def test_home_source_labels_summary_tamper(self):
+        (self.root/'pending-home-source-labels-review.md').write_text('changed');self.rejected('Home source labels summary changed')
+    def test_home_source_labels_prior_tamper(self):
+        p=self.root/'pending-home-source-labels.json';e=json.loads(p.read_text());e['pages']['index.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Home source labels snapshot chain mismatch')
+    def test_home_source_labels_symlink(self):
+        p=self.root/'pending-home-source-labels.json';p.unlink();p.symlink_to(self.root/'pending-seed-flow.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_seed_flow_summary_tamper(self):
         (self.root/'pending-seed-flow-review.md').write_text('changed');self.rejected('Seed flow summary changed')
     def test_seed_flow_prior_tamper(self):
@@ -98,7 +104,7 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-seed-order.json';p.unlink();p.symlink_to(self.root/'pending-descriptions.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_seed_order_forged_current_source(self):
         mpath=self.root/'content-manifest.json';ppath=self.root/'pending-seed-order.json';m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='seed-guide.md'
-        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64;mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));self.rejected('Seed flow manifest or pending status changed')
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64;mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p));self.rejected('Home source labels manifest or pending status changed')
     def test_descriptions_summary_tamper(self):
         (self.root/'pending-descriptions-review.md').write_text('changed');self.rejected('Descriptions summary changed')
     def test_descriptions_prior_tamper(self):
@@ -110,7 +116,7 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='existing-project-detail.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Seed flow manifest or pending status changed')
+        self.rejected('Home source labels manifest or pending status changed')
     def test_worktree_input_summary_tamper(self):
         (self.root/'pending-worktree-input-review.md').write_text('changed');self.rejected('Worktree input summary changed')
     def test_worktree_input_prior_tamper(self):
@@ -659,7 +665,10 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());flow=json.loads((root/'pending-seed-flow.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());labels=json.loads((root/'pending-home-source-labels.json').read_text())
+            for name,entry in labels['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),labels['prior_manifest_sha256'])
+            flow=json.loads((root/'pending-seed-flow.json').read_text())
             for name,entry in flow['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),flow['prior_manifest_sha256'])
             setup=json.loads((root/'pending-setup-split.json').read_text())
@@ -689,7 +698,7 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
             outer=json.loads((root/'pending-megacode-warning.json').read_text())
             for name,entry in outer['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),outer['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    seed_flow = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    home_source_labels = json.loads(");end=code.index("    seed_order = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("megacode_warning['prior_manifest_sha256'] != seed_order['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != seed_order['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'seed_order_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-seed-order.json';p=json.loads(ppath.read_text());name='seed-guide.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -701,7 +710,10 @@ class WorktreePriorTamperTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
             (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
-            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());flow=json.loads((root/'pending-seed-flow.json').read_text())
+            mpath=root/'content-manifest.json';m=json.loads(mpath.read_text());labels=json.loads((root/'pending-home-source-labels.json').read_text())
+            for name,entry in labels['pages'].items():m['pages'][name]=entry['prior']
+            self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),labels['prior_manifest_sha256'])
+            flow=json.loads((root/'pending-seed-flow.json').read_text())
             for name,entry in flow['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),flow['prior_manifest_sha256'])
             setup=json.loads((root/'pending-setup-split.json').read_text())
@@ -737,7 +749,7 @@ class WorktreePriorTamperTest(unittest.TestCase):
             descriptions=json.loads((root/'pending-descriptions.json').read_text())
             for name,entry in descriptions['pages'].items():m['pages'][name]=entry['prior']
             raw=(json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode();self.assertEqual(hashlib.sha256(raw).hexdigest(),descriptions['prior_manifest_sha256']);mpath.write_bytes(raw)
-            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    seed_flow = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
+            code=(ROOT/'verify-pending-guides.py').read_text();start=code.index("    home_source_labels = json.loads(");end=code.index("    worktree_input = json.loads(",start);code=code[:start]+code[end:]
             code=code.replace("descriptions['prior_manifest_sha256'] != worktree_input['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != worktree_input['manifest_sha256']")
             namespace={'__file__':str(ROOT/'verify-pending-guides.py'),'__name__':'worktree_prior_fixture'};exec(compile(code,str(ROOT/'verify-pending-guides.py'),'exec'),namespace)
             ppath=root/'pending-worktree-input.json';p=json.loads(ppath.read_text());name='existing-project-detail.md';m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
@@ -750,6 +762,9 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
         manifest=json.loads((self.root/'content-manifest.json').read_text())
+        labels = json.loads((self.root/'pending-home-source-labels.json').read_text())
+        for name, entry in labels['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), labels['prior_manifest_sha256'])
         flow = json.loads((self.root/'pending-seed-flow.json').read_text())
         for name, entry in flow['pages'].items(): manifest['pages'][name] = entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), flow['prior_manifest_sha256'])
@@ -795,7 +810,7 @@ class TranslatedPriorTamperTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(raw).hexdigest(),preflight['prior_manifest_sha256'])
         (self.root/'content-manifest.json').write_bytes(raw)
         code=(ROOT/'verify-pending-guides.py').read_text()
-        start=code.index("    seed_flow = json.loads(")
+        start=code.index("    home_source_labels = json.loads(")
         end=code.index("    translated = json.loads(",start)
         code=code[:start]+code[end:]
         code=code.replace("preflight['prior_manifest_sha256'] != translated['manifest_sha256']", "sha((root/'content-manifest.json').read_bytes()) != translated['manifest_sha256']")
@@ -827,6 +842,9 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        labels = json.loads((self.root/'pending-home-source-labels.json').read_text())
+        for name, entry in labels['pages'].items(): manifest['pages'][name] = entry['prior']
+        self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), labels['prior_manifest_sha256'])
         flow = json.loads((self.root/'pending-seed-flow.json').read_text())
         for name, entry in flow['pages'].items(): manifest['pages'][name] = entry['prior']
         self.assertEqual(hashlib.sha256((json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()).hexdigest(), flow['prior_manifest_sha256'])

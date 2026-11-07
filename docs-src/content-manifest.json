@@ -39,8 +39,8 @@
     },
     "index.md": {
       "source": "content/guide-home.md",
-      "source_sha256": "279e8dcea48c3544a7df1ef10a4dbcc3ce30c90d16a87675cea7e62a58756e33",
-      "page_sha256": "8285ef9b4a999b3468437d1f3d726f53b7aff5c142787fa40a6178ea156f5d7c"
+      "source_sha256": "4329560cf4380b17f29d020ff3c9412ab85082881ffd49cc24a58951b181a52d",
+      "page_sha256": "80b8baaaa83a720281a1c7214eb091ab4f599badba31f4a56a86da8ca1f27935"
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
