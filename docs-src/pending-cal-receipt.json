@@ -1,0 +1,56 @@
+{
+  "status": "pending",
+  "manifest_sha256": "9b9fad7f06bf4f91b142cf5a4825222fa0e05e130adae7f77c564dd0f7714191",
+  "prior_manifest_sha256": "9ecd8ad406ed27eaa180ae43df04c7724e4cd6eb3a6d1b7bac4d961074620de4",
+  "summary_sha256": "92b1d0bf1d9beae3504fc7667476445d8ea7e037743069a75347dd89fe1d5701",
+  "pages": {
+    "ai-troubleshooting.md": {
+      "prior": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "9d1c7a9eb46a5fd2071794ca51253192609c96179f4dd9e8047970bc409d491f",
+        "page_sha256": "84e9c6aeda20b5189cf5cdf61ba6ff88fc6ac33e096ddf435f8aaaed648c114d"
+      },
+      "current": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "a730647dbaaf822aee168561b48c409ad534d59e8bd8c3b7e976cca958f4ff04",
+        "page_sha256": "6552a2a87a5a4da610e97387a5c4cb6d76571d970af170426035a26f91a50cdf"
+      }
+    },
+    "en/ai-troubleshooting.md": {
+      "prior": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "cecbeaeb50863cbfa00e27c5e9bd12db36888bbaa6d2a86185eab044a6fd361a",
+        "page_sha256": "cecbeaeb50863cbfa00e27c5e9bd12db36888bbaa6d2a86185eab044a6fd361a"
+      },
+      "current": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "42a7d528246afc30b392d0f240bde0be32e7c4bfca838be460bc5fee84a316ff",
+        "page_sha256": "42a7d528246afc30b392d0f240bde0be32e7c4bfca838be460bc5fee84a316ff"
+      }
+    },
+    "mcp-reference-guide.md": {
+      "prior": {
+        "source": "content/mcp-reference-guide.md",
+        "source_sha256": "f4e4aef9b6fa060ee60d898dbfee3aa33bd1dacac71680c37d73d8f5e9fef799",
+        "page_sha256": "53ffaa416fb2cb8d93fd88be8c14b17db740653753b91b177b86324f1d1292b6"
+      },
+      "current": {
+        "source": "content/mcp-reference-guide.md",
+        "source_sha256": "c5230466792b765b257a8ddd05961d2730743a9ed3ea21ebfe8419ffe6b95b6e",
+        "page_sha256": "f070aa75817eb5f89fcf85684e4763e70c10daf45267d956e8ee67a023b752c7"
+      }
+    },
+    "status-guide.md": {
+      "prior": {
+        "source": "content/status-guide.md",
+        "source_sha256": "2b4b6871b8195e4d4bd6b52913ffb26e1fc6acceebebc62367fa9dd8a14c4425",
+        "page_sha256": "b74835957f2ee39e7443140634c66981f742413e85f7502648d77788481a249d"
+      },
+      "current": {
+        "source": "content/status-guide.md",
+        "source_sha256": "a606bb17b77c12931b49a47218be4c1384355b19fe76f808e49d462f00897335",
+        "page_sha256": "2966f82bd7d31c53fdc8ab674a0ce3acffc84fc6b6867781a77750db62e2b753"
+      }
+    }
+  }
+}

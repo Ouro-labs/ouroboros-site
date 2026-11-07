@@ -50,6 +50,8 @@ MCP 호스트에서는 도구 이름을 서버의 실제 `list_tools`와 대조�
 
 ## 결과 읽는 순서
 
+**시작 수락 미확정:** `detached_job_acceptance_pending` 영수증은 durable job 행의 수락이 확인되지 않은 상태이며 worker가 이미 있을 수 있습니다. 고정 main `592c667f`는 알려진 pending 영수증을 조회할 때 `acceptance_pending` 비종결로 표시할 수 있지만, release `0.59.9`의 `ouroboros_job_result`는 행을 찾지 못하면 `job_handle_not_found`, `lifecycle_status: invalid`, `is_terminal: true`를 반환할 수 있습니다. 이는 작업 종료의 증거가 아닙니다. 후속 not found만으로 중복 실행하지 말고 원래 영수증과 실제 ID, 같은 서버·DB, 소유자 및 진행 중인 작업을 확인하세요. `job_wait`의 not-found 표시는 별도 계약입니다. 실제 호스트 schema·worker 상태는 미검증입니다. [main pending 조회](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/job_read_state.py#L124-L160) · [release result](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/job_handlers.py#L2065-L2083) · [시작 영수증](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/background.py#L295-L310)
+
 1. **같은 ID로 다시 조회**해 `running`, `paused`, `completed`, `failed`, `cancelled` 등 표시된 lifecycle 상태를 확인합니다. `acceptance_pending`이면 시작 요청의 영속 수락이 확인되지 않았고 워커 상태도 모릅니다. 응답에 `retry_start_allowed: false`가 있으면 중복 시작을 하지 말고 안내된 같은 `job_id`로 다시 조회합니다. 이 표시는 성공·실패의 terminal 결과가 아닙니다. [pending job 상태 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/job_read_state.py)
 2. **job이 terminal일 때** 같은 ID의 `job result`를 읽습니다. 아직 terminal이 아니면 결과는 없을 수 있습니다. 완료 상태와 result의 실제 본문·평가를 별도로 확인합니다.
 3. **실패·취소·불명확이면** 실행/세션 이벤트, Seed 경로, 작업 branch·파일, 외부 도구가 이미 수행한 효과를 살펴봅니다. failure 표시만으로 외부 변경이 모두 되돌아갔다고 가정하지 않습니다.
