@@ -55,6 +55,8 @@ These are partial draft translations: the quickstarts describe the first task, a
 - English quickstart Markdown: https://ouroboros.page/docs/markdown/en/quickstart.md
 - English first-task troubleshooting: https://ouroboros.page/docs/en/troubleshooting/
 - English first-task troubleshooting Markdown: https://ouroboros.page/docs/markdown/en/troubleshooting.md
+- English AI troubleshooting manual for installation, MCP connection, execution and update problems (source 592c667f; check the installed version): https://ouroboros.page/docs/en/ai-troubleshooting/
+- English AI troubleshooting manual Markdown: https://ouroboros.page/docs/markdown/en/ai-troubleshooting.md
 - Chinese quickstart: https://ouroboros.page/docs/zh/quickstart/
 - Chinese quickstart Markdown: https://ouroboros.page/docs/markdown/zh/quickstart.md
 - Chinese first-task troubleshooting: https://ouroboros.page/docs/zh/troubleshooting/
