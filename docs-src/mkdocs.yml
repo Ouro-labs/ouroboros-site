@@ -99,6 +99,7 @@ nav:
   - English AI diagnostics (draft): en/ai-troubleshooting.md
   - 中文快速入门（草稿）: zh/quickstart.md
   - 中文问题排查（草稿）: zh/troubleshooting.md
+  - 합성 할 일 참고 예제: todo-reference-example.md
 extra_css:
   - assets/site.css
 extra_javascript:
