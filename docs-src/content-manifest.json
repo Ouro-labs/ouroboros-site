@@ -19,8 +19,8 @@
     },
     "megacode-guide.md": {
       "source": "content/megacode-guide.md",
-      "source_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258",
-      "page_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258"
+      "source_sha256": "0224ac5b54740579582fdcb35937932ca86615495d7fb7378daa7c59997dc5c5",
+      "page_sha256": "0224ac5b54740579582fdcb35937932ca86615495d7fb7378daa7c59997dc5c5"
     },
     "settings-gui-guide.md": {
       "source": "content/settings-gui-guide-ko.md",
@@ -214,8 +214,8 @@
     },
     "runtime-support-detail.md": {
       "source": "content/runtime-support-detail.md",
-      "source_sha256": "9dee2aa26b622264b2e10382da95e086ddd3bfcf2ec59c8696b73c7f66633d93",
-      "page_sha256": "fe797aa6b2955099c8202fd32c532d1e5bc83d007b4a8656ad67354bfa202974"
+      "source_sha256": "d31d20cf2d9dd690dc1eac1298a4f91c6c143b89bf523173a145eccfa4e4c6a3",
+      "page_sha256": "eff73ec8cb16e61b427bdc01bbfa2ad9ea01ca338a98e4f12737f0a6c0abc3cb"
     },
     "opencode-bridge-detail.md": {
       "source": "content/opencode-bridge-detail.md",

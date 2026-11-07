@@ -1,0 +1,32 @@
+{
+  "status": "pending",
+  "manifest_sha256": "ea59b6a439e9af819e1915035f6bd14fcac6581e37ab211d1aed8f006506a69f",
+  "prior_manifest_sha256": "cba82169c5fffef75de469b8e3722016ece8551b0067c4906d6154efa9642bb8",
+  "summary_sha256": "483a129aad20870afcd9e714ac9e1484377ae23a82814056e32c60b94a1cd4aa",
+  "pages": {
+    "megacode-guide.md": {
+      "current": {
+        "source": "content/megacode-guide.md",
+        "source_sha256": "0224ac5b54740579582fdcb35937932ca86615495d7fb7378daa7c59997dc5c5",
+        "page_sha256": "0224ac5b54740579582fdcb35937932ca86615495d7fb7378daa7c59997dc5c5"
+      },
+      "prior": {
+        "source": "content/megacode-guide.md",
+        "source_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258",
+        "page_sha256": "7c1d5cd0553fe23b6ac441742061e5b9dbcf02d972a3aa2fcb5251b15d1b5258"
+      }
+    },
+    "runtime-support-detail.md": {
+      "current": {
+        "source": "content/runtime-support-detail.md",
+        "source_sha256": "d31d20cf2d9dd690dc1eac1298a4f91c6c143b89bf523173a145eccfa4e4c6a3",
+        "page_sha256": "eff73ec8cb16e61b427bdc01bbfa2ad9ea01ca338a98e4f12737f0a6c0abc3cb"
+      },
+      "prior": {
+        "source": "content/runtime-support-detail.md",
+        "source_sha256": "9dee2aa26b622264b2e10382da95e086ddd3bfcf2ec59c8696b73c7f66633d93",
+        "page_sha256": "fe797aa6b2955099c8202fd32c532d1e5bc83d007b4a8656ad67354bfa202974"
+      }
+    }
+  }
+}

@@ -30,6 +30,77 @@
 
 같은 등록에서 `ourocode`, `dsh`, `litellm`은 LLM 백엔드로 나타나지만 작업 런타임으로 등록돼 있지 않다. `dsh` 호스트가 `host` 실행 런타임을 사용하는 경로와 혼동하지 않는다. 등록 정보는 각 커맨드가 해당 이름을 모두 받는다는 보장은 아니다. 각 진입점의 도움말과 해당 안내를 확인한다.
 
+## DSH(DeepSeek Harness)를 LLM 백엔드로 사용할 때 {#dsh-llm-backend}
+
+이 별도 안내는 제품 main `592c667f`와 release `v0.59.9`의 DSH 경로를 설명합니다. 제품 client 소스가 대조한 upstream은 `deepseek-harness@0.1.0-rc.5`, commit `47f9438`입니다. 이 판본 표시는 현재 upstream/package 상태를 보증하지 않습니다. `dsh`는 interview·Seed·QA 등의 **LLM 백엔드**이고 agent 작업을 실행하는 runtime은 아닙니다. `dsh-acp-demo`를 별도 child process로 실행하며, 작업 runtime도 따로 지정해야 합니다. [main backend 등록](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/backends/capabilities.py#L714-L728) · [release 등록](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/backends/capabilities.py#L702-L710).
+
+### 먼저 실행 파일을 확인하기 {#dsh-executable-check}
+
+`ouroboros mcp serve`를 실행할 **같은 터미널·환경**에서 다음을 확인합니다. 이 명령은 `PATH`에서 찾은 경로만 출력하며, Ouroboros가 실제로 선택하는 경로와 다를 수 있습니다. 실행 결과를 공유할 때는 개인 경로를 가리세요.
+
+```sh
+command -v dsh-acp-demo
+```
+
+별도 경로를 설정했다면 `command -v` 결과 대신 선택된 절대 경로를 직접 확인합니다. 예를 들어 경로가 `/absolute/path/to/dsh-acp-demo`라면:
+
+```sh
+test -x /absolute/path/to/dsh-acp-demo
+```
+
+실행 파일을 찾지 못했다면 제품 문서가 고정한 DeepSeek Harness source commit `47f9438`과 Node.js `>= 22` 조건, `pnpm install && pnpm run build` source-build 절차를 검토한 뒤 실행하세요. 제품 문서는 대조한 `@0.1.0-rc.5` 호환 경로에서 published `@deepseek-ai/dsh-acp-demo` 설치의 peer-dependency 문제를 기록합니다. 이 상태는 문서가 대조한 버전의 관찰이며 현재 registry 상태나 설치 성공을 보증하지 않습니다. 의존성 설치와 build는 네트워크·실행 스크립트를 사용할 수 있습니다. [main DSH client](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/dsh_acp_client.py#L1-L13) · [main launch/validation](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/dsh_acp_client.py#L47-L137) · [release DSH client](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/providers/dsh_acp_client.py#L1-L13) · [release launch/validation](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/providers/dsh_acp_client.py#L47-L137) · [main guide](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/guides/deepseek-harness.md#L96-L103) · [release guide](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/guides/deepseek-harness.md#L96-L103).
+
+CLI 경로 우선순위는 호출자의 명시적 `cli_path` → `OUROBOROS_DSH_CLI_PATH` → 신뢰된 `~/.ouroboros/config.yaml`의 `orchestrator.dsh_cli_path` → `PATH`의 `dsh-acp-demo`입니다. `command -v`는 마지막 경로만 확인합니다. [main factory](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/factory.py#L297-L305) · [main 설정 우선순위](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/loader.py#L1416-L1438) · [release factory](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/providers/factory.py#L297-L305) · [release 설정 우선순위](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/config/loader.py#L1412-L1434).
+
+### 신뢰한 composition과 인증을 지정하기 {#dsh-composition-auth}
+
+`dsh-acp-demo`에는 Cordis composition 파일이 필수입니다. 경로는 `OUROBOROS_DSH_CONFIG_PATH` → 신뢰된 `~/.ouroboros/config.yaml`의 `orchestrator.dsh_config_path` 순으로 선택되며, 둘 다 없으면 child process를 시작하지 않고 fail-closed 합니다. Composition 경로는 **절대 경로**여야 하며, 그 파일과 파일 위치에서 해석되는 plugin/package를 신뢰해야 합니다. 이 composition은 Node process에 어떤 plugins를 로드할지 고르며 그 plugin 코드를 실행할 수 있습니다. 상대 경로는 `invalid_config`로 process 시작 전에 거절됩니다. Composition이 있는 곳에서 dsh의 `node_modules` 또는 workspace가 해석 가능한지도 확인하세요. [main 설정 우선순위](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/loader.py#L1441-L1463) · [main 필수 경로 검사](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/dsh_acp_client.py#L105-L123) · [release 설정 우선순위](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/config/loader.py#L1437-L1459) · [release 필수 경로 검사](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/providers/dsh_acp_client.py#L105-L123).
+
+환경 변수는 `dsh-acp-demo`를 포함한 Ouroboros 시작 환경에서 지정합니다. 예를 들어 trusted shell에서 다음 변수를 설정할 수 있습니다. 두 경로는 절대 경로로 지정하고, 실제 파일 위치로 바꾸세요.
+
+```sh
+export OUROBOROS_DSH_CLI_PATH=/absolute/path/to/dsh-acp-demo
+export OUROBOROS_DSH_CONFIG_PATH=/absolute/path/to/cordis.yml
+```
+
+대신 경로는 `~/.ouroboros/config.yaml`의 다음 키에 지정할 수 있습니다. 기존 YAML 전체를 덮어쓰지 말고 신뢰된 설정에 필요한 키만 병합하세요.
+
+```yaml
+llm:
+  backend: dsh
+orchestrator:
+  dsh_cli_path: /absolute/path/to/dsh-acp-demo
+  dsh_config_path: /absolute/path/to/cordis.yml
+```
+
+두 `OUROBOROS_DSH_*_PATH` 값은 project `.env`에서 신뢰하지 않는 입력으로 차단됩니다. Composition 경로는 실행할 plugin tree를 선택하므로 repository가 실행 파일이나 composition을 바꾸게 두지 마세요. [main denylist](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/config/untrusted_env.py#L98-L111) · [release denylist](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/config/untrusted_env.py#L95-L108).
+
+Composition이 지정한 provider 인증 정보도 같은 Ouroboros 시작 환경에서 접근 가능해야 합니다. 일반적인 예는 `DEEPSEEK_API_KEY`지만 실제 변수 이름은 trusted composition이 정합니다. 값을 출력하지 말고 해당 프로세스가 읽을 수 있는지 presence만 확인하세요. 예를 들어 composition이 `DEEPSEEK_API_KEY`를 요구할 때는 다음처럼 값 없이 확인할 수 있습니다.
+
+```sh
+test -n "${DEEPSEEK_API_KEY:-}" && echo "DEEPSEEK_API_KEY is set" || echo "DEEPSEEK_API_KEY is missing"
+```
+
+Ouroboros는 일반 환경을 child에 넘기면서 자체 runtime/backend selector 일부만 제거합니다. DSH에서 키가 없거나 거부되면 전용 `auth failed` 분류가 아니라 보통 ACP/RPC model 오류로 나타날 수 있으므로, 오류 문구 하나로 원인을 단정하지 마세요. [main child environment/오류 처리](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/providers/dsh_acp_client.py#L95-L108) · [release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/providers/dsh_acp_client.py#L95-L108).
+
+### 별도 runtime과 함께 선택하기
+
+MCP 서버를 시작하는 경우 제품 문서의 예시는 다음과 같습니다. `claude-cli`가 설치·인증된 executable runtime이 아닐 경우 실제 환경에서 지원되는 runtime(예: `codex`, `opencode`)을 선택합니다. `--runtime`은 별도 작업 실행 경로이며 `dsh`로 바꾸지 않습니다.
+
+```sh
+ouroboros mcp serve --runtime claude-cli --llm-backend dsh
+```
+
+같은 backend는 trusted user config의 `llm.backend: dsh` 또는 시작 process의 `OUROBOROS_LLM_BACKEND=dsh`로 지정할 수도 있습니다. CLI와 config에는 runtime 해석 alias `deepseek_harness` 대신 `dsh`를 사용합니다. 이 예시는 설정 위치와 명령 형태만 보여 주며 실제 실행·연결·모델 호출의 성공 출력은 아닙니다. [main guide: backend/runtime](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/guides/deepseek-harness.md#L131-L159) · [release guide](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/guides/deepseek-harness.md#L131-L159).
+
+### 오류가 나면 처음 확인할 것 {#dsh-first-checks}
+
+- `dsh-acp-demo` spawn/command not found: 위의 `command -v`를 **서버를 실제로 띄우는 같은 환경**에서 확인하세요. `orchestrator.dsh_cli_path`를 썼다면 사용자 설정의 값이 실행 가능한 절대 경로인지 검토하되, 경로 전체를 공유하지 않습니다.
+- `invalid_config` 또는 composition 오류: `OUROBOROS_DSH_CONFIG_PATH`가 absolute/readable인지, 또는 trusted user config의 `orchestrator.dsh_config_path`가 그 composition을 가리키는지 확인하세요. Project `.env`에 넣지 마세요. composition의 plugin/package resolution 경로도 그 파일 기준으로 점검합니다.
+- ACP/RPC model 오류: 같은 실행 환경에서 composition의 provider와 credential 변수 이름을 확인하고 해당 값이 process에 설정됐는지만 확인합니다. 키 값, composition 전체, 환경 전체를 출력하거나 붙여넣지 마세요.
+
+DSH composition이 provider와 model을 고릅니다. ACP 응답은 model 이름과 token count를 제공하지 않아 Ouroboros가 `dsh-composition` 및 0-token usage를 표시할 수 있습니다. 이를 호출 없음이나 비용 없음으로 해석하지 마세요. 실제 사용량·요금은 composition이 연결한 provider의 기록에서 확인해야 하며, 여기서는 모델 호출이나 비용을 측정하지 않았습니다. main과 release `0.59.9`에서 소스·문서 계약을 대조했을 뿐, 이 환경의 DSH binary 설치, composition, credential, host 연결, 모델·청구 동작은 시험하지 않았습니다. [main model/usage note](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/guides/deepseek-harness.md#L161-L166) · [release guide](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/guides/deepseek-harness.md#L161-L166).
+
 ## Zcode로 시작·평가·실행하기
 
 고정 소스의 [Zcode 안내](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/docs/runtime-guides/zcode.ko.md) 기준으로 ZCode 앱 또는 실행 가능한 `zcode`, 해당 공급자 인증 및 유효한 `~/.zcode/cli/config.json`의 문자열 `model.main`이 필요하다. 데스크톱에서 모델을 선택했다고 CLI용 설정이 자동 생성되는 것은 아니다. 독립 `.cjs`에는 호환되는 Node가 필요하고 공식 macOS 앱 번들은 포함된 Electron/Node를 사용한다. 이 요구사항은 원본 안내의 계약이며 이 환경에서 Zcode 설치·인증을 확인한 것은 아니다. 자격증명을 명령·문서·로그에 적지 않는다. `ouroboros setup --runtime zcode`는 설정을 변경할 수 있으므로 실행 전에 [호스트 설정](/docs/setup-host-detail/)을 확인한다.
