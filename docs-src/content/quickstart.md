@@ -136,6 +136,8 @@ ouroboros setup --runtime codex</code></pre>
 !!! warning "실행 전 관리 worktree 경로 확인"
     worktree를 사용하는 실행은 관리 경로 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. 새 CLI 실행과 ID가 별도 제공되지 않은 일반 MCP 실행은 ID를 실행 중 생성하므로 정확한 새 경로를 미리 알 수 없습니다. 시작 전에 실제 관리 root와 저장소별 디렉터리, 대상 저장소에서 `git worktree list --porcelain`으로 등록을 확인하고 진행 중 작업과 보존 자료를 살펴보세요. 재개는 실제 세션 ID와 저장된 workspace 경로가 있으면 그 기록도 대조하세요. 확인할 수 없으면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 확인 후에도 동시 변경에 따른 위험은 남으며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
+**진행 순서:** Claude Code는 설정 → Interview → Seed 생성 → 공통 검토, Codex는 플러그인·MCP 연결 확인 → Interview → Seed 생성 → 공통 검토, 독립 CLI는 준비 → Interview → Seed 생성 승인 → 공통 검토 순서입니다.
+
 <span id="plugin-first-task"></span>**Claude Code 플러그인:** 새 세션에서 작업 폴더를 열고 호스트 **대화에** 설정을 요청합니다.
 
 ```text
@@ -150,6 +152,12 @@ ooo setup
 ooo interview "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
 ```
 
+### 플러그인 대화에서 Seed 만들기
+
+Interview 스킬은 목표를 다시 확인하고 Seed 생성을 제안합니다. 목표 확인에 동의한 뒤 같은 대화에서 `ooo seed`를 요청합니다. 인터뷰 세션 ID를 받았다면 필요할 때 `ooo seed <실제 세션 ID>`로 대상을 지정할 수 있습니다. 스킬의 QA 의견은 참고하되 점수만으로 내용의 정확성을 판단하지 마세요.
+
+MCP 서버를 사용할 수 없으면 스킬은 대화에서 확인한 요구로 Seed를 작성하는 대체 경로를 사용하며 서버 연결 설정을 안내할 수 있습니다. 이때도 실제 YAML과 저장 여부를 확인하세요. Claude Code와 Codex의 실제 화면과 스킬 호출 방식은 설치한 호스트·버전에 따라 확인해야 합니다. [Interview 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
+
 <span id="cli-first-task"></span>**독립 CLI:** 작업 폴더의 **터미널에** 입력합니다.
 
 ```bash
@@ -162,7 +170,13 @@ Windows PowerShell (project directory):
 & $OuroborosPython -m ouroboros init start "오늘 할 일을 추가하고 완료 표시할 수 있는 간단한 웹앱을 만들고, 프로젝트 README에 의존성 설치 방법, 앱 실행 명령, 실제 접속 주소와 포트, 종료 방법, 테스트 명령과 그 범위를 설명해 주세요."
 ```
 
-Interview의 질문에 답합니다. 예를 들어 새로고침 뒤에도 할 일이 남아야 하는지 정할 수 있습니다. 이는 **설명용 예시**이며 실제 출력이 아닙니다. Seed는 목표·제약·완료 조건을 정리한 명세입니다. **Interview 완료가 Seed 생성을 뜻하지는 않습니다.** 아래 경로에서 생성을 확인한 뒤 전체 YAML의 목표, 작업 대상, 제약과 검증 가능한 완료 조건을 검토하고, 저장된 실제 경로와 파일 내용까지 확인하세요. 승인하기 전에는 실행하지 마세요.
+### 독립 CLI에서 Seed 확인하기
+
+터미널의 대화형 Interview에서 Seed 생성을 승인하고 출력된 실제 파일 경로와 내용을 확인하세요. `Start workflow now?`의 기본값은 예입니다. 실행 전에 검토하려면 `n`을 선택합니다. 이 동작은 위 소스 기준이므로 설치된 버전의 화면을 확인하세요.
+
+### 두 경로 공통: 생성된 Seed 검토 {#shared-seed-review}
+
+Interview의 질문에 답합니다. 예를 들어 새로고침 뒤에도 할 일이 남아야 하는지 정할 수 있습니다. 이는 **설명용 예시**이며 실제 출력이 아닙니다. Seed는 목표·제약·완료 조건을 정리한 명세입니다. **Interview 완료가 Seed 생성을 뜻하지는 않습니다.** 위에서 선택한 경로의 생성을 확인한 뒤 전체 YAML의 목표, 작업 대상, 제약과 검증 가능한 완료 조건을 검토하고, 저장된 실제 경로와 파일 내용까지 확인하세요. 승인하기 전에는 실행하지 마세요.
 
 **검토 예시:** 다음은 필드 의미를 설명하는 일부 예시이며 전체 Seed나 실제 출력·결과가 아닙니다. 대화에서 실제 합의한 내용과 비교하세요.
 
@@ -173,16 +187,6 @@ Interview의 질문에 답합니다. 예를 들어 새로고침 뒤에도 할 �
 반환된 실제 Seed 파일 경로와 선택한 작업 폴더는 YAML 필드가 항상 있다고 가정하지 말고 각각 확인하세요. 목표·제약·기준이나 작업 대상이 합의와 다르면 기존 YAML을 직접 수정하고 전체를 다시 검토합니다. [고정 Seed 모델](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L925-L948)
 
 README 수용 기준이 의존성 설치, 앱 실행 명령, 실제 URL·포트, 종료 방법, 테스트 명령과 범위를 설명하도록 요구하는지 확인하세요. 테스트가 없다면 없다고 기록하도록 기준을 정할 수 있습니다. 이는 요청할 목표이지 README가 이미 존재하거나 정확하거나 테스트됐다는 뜻이 아닙니다.
-
-### 플러그인 대화에서 Seed 만들기
-
-Interview 스킬은 목표를 다시 확인하고 Seed 생성을 제안합니다. 목표 확인에 동의한 뒤 같은 대화에서 `ooo seed`를 요청합니다. 인터뷰 세션 ID를 받았다면 필요할 때 `ooo seed <실제 세션 ID>`로 대상을 지정할 수 있습니다. 스킬의 QA 의견은 참고하되 점수만으로 내용의 정확성을 판단하지 마세요.
-
-MCP 서버를 사용할 수 없으면 스킬은 대화에서 확인한 요구로 Seed를 작성하는 대체 경로를 사용하며 서버 연결 설정을 안내할 수 있습니다. 이때도 실제 YAML과 저장 여부를 확인하세요. Claude Code와 Codex의 실제 화면과 스킬 호출 방식은 설치한 호스트·버전에 따라 확인해야 합니다. [Interview 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
-
-### 독립 CLI에서 Seed 확인하기
-
-터미널의 대화형 Interview에서 Seed 생성을 승인하고 출력된 실제 파일 경로와 내용을 확인하세요. `Start workflow now?`의 기본값은 예입니다. 실행 전에 검토하려면 `n`을 선택합니다. 이 동작은 위 소스 기준이므로 설치된 버전의 화면을 확인하세요.
 
 **결과가 다를 때:**
 

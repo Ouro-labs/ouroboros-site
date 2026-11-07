@@ -165,6 +165,8 @@ ouroboros setup --runtime codex</code></pre>
 !!! warning "Check the managed worktree path before execution"
     When an execution uses worktrees, preparation may attempt recursive deletion if `<worktree_root>/<repository name>/<durable_id>` already exists but is not registered as a Git worktree of the target repository. The default root is `~/.ouroboros/worktrees`. A new CLI run and a normal MCP run without a separately supplied ID generate the ID during execution, so the exact new path is not known beforehand. Before starting, check the actual managed root and repository directory, Git worktree registrations with `git worktree list --porcelain` in the target repository, active work, and data to preserve. For a resume, also compare the actual session ID and saved workspace path when available. If you cannot check these, defer execution; do not delete or overwrite an uncertain path. Concurrent changes can still create risk after inspection, and deletion does not necessarily succeed for every path. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
+**Sequence:** Claude Code: setup → Interview → create a Seed → common review. Codex: check the plugin and MCP connection → Interview → create a Seed → common review. Standalone CLI: prepare → Interview → approve Seed creation → common review.
+
 <span id="plugin-first-task"></span>**Claude Code plugin:** Open the task folder in a new session and request setup in the host's **conversation**.
 
 ```text
@@ -179,6 +181,12 @@ Once ready, send the Interview request as the next message in the host conversat
 ooo interview "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
 ```
 
+### Create a Seed from a Plugin Conversation
+
+The Interview skill confirms the goal and offers Seed creation. After agreeing, request `ooo seed` in the same conversation. If you received an interview session ID, use `ooo seed <actual session ID>` when needed to target it. The skill offers QA feedback, but a score alone does not establish correctness.
+
+If MCP is unavailable, the skill uses a fallback path to create a Seed from requirements confirmed in conversation and may explain how to configure the server. Still check the YAML presented and whether a file was saved. The product guide covers Claude Code and Codex plugins, but actual screens and skill invocation depend on the installed host and version. [Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
+
 <span id="cli-first-task"></span>**Standalone CLI:** Enter this command in a **terminal** opened in the task folder.
 
 ```bash
@@ -191,7 +199,13 @@ Windows PowerShell (project directory):
 & $OuroborosPython -m ouroboros init start "Build a simple web app where I can add tasks for today and mark them complete. Make the project README explain dependency installation, the app start command, its actual URL and port, how to stop it, and the test commands and what they cover."
 ```
 
-Answer the Interview questions. For example, decide whether tasks should remain after a page refresh; this is an **illustrative example**, not actual output. A Seed specifies the goal, constraints, and completion criteria. **An Interview ending does not mean a Seed was created.** Confirm creation using your path below, review the entire YAML for the goal, work target, constraints, and verifiable completion criteria, and check the actual saved path and file contents. Do not run before approval.
+### Check the Seed in the Standalone CLI
+
+Approve Seed creation in the terminal Interview, then check the actual displayed file path and contents. At `Start workflow now?`, the default is yes; choose `n` to review before execution. This describes the source above; check your installed version's screens.
+
+### Both paths: review the generated Seed {#shared-seed-review}
+
+Answer the Interview questions. For example, decide whether tasks should remain after a page refresh; this is an **illustrative example**, not actual output. A Seed specifies the goal, constraints, and completion criteria. **An Interview ending does not mean a Seed was created.** Confirm creation using your chosen path above, review the entire YAML for the goal, work target, constraints, and verifiable completion criteria, and check the actual saved path and file contents. Do not run before approval.
 
 **Review example:** These are partial field illustrations, not a complete Seed or actual output or results. Compare them with what you agreed in the conversation.
 
@@ -202,16 +216,6 @@ Answer the Interview questions. For example, decide whether tasks should remain 
 Check the actual returned Seed file path and the selected working folder separately; do not assume a working-folder YAML field always exists. If the goal, constraints, criteria, or work target differ from the agreement, edit the existing YAML and review it all again. [Pinned Seed model](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L925-L948)
 
 Check that the README acceptance criteria require dependency installation, the app start command, actual URL and port, how to stop it, and test commands and scope. If there are no tests, the criteria can require the README to say so. This is a requested outcome, not a claim that a README already exists, is accurate, or was tested.
-
-### Create a Seed from a Plugin Conversation
-
-The Interview skill confirms the goal and offers Seed creation. After agreeing, request `ooo seed` in the same conversation. If you received an interview session ID, use `ooo seed <actual session ID>` when needed to target it. The skill offers QA feedback, but a score alone does not establish correctness.
-
-If MCP is unavailable, the skill uses a fallback path to create a Seed from requirements confirmed in conversation and may explain how to configure the server. Still check the YAML presented and whether a file was saved. The product guide covers Claude Code and Codex plugins, but actual screens and skill invocation depend on the installed host and version. [Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
-
-### Check the Seed in the Standalone CLI
-
-Approve Seed creation in the terminal Interview, then check the actual displayed file path and contents. At `Start workflow now?`, the default is yes; choose `n` to review before execution. This describes the source above; check your installed version's screens.
 
 **If the result differs:**
 

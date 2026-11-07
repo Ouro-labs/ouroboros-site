@@ -165,6 +165,8 @@ ouroboros setup --runtime codex</code></pre>
 !!! warning "运行前检查受管理 worktree 路径"
     使用 worktree 的执行在准备时，如果 `<worktree_root>/<仓库名称>/<durable_id>` 已存在但未在目标仓库注册为 Git worktree，可能尝试递归删除该路径。默认 root 为 `~/.ouroboros/worktrees`。新的 CLI 执行以及未另行提供 ID 的普通 MCP 执行会在运行中生成 ID，因此无法事先知道精确的新路径。开始前请检查实际管理 root、仓库对应目录、在目标仓库用 `git worktree list --porcelain` 检查 Git worktree 注册，以及进行中的工作和需要保留的数据。恢复时，如有实际 session ID 和已保存的 workspace 路径，也请核对这些记录。若无法确认，请暂缓执行，不要擅自删除或覆盖不确定的路径。检查后仍可能发生并发变化；这也不代表所有路径都能删除成功。 [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
+**操作顺序：**Claude Code：设置 → Interview → 创建 Seed → 共同检查；Codex：检查插件和 MCP 连接 → Interview → 创建 Seed → 共同检查；独立 CLI：准备 → Interview → 批准创建 Seed → 共同检查。
+
 <span id="plugin-first-task"></span>**Claude Code 插件：**在新会话中打开任务目录，然后在宿主的**对话中**请求设置。
 
 ```text
@@ -179,6 +181,12 @@ ooo setup
 ooo interview "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
+### 在插件对话中创建 Seed
+
+Interview skill 会重新确认目标并提出创建 Seed。同意目标后，在同一对话中请求 `ooo seed`。如果收到了 interview session ID，需要指定目标时可使用 `ooo seed <实际 session ID>`。skill 会提供 QA 意见，但仅凭分数无法证明内容正确。
+
+如果 MCP 不可用，skill 会使用备用路径，根据对话中确认的需求创建 Seed，并可能说明服务器连接设置。仍需检查实际显示的 YAML 和文件是否保存。产品指南涵盖 Claude Code 和 Codex 插件，但实际界面及 skill 调用方式取决于已安装的宿主和版本。[Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
+
 <span id="cli-first-task"></span>**独立 CLI：**在任务目录的**终端**中输入：
 
 ```bash
@@ -191,7 +199,13 @@ Windows PowerShell（项目目录中）：
 & $OuroborosPython -m ouroboros init start "构建一个简单的网页应用，让我可以添加今天的待办并将其标记为完成。项目 README 需说明依赖安装方法、应用启动命令、实际访问地址和端口、停止方法，以及测试命令和测试范围。"
 ```
 
-回答 Interview 的问题。例如，你可以决定刷新页面后待办是否仍应保留；这只是**说明性示例**，不是实际输出。Seed 是整理目标、约束和完成条件的规格说明。**Interview 结束不等于 Seed 已创建。**按照下面的使用路径确认生成，检查完整 YAML 中的目标、工作对象、约束和可验证的完成条件，并核对实际保存路径和文件内容。批准前不要运行。
+### 在独立 CLI 中检查 Seed
+
+在终端的交互式 Interview 中批准创建 Seed，然后检查实际显示的文件路径和内容。出现 `Start workflow now?` 时，默认答案是“是”；如需先检查再执行，请选择 `n`。此行为依据上述源码，请以已安装版本的实际界面为准。
+
+### 两种路径共同步骤：检查生成的 Seed {#shared-seed-review}
+
+回答 Interview 的问题。例如，你可以决定刷新页面后待办是否仍应保留；这只是**说明性示例**，不是实际输出。Seed 是整理目标、约束和完成条件的规格说明。**Interview 结束不等于 Seed 已创建。**按照上面所选路径确认生成，检查完整 YAML 中的目标、工作对象、约束和可验证的完成条件，并核对实际保存路径和文件内容。批准前不要运行。
 
 **检查示例：**以下只是字段含义的局部示例，不是完整 Seed，也不是实际输出或结果。请与对话中实际达成的约定比较。
 
@@ -202,16 +216,6 @@ Windows PowerShell（项目目录中）：
 请分别核对实际返回的 Seed 文件路径和所选工作文件夹，不要假设 YAML 中一定存在工作文件夹字段。如果目标、约束、标准或工作对象与约定不符，请直接编辑现有 YAML 并重新检查完整内容。[固定版本 Seed 模型](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/seed.py#L925-L948)
 
 检查 README 验收标准是否要求说明依赖安装、应用启动命令、实际 URL 和端口、停止方法，以及测试命令和范围。如果没有测试，可以要求 README 明确说明。这是所要求的结果，不表示 README 已存在、准确或经过测试。
-
-### 在插件对话中创建 Seed
-
-Interview skill 会重新确认目标并提出创建 Seed。同意目标后，在同一对话中请求 `ooo seed`。如果收到了 interview session ID，需要指定目标时可使用 `ooo seed <实际 session ID>`。skill 会提供 QA 意见，但仅凭分数无法证明内容正确。
-
-如果 MCP 不可用，skill 会使用备用路径，根据对话中确认的需求创建 Seed，并可能说明服务器连接设置。仍需检查实际显示的 YAML 和文件是否保存。产品指南涵盖 Claude Code 和 Codex 插件，但实际界面及 skill 调用方式取决于已安装的宿主和版本。[Interview skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/interview/SKILL.md) · [Seed skill](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md)
-
-### 在独立 CLI 中检查 Seed
-
-在终端的交互式 Interview 中批准创建 Seed，然后检查实际显示的文件路径和内容。出现 `Start workflow now?` 时，默认答案是“是”；如需先检查再执行，请选择 `n`。此行为依据上述源码，请以已安装版本的实际界面为准。
 
 **如果结果不同：**
 
