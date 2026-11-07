@@ -94,7 +94,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_latest_summary(self):
         (self.root/'pending-latest-review.md').write_text('altered');self.rejected('Latest summary changed')
@@ -113,7 +114,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_latest_chain(self):
         p=self.root/'pending-latest.json';e=json.loads(p.read_text());e['pages']['cli-reference-guide.md']['mid']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Latest snapshot chain mismatch: mid')
@@ -146,7 +148,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_diagnostic_summary(self):
         (self.root/'pending-job-diagnostic-review.md').write_text('altered');self.rejected('Diagnostic summary changed')
@@ -168,7 +171,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_package_summary(self):
         (self.root/'pending-package-review.md').write_text('altered');self.rejected('Package summary changed')
@@ -190,7 +194,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_seed_summary(self):
         (self.root/'pending-seed-review.md').write_text('altered');self.rejected('Seed summary changed')
@@ -212,7 +217,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_interview_summary(self):
         (self.root/'pending-interview-review.md').write_text('altered');self.rejected('Interview summary changed')
@@ -234,7 +240,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_seed_version_summary(self):
         (self.root/'pending-seed-version-review.md').write_text('altered');self.rejected('Seed version summary changed')
@@ -256,7 +263,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_runtime_summary(self):
         (self.root/'pending-runtime-review.md').write_text('altered');self.rejected('Runtime summary changed')
@@ -278,7 +286,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_home_summary(self):
         (self.root/'pending-home-review.md').write_text('altered');self.rejected('Home summary changed')
@@ -313,7 +322,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_headings_summary(self):
         (self.root/'pending-headings-review.md').write_text('altered');self.rejected('Headings summary changed')
@@ -333,7 +343,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_headings_hook(self):
         (self.root/'heading_labels.py').write_text('altered');self.rejected('Headings file changed')
@@ -356,7 +367,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_example_config(self):
         (self.root/'mkdocs.yml').write_text('altered');self.rejected('Example file changed')
@@ -378,7 +390,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_worktree_result_summary(self):
         (self.root/'pending-worktree-review-result.md').write_text('altered');self.rejected('Worktree result summary changed')
@@ -395,7 +408,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_seed_verification_summary(self):
         (self.root/'pending-seed-verification-review.md').write_text('altered');self.rejected('Seed verification summary changed')
@@ -411,7 +425,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_browser_example_summary(self):
         (self.root/'pending-browser-example-review.md').write_text('altered');self.rejected('Browser example summary changed')
@@ -426,7 +441,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_initial_commit_summary(self):
         (self.root/'pending-initial-commit-review.md').write_text('altered');self.rejected('Initial commit summary changed')
@@ -440,7 +456,8 @@ class PendingGuidesTest(unittest.TestCase):
         qpath=self.root/'pending-sidecar.json';q=json.loads(qpath.read_text());q['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();qpath.write_text(json.dumps(q))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_sidecar_summary(self):
         (self.root/'pending-sidecar-review.md').write_text('altered');self.rejected('Sidecar summary changed')
@@ -453,7 +470,8 @@ class PendingGuidesTest(unittest.TestCase):
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         kpath=self.root/'pending-megacode-claim.json';k=json.loads(kpath.read_text());k['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();kpath.write_text(json.dumps(k))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_megacode_claim_summary(self):
         (self.root/'pending-megacode-claim-review.md').write_text('altered');self.rejected('Megacode claim summary changed')
@@ -465,7 +483,8 @@ class PendingGuidesTest(unittest.TestCase):
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         zpath=self.root/'pending-ko-venv.json';z=json.loads(zpath.read_text());z['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();zpath.write_text(json.dumps(z))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
 
     def test_changed_ai_manual_summary(self):
         (self.root/'pending-ai-manual-review.md').write_text('altered');self.rejected('AI manual summary changed')
@@ -496,10 +515,26 @@ class PendingGuidesTest(unittest.TestCase):
         m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='first-run-detail.md'
         m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
-        self.rejected('Recovery navigation manifest or pending status changed')
+        tpath=self.root/'pending-translated-recovery.json';t=json.loads(tpath.read_text());t['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();tpath.write_text(json.dumps(t))
+        self.rejected('Translated recovery snapshot chain mismatch')
+
+    def test_translated_recovery_summary_changed(self):
+        (self.root/'pending-translated-recovery-review.md').write_text('altered');self.rejected('Translated recovery summary changed')
+    def test_translated_recovery_prior_changed(self):
+        p=self.root/'pending-translated-recovery.json';e=json.loads(p.read_text());e['pages']['en/troubleshooting.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Translated recovery snapshot chain mismatch')
+    def test_translated_recovery_evidence_symlink(self):
+        p=self.root/'pending-translated-recovery.json';p.unlink();p.symlink_to(self.root/'pending-recovery-navigation.json');self.rejected('Evidence input is not a regular non-symlink file')
+    def test_translated_recovery_source_changed(self):
+        p=self.root/'content/en/troubleshooting.md';p.write_text(p.read_text()+'changed');self.rejected('Content hash does not match: en/troubleshooting.md')
+    def test_translated_recovery_forged_hash(self):
+        mpath=self.root/'content-manifest.json';ppath=self.root/'pending-translated-recovery.json'
+        m=json.loads(mpath.read_text());p=json.loads(ppath.read_text());name='en/troubleshooting.md'
+        m['pages'][name]['source_sha256']='a'*64;p['pages'][name]['current']['source_sha256']='a'*64
+        mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
+        self.rejected('Translated recovery current metadata mismatch')
     def test_changed_manifest(self):
         with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Recovery navigation manifest or pending status changed')
+        self.rejected('Translated recovery manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):
@@ -529,6 +564,10 @@ class PriorStageTamperTest(unittest.TestCase):
         shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
+        translated = json.loads((self.root/'pending-translated-recovery.json').read_text())
+        for name, entry in translated['pages'].items(): manifest['pages'][name] = entry['prior']
+        translated_raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
+        self.assertEqual(hashlib.sha256(translated_raw).hexdigest(), translated['prior_manifest_sha256'])
         for name, entry in nav['pages'].items(): manifest['pages'][name] = entry['prior']
         raw = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), nav['prior_manifest_sha256'])

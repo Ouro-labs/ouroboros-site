@@ -25,11 +25,14 @@ ID 前缀只能作提示；以启动结果中的字段名为准。不要把 `job
 | 启动结果中的字段 | 表示什么 | 如何继续查询 |
 | --- | --- | --- |
 | `job_id` | 后台工作的状态与结果 | CLI：`ouroboros job status <JOB_ID>`；变化等待：`ouroboros job wait <JOB_ID>`；终止后：`ouroboros job result <JOB_ID>`。宿主 MCP 则使用服务器实际提供的 `ouroboros_job_status`、`ouroboros_job_wait`、`ouroboros_job_result`。 |
-| `session_id` | 执行会话 | CLI：`ouroboros status run --session-id <SESSION_ID>`；如果宿主提供会话状态工具，可用该实际工具查询。 |
+| `ouroboros_interview` 返回的 `session_id` | Interview 保存记录 ID（`interview_id`），不是执行会话 | 在原宿主会话中用同一宿主/服务器调用 `ouroboros_interview`，传入同一 ID 和用户对当前问题的实际回答；这会继续访谈，不是只读查询。 |
+| 执行启动操作返回的 `session_id` | 编排器执行会话 | CLI：`ouroboros status run --session-id <SESSION_ID>`；如果宿主提供执行会话状态工具，可用该实际工具查询。 |
 | `execution_id` | 执行事件与状态记录 | CLI：`ouroboros status execution <EXECUTION_ID> --events`。 |
 | `auto_session_id` | Auto 访谈、Seed 和执行交接状态 | CLI：`ouroboros status auto <AUTO_SESSION_ID>`。 |
 
-这些是产品源码 `592c667f` 中的 CLI 形式；安装版本可能不同。插件调用通常不会提供终端 `ouroboros` 命令。对于 MCP，先确认当前连接的服务器是否提供这些工具及其实际参数。
+这些是产品源码 `592c667f` 中的 CLI 形式；安装版本可能不同。插件调用通常不会提供终端 `ouroboros` 命令。对于 MCP，先确认当前连接的服务器是否提供这些工具及其实际参数。MCP `ouroboros_interview` 返回的 `session_id` 实际对应 `state.interview_id`，不能传给 `ouroboros status run --session-id` 或执行会话状态工具。若要继续访谈，必须回到原宿主/服务器，用该 ID 和用户对当前问题的实际回答调用 `ouroboros_interview`；这会继续并保存访谈，不是只读查询，也可能调用模型并产生费用。
+
+独立 CLI 的访谈 ID 可在原来的同一状态目录中用 `ouroboros init list` 查找，再用 `ouroboros init start --resume <INTERVIEW_ID>` 继续。若之前使用了 `--state-dir <目录>`，两个命令都要指定相同目录。继续操作不是只读查询：它可能调用模型、写入访谈状态并生成 Seed；之后的 `Start workflow now?` 默认是 `yes`。检查 Seed 后再决定是否启动工作流；若只想检查 Seed，在该提示处输入 `n`。不要把访谈 ID 当作执行会话 ID，也不要为找不到的 ID 猜测或新建重复访谈。源码依据：main `592c667f` 的 [Interview 响应](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py#L2690-L2713)、[执行会话状态查询](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/query_handlers.py#L291-L323)、[CLI 恢复参数](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/init.py#L1022-L1047)、[CLI 访谈列表](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/init.py#L1212-L1246) 与 [Seed/工作流确认](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/init.py#L594-L654)；release `0.59.9` 的 [Interview 响应](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/authoring_handlers.py#L2683-L2738)、[状态查询](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/query_handlers.py#L291-L323)、[CLI 恢复参数](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/init.py#L1022-L1047)、[CLI 访谈列表](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/init.py#L1212-L1246) 与 [Seed/工作流确认](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/init.py#L593-L653)。
 
 ## 查看当前状态 {#status}
 
