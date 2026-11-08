@@ -140,6 +140,19 @@ def check_manifest(root, files):
         raise ValueError('Search shortcut content overlaps')
     static = dict(static)
     static['assets/ouro-search-shortcut.js'] = shortcut_files[shortcut_path]
+    # This additional asset is pending, never historical publication approval.
+    locale_path = root/'docs-src/pending-search-locale.json'
+    if locale_path.exists():
+        locale = load_json(regular(root, 'docs-src/pending-search-locale.json'))
+        if digest(locale_path.read_bytes()) != '810076c353de29b0b88e349d28cbcd46341ccc82b0792f617ccf790245cb4c7e' or locale.get('status') != 'pending':
+            raise ValueError('Search locale pending record changed')
+        name = 'assets/ouro-search-locale.js'
+        current = locale.get('files', {}).get('content/'+name, {}).get('current')
+        if not isinstance(current, str) or digest(current.encode()) != files.get('docs-src/content/'+name):
+            raise ValueError('Search locale pending asset changed')
+        if name in set(pages) | set(assets) | set(static):
+            raise ValueError('Search locale content overlaps')
+        static[name] = digest(current.encode())
     actual_content = {name.removeprefix('docs-src/content/') for name in files if name.startswith('docs-src/content/')}
     if actual_content != set(pages) | set(assets) | set(static):
         raise ValueError('Content file set differs from manifest and static inputs')

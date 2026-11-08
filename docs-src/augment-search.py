@@ -4,6 +4,7 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
+import hashlib
 
 ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / 'site/docs/search/search_index.json'
@@ -64,3 +65,34 @@ for language, names in LANGUAGE_PAGES.items():
 (ROOT / 'site/docs/search/languages.json').write_text(
     json.dumps(routes, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n', encoding='utf-8')
 print('Wrote explicit search result language map.')
+
+# Stable partition only already-matched page groups, before Material truncates
+# the first rendered chunk. No score changes, filtering or query aliases here.
+patch = '''
+;(()=>{const send=self.postMessage.bind(self);
+const locale=new URL(self.location.href).searchParams.get('ouro_locale');
+const routes=ROUTES;
+self.postMessage=function(message,...rest){
+ if(message && message.type===3 && message.data && Array.isArray(message.data.items) && ['ko','en','zh-Hans'].includes(locale)){
+  const items=message.data.items;
+  const same=group=>Array.isArray(group)&&group.some(item=>{
+   if(!item || typeof item.location!=='string')return false;
+   const path='/docs/'+item.location.split('#')[0];
+   return routes[path]===locale;
+  });
+  message={...message,data:{...message.data,items:items.filter(same).concat(items.filter(group=>!same(group)))}};
+ }
+ return send(message,...rest);
+};})();
+'''.replace('ROUTES',json.dumps(routes,ensure_ascii=False))
+workers=list((ROOT/'site/docs/assets/javascripts/workers').glob('search.*.min.js'))
+if len(workers)!=1: raise SystemExit('Expected one pinned Material search worker')
+worker=workers[0]
+marker='\n/* ouro-locale-order-v1 */\n'
+original_bytes=worker.read_bytes().split(marker.encode())[0]
+original=original_bytes.decode('utf-8')
+# Exact upstream bytes pin both matching and the 0/1 init, 2/3 query protocol.
+# An upgrade must be explicitly reviewed; never publish an unrecognized patch.
+if worker.name != 'search.2c215733.min.js' or hashlib.sha256(original_bytes).hexdigest() != 'cfb35333fafd6d2eb148eba21452849fb7fbde32fdfbf986836573f963106188':
+    raise SystemExit('Unsupported Material search worker bytes/protocol; build blocked')
+worker.write_text(original+marker+patch,encoding='utf-8')

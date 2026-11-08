@@ -70,6 +70,7 @@
   {% endif %}
 {% endblock %}
 {% block scripts %}
+  <script src="{{ 'assets/ouro-search-locale.js' | url }}"></script>
   {% if page and 'class="mermaid"' in page.content %}
     <script src="{{ 'assets/vendor/mermaid/mermaid-11.4.1.min.js' | url }}"></script>
     <script src="{{ 'assets/ouro-mermaid.js' | url }}"></script>
