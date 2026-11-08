@@ -96,15 +96,13 @@ ouroboros --version</code></pre>
 
 <p><strong>플랫폼 지원 경계:</strong> 확인한 제품 문서에서 네이티브 Windows는 실험적이며 Codex CLI는 네이티브 Windows에서 지원하지 않습니다. Windows에서는 WSL2 경로를 권장합니다. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
 
-<p>Codex CLI를 이미 설치하고 인증해 사용할 준비가 되었다면:</p>
+<p>macOS/Linux/WSL2 터미널에서 Codex CLI를 이미 설치하고 인증했다면 아래 명령을 실행하세요. 이 명령은 네이티브 Windows PowerShell용이 아닙니다. 네이티브 Windows의 Codex Desktop은 아래 별도 HTTP 안내를 참고하세요.</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
 
 
 
-<p>Windows PowerShell:</p>
 
-<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
 <p><strong>Codex: uvx가 있는 경우</strong></p>
 

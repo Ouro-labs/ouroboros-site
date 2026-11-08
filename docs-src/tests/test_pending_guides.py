@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index('    en_manual_update=json.loads(')
+    start=code.index("    windows_codex_cli=json.loads((root/'pending-windows-codex-cli.json').read_text())")
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    windows=json.loads((root/'pending-windows-codex-cli.json').read_text())
+    for name,entry in windows['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest Windows Codex CLI current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=windows['prior_manifest_sha256']: raise AssertionError('Latest Windows Codex CLI prior snapshot mismatch')
     latest=json.loads((root/'pending-en-manual-update.json').read_text())
     for name,entry in latest['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest EN manual current mismatch: '+name)
@@ -59,7 +64,6 @@ class PendingGuidesTest(unittest.TestCase):
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
     def rejected(self, message):
         outer_boundary_tests = {
-            'test_changed_manifest',
             'test_forged_browser_example_source_hash',
             'test_forged_diagnostic_source_hash',
             'test_forged_example_source_hash',
@@ -86,13 +90,20 @@ class PendingGuidesTest(unittest.TestCase):
             'test_job_wait_outer_manifest_tamper',
             'test_worktree_scope_outer_manifest_tamper',
             'test_mcp_visibility_outer_manifest_tamper',
+            'test_windows_codex_cli_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'EN manual update manifest or pending status changed'
+            message = 'Windows Codex CLI manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'EN manual update manifest or pending status changed'
+            message = 'Windows Codex CLI manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
+        elif self._testMethodName == 'test_windows_codex_cli_outer_manifest_tamper':
+            message = 'Windows Codex CLI manifest or pending status changed'
+        elif self._testMethodName == 'test_windows_codex_cli_prior_tamper':
+            message = 'Windows Codex CLI summary prior hash mismatch'
+        elif self._testMethodName == 'test_windows_codex_cli_snapshot_tamper':
+            message = 'Windows Codex CLI snapshot chain mismatch'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
     def test_mcp_visibility_outer_manifest_tamper(self):
@@ -182,6 +193,16 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-en-manual-update.json'; e=json.loads(p.read_text()); e['pages']['en/ai-troubleshooting.md']['prior']['source_sha256']='a'*64; p.write_text(json.dumps(e)); self.rejected('EN manual update summary prior hash mismatch')
     def test_en_manual_update_symlink(self):
         p=self.root/'pending-en-manual-update.json'; p.unlink(); p.symlink_to(self.root/'pending-mcp-visibility.json'); self.rejected('Evidence input is not a regular non-symlink file')
+    def test_windows_codex_cli_outer_manifest_tamper(self):
+        p=self.root/'content-manifest.json';m=json.loads(p.read_text());m['pages']['quickstart.md']['page_sha256']='a'*64;p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');self.rejected('Windows Codex CLI manifest or pending status changed')
+    def test_windows_codex_cli_summary_tamper(self):
+        (self.root/'pending-windows-codex-cli-review.md').write_text('changed');self.rejected('Windows Codex CLI summary changed')
+    def test_windows_codex_cli_prior_tamper(self):
+        p=self.root/'pending-windows-codex-cli.json';e=json.loads(p.read_text());e['pages']['quickstart.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Windows Codex CLI summary prior hash mismatch')
+    def test_windows_codex_cli_snapshot_tamper(self):
+        p=self.root/'pending-windows-codex-cli.json';e=json.loads(p.read_text());e['prior_manifest_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Windows Codex CLI snapshot chain mismatch')
+    def test_windows_codex_cli_symlink(self):
+        p=self.root/'pending-windows-codex-cli.json';p.unlink();p.symlink_to(self.root/'pending-windows-codex.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_landing_summary_tamper(self):
         (self.root/'pending-landing-review.md').write_text('changed');self.rejected('Landing summary changed')
     def test_landing_prior_tamper(self):

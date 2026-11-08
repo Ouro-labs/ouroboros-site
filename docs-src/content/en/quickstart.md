@@ -125,15 +125,13 @@ ouroboros --version</code></pre>
 
 <p><strong>Platform support:</strong> In the checked product documentation, native Windows is experimental and Codex CLI is not supported on native Windows. On Windows, use the recommended WSL2 path. <a href="https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/docs/platform-support.md#L16-L27">main</a> · <a href="https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/docs/platform-support.md#L16-L27">release 0.59.9</a>.</p>
 
-<p>If Codex CLI is already installed and ready to use with your authentication, run:</p>
+<p>In a macOS/Linux/WSL2 terminal, if Codex CLI is installed and authenticated, run the command below. It is not a native Windows PowerShell command. For native Windows Codex Desktop, see the separate HTTP instructions below.</p>
 
 <pre><code class="language-bash">ouroboros setup --runtime codex</code></pre>
 
 
 
-<p>Windows PowerShell:</p>
 
-<pre><code class="language-powershell">&amp; $OuroborosPython -m ouroboros setup --runtime codex</code></pre>
 
 <p><strong>Codex: with uvx</strong></p>
 
