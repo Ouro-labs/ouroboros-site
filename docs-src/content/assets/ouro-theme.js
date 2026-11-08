@@ -48,13 +48,59 @@
   query.addEventListener('compositionend',notify);
 })();
 
-// The Material search opener is a label; make it operable from the keyboard.
+// Search keyboard operation and Escape focus restoration.
 (function(){
   var opener=document.querySelector('[data-ouro-search-open]');
-  if(!opener) return;
+  var search=document.querySelector('[data-md-component="search"]');
+  var toggle=document.getElementById('__search');
+  var query=document.querySelector('[data-md-component="search-query"]');
+  var output=document.querySelector('.md-search__output');
+  if(!opener || !search || !toggle || !query || !output) return;
+  var mobile=window.matchMedia('(max-width: 59.984375em)');
+  var hadTab=query.hasAttribute('tabindex'), originalTab=query.getAttribute('tabindex');
+  var previous=null, pending=null, composing=false;
+  function valid(e){return e && e!==document.body && e.isConnected && !search.contains(e) && e.getClientRects().length>0 && typeof e.focus==='function';}
+  function cancel(){pending=null;}
+  function sync(){
+    if(mobile.matches && !toggle.checked) query.setAttribute('tabindex','-1');
+    else if(hadTab) query.setAttribute('tabindex',originalTab);
+    else query.removeAttribute('tabindex');
+    output.inert=mobile.matches && !toggle.checked;
+  }
   opener.addEventListener('keydown',function(event){
-    if(event.key==='Enter' || event.key===' '){event.preventDefault();opener.click();}
+    if(event.key==='Enter' || event.key===' '){event.preventDefault();event.stopPropagation();opener.click();}
   });
+  document.addEventListener('focusin',function(event){
+    if(search.contains(event.target)){
+      if(!search.contains(event.relatedTarget)){
+        var brand=document.querySelector('.ouro-brand');
+        previous=valid(event.relatedTarget)?event.relatedTarget:(valid(opener)?opener:(valid(brand)?brand:null));
+      }
+      sync();
+    } else if(pending) cancel();
+  },true);
+  document.addEventListener('pointerdown',cancel,true);
+  document.addEventListener('compositionstart',function(){composing=true;cancel();},true);
+  document.addEventListener('compositionend',function(){composing=false;},true);
+  document.addEventListener('keydown',function(event){
+    if(event.key!=='Escape'){cancel();return;}
+    if(composing || event.isComposing || event.keyCode===229 || !toggle.checked || !search.contains(event.target) || !valid(previous)){cancel();return;}
+    pending={trigger:previous};
+  },true);
+  document.addEventListener('focusout',function(event){
+    if(!search.contains(event.target)) return;
+    requestAnimationFrame(sync);
+    if(!pending || toggle.checked) return;
+    if(event.relatedTarget){cancel();return;}
+    var token=pending;
+    requestAnimationFrame(function(){
+      if(pending!==token || toggle.checked || document.activeElement!==document.body || !valid(token.trigger)){cancel();return;}
+      cancel();token.trigger.focus();
+    });
+  },true);
+  toggle.addEventListener('change',sync);
+  mobile.addEventListener('change',sync);
+  sync();
 })();
 
 // Annotate only reviewed result URLs. Unknown URLs or a failed map load are left alone.

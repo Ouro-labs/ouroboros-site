@@ -1,0 +1,9 @@
+{
+  "status": "pending",
+  "prior_js_sha256": "4d826a9d0a74d65c2f326d05bdffe800c7bd2d9aedd873c8cfafc50809b6dc6d",
+  "summary_sha256": "ed3ae73cbde452c4a387d8d291749f6309bb70b15897662e35be0c063dd8acb9",
+  "files": {
+    "docs-src/content/assets/ouro-theme.js": "71695bbe0bdb3f91b40908f6c49b27a01ec073f2e6b6a187da1bb1167cc7264e",
+    "docs-src/tests/test_search_escape.cjs": "25c0da7e5fcf2062a04936070a01a27a27535ad9ff24442f85cf33ab5be82e9d"
+  }
+}
