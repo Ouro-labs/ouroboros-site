@@ -21,6 +21,8 @@ Codex 설정의 기본 위치는 `~/.codex/config.toml`이며 `CODEX_HOME`이 �
 
 ## Codex MCP 모드
 
+**Codex 플러그인 세션 확인:** 고정 main `592c667f`와 release `0.59.9`의 welcome은 Ouroboros 런타임 설정과 Codex `config.toml`의 Ouroboros MCP 항목 등을 검사하므로, 플러그인이 현재 세션에서 MCP를 제공하더라도 `CODEX_SETUP_REQUIRED`가 나올 수 있다. 이 메시지나 `codex mcp list`에 항목이 없다는 사실만으로 서버 부재를 단정하거나 setup을 반복하지 말고, 같은 호스트·세션에서 플러그인 활성화와 서버·도구 목록을 확인한다. 목록에 보이는 것만으로 실제 도구 호출 성공을 보장하지는 않는다. 별도 setup은 MCP 등록뿐 아니라 런타임·모델 설정이나 관리 스킬·규칙을 바꿀 수 있으므로 대상과 영향을 먼저 검토하고 사용자가 결정한다. `preserve`도 유효한 기존 Codex 항목이 없으면 실패한다. 실제 호스트 연결은 이 설명에서 시험하지 않았다. [main welcome](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/welcome/SKILL.md#L545-L592) · [release welcome](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/welcome/SKILL.md#L545-L592) · [main setup](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L1248-L1277) · [release setup](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/setup.py#L1246-L1275).
+
 `--mcp-mode`는 **Codex 통합의 MCP 등록**에 적용된다. 다른 설정이나 산출물 전체의 보존을 약속하는 옵션이 아니다.
 
 | 모드 | 이 버전의 동작 |

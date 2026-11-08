@@ -50,6 +50,8 @@ PowerShell에서는 `Get-Command ouroboros`로 실행 파일을 찾습니다. �
 
 ### MCP 연결 실패: 도구가 보이지 않을 때 {#mcp}
 
+Codex에서 `CODEX_SETUP_REQUIRED` 또는 `codex mcp list`의 항목 누락만으로 플러그인 세션의 MCP 부재를 단정하거나 setup을 반복하지 마세요. 고정 main `592c667f`와 release `0.59.9`의 welcome은 Codex `config.toml` 항목 등을 기준으로 판정하므로 플러그인이 현재 세션에 서버를 제공하더라도 경고가 나올 수 있습니다. 같은 호스트·세션에서 플러그인, 서버와 도구 목록을 확인하되 목록 표시만으로 실제 도구 호출 성공을 보장하지 않습니다. 별도 setup은 MCP 등록과 런타임·모델·관리 스킬·규칙에 영향을 줄 수 있으므로 변경 대상을 검토한 뒤 사용자가 결정하세요. `preserve`는 유효한 기존 Codex MCP 항목이 없으면 실패합니다. 실제 호스트 연결은 검증하지 않았습니다. [main welcome](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/welcome/SKILL.md#L545-L592) · [release welcome](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/welcome/SKILL.md#L545-L592) · [main setup](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L1248-L1277) · [release setup](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/setup.py#L1246-L1275).
+
 1. 호스트에서 해당 플러그인과 서버가 활성화됐는지, 오류가 연결 실패인지 도구 미발견인지 확인합니다. 독립 CLI의 정상 출력만으로 호스트 서버의 판본과 연결을 판단하지 않습니다.
 2. 독립 CLI가 있으면 `ouroboros mcp doctor`의 실패 행을 살펴봅니다. 실패가 없더라도 호스트 설정과 인증이 맞는지는 별도입니다. Codex에서는 `ouroboros codex doctor`로 auto dispatch 설정을 확인할 수 있습니다.
 3. 추가 확인이 필요하면 선택적 `ouroboros mcp doctor --probe-local-stdio`는 임시 자식 서버의 시작과 도구 발견을 검사합니다. 실제 호스트의 launcher나 모델 호출을 검사하지 않습니다. Python 수준 제한은 OS 격리가 아니며 일반 doctor 검사도 오프라인을 보장하지 않습니다. `ouroboros codex doctor --live-mcp`는 **설정된 stdio 서버를 실제로 시작**하므로 그 명령과 외부 효과를 먼저 확인하세요. URL 전송은 이 live 검사 대상이 아닙니다. [Codex 진단 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/codex.py).

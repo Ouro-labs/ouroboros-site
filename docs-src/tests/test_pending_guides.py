@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index("    concepts=json.loads((root/'pending-concepts-detail.json').read_text())")
+    start=code.index("    codex_plugin=json.loads((root/'pending-codex-plugin.json').read_text())")
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    latest=json.loads((root/'pending-codex-plugin.json').read_text())
+    for name,entry in latest['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest Codex plugin current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=latest['prior_manifest_sha256']: raise AssertionError('Latest Codex plugin prior snapshot mismatch')
     concepts=json.loads((root/'pending-concepts-detail.json').read_text())
     for name,entry in concepts['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest concepts current mismatch: '+name)
@@ -105,9 +110,9 @@ class PendingGuidesTest(unittest.TestCase):
             'test_concepts_detail_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'Concepts detail manifest or pending status changed'
+            message = 'Codex plugin manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'Concepts detail manifest or pending status changed'
+            message = 'Codex plugin manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         elif self._testMethodName == 'test_concepts_detail_current_tamper':
