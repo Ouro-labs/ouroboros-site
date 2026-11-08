@@ -187,7 +187,7 @@ ouroboros setup --runtime codex</code></pre>
 ooo setup
 ```
 
-Answer the setup questions and finish. <span id="codex-first-task"></span>**Codex plugin:** Open the task folder in a new Codex session and check that the installed plugin and MCP tools are connected. If not, see the [MCP troubleshooting guide](/docs/en/ai-troubleshooting/). Standalone Codex CLI setup is a separate path.
+Answer the setup questions and finish. <span id="codex-first-task"></span>**Codex plugin:** Open the task folder in a new Codex session. In a Codex CLI/TUI conversation, enter `/mcp` and check whether an Ouroboros-related server appears in the active server list. Its displayed name can vary by plugin and server version; seeing it listed does not prove tool calls work or that a model task will succeed. If the server is missing or shows a connection error, follow the [MCP troubleshooting guide](/docs/en/ai-troubleshooting/). Do not assume this CLI/TUI UI is available in Codex Desktop. See the [official Codex MCP CLI guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli#configure-with-the-cli). Standalone Codex CLI setup is a separate path.
 
 Once ready, send the Interview request as the next message in the host conversation.
 

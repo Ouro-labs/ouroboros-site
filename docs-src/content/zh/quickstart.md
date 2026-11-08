@@ -187,7 +187,7 @@ ouroboros setup --runtime codex</code></pre>
 ooo setup
 ```
 
-回答设置问题并完成设置。<span id="codex-first-task"></span>**Codex 插件：**在新的 Codex 会话中打开任务目录，确认已安装的插件和 MCP 工具已连接；如未连接，请先查看 [MCP 诊断指南（韩文）](/docs/ai-troubleshooting/#mcp)。独立 Codex CLI 设置是另一条路径。
+回答设置问题并完成设置。<span id="codex-first-task"></span>**Codex 插件：**在新的 Codex 会话中打开任务目录。如果使用 Codex CLI/TUI，请在对话中输入 `/mcp`，确认活动服务器列表中是否出现 Ouroboros 相关服务器。显示名称可能随插件和服务器版本变化；列表中出现服务器并不能证明工具调用正常，也不能保证模型任务成功。如果服务器缺失或显示连接错误，请参阅 [MCP 诊断指南（韩文）](/docs/ai-troubleshooting/#mcp)。不要假定 Codex Desktop 也有相同的 CLI/TUI 界面。参见[Codex MCP CLI 官方指南](https://learn.chatgpt.com/docs/extend/mcp?surface=cli#configure-with-the-cli)。独立 Codex CLI 设置是另一条路径。
 
 准备好后，在宿主对话的下一条消息中发送 Interview 请求。
 
