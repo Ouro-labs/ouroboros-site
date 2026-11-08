@@ -18,6 +18,8 @@
   var toggle=document.getElementById('__drawer');
   var button=document.querySelector('.ouro-drawer');
   var sidebar=document.querySelector('.md-sidebar--primary');
+  var searchToggle=document.getElementById('__search');
+  var search=document.querySelector('[data-md-component="search"]');
   if(!toggle || !button || !sidebar) return;
   sidebar.id='ouro-navigation';
   var mobile=window.matchMedia('(max-width: 76.2344em)');
@@ -31,7 +33,8 @@
   toggle.addEventListener('change',syncDrawer);
   mobile.addEventListener('change',syncDrawer);
   document.addEventListener('keydown',function(event){
-    if(event.key==='Escape' && toggle.checked && mobile.matches){
+    if(event.key==='Escape' && !event.defaultPrevented && !event.isComposing && event.keyCode!==229 && toggle.checked && mobile.matches){
+      if(search && search.contains(event.target)) return;
       toggle.click();syncDrawer();button.focus();
     }
   });
@@ -58,9 +61,37 @@
   if(!opener || !search || !toggle || !query || !output) return;
   var mobile=window.matchMedia('(max-width: 59.984375em)');
   var hadTab=query.hasAttribute('tabindex'), originalTab=query.getAttribute('tabindex');
-  var previous=null, pending=null, composing=false;
-  function valid(e){return e && e!==document.body && e.isConnected && !search.contains(e) && e.getClientRects().length>0 && typeof e.focus==='function';}
-  function cancel(){pending=null;}
+  var previous=null, pending=null, composing=false, tokenTimer=null, tokenSerial=0, doc=document;
+  function valid(e){
+    if(!e || e===document.body || e.disabled || (e.matches && e.matches(':disabled')) || !e.isConnected || search.contains(e) || !e.getClientRects().length || typeof e.focus!=='function') return false;
+    for(var node=e;node && node.nodeType===1;node=node.parentElement){
+      if(node.hidden || node.inert || (node.hasAttribute && (node.hasAttribute('hidden') || node.hasAttribute('inert'))) || (node.getAttribute && node.getAttribute('aria-hidden')==='true')) return false;
+      if(window.getComputedStyle && window.getComputedStyle(node).visibility==='hidden') return false;
+    }
+    return true;
+  }
+  function cancel(){pending=null;if(tokenTimer!==null){clearTimeout(tokenTimer);tokenTimer=null;}}
+  function begin(trigger){
+    cancel();
+    var token={trigger:trigger,document:doc,url:location.href,serial:++tokenSerial,expires:Date.now()+700};
+    pending=token;
+    tokenTimer=setTimeout(function(){if(pending===token) cancel();},700);
+    requestAnimationFrame(function(){restore(token);});
+  }
+  function restore(token){
+    if(pending!==token || token.document!==document || token.url!==location.href || Date.now()>token.expires || toggle.checked || document.activeElement!==document.body || !document.hasFocus() || document.visibilityState==='hidden') return;
+    var brand=document.querySelector('.ouro-brand');
+    var candidates=[token.trigger,opener,brand], tried=[];
+    cancel();
+    for(var i=0;i<candidates.length;i++){
+      var target=candidates[i];
+      if(!valid(target) || tried.indexOf(target)!==-1) continue;
+      tried.push(target);
+      try{target.focus({preventScroll:true});}catch(e){}
+      if(document.activeElement===target) return;
+      if(document.activeElement!==document.body) return;
+    }
+  }
   function sync(){
     if(mobile.matches && !toggle.checked) query.setAttribute('tabindex','-1');
     else if(hadTab) query.setAttribute('tabindex',originalTab);
@@ -77,28 +108,29 @@
         previous=valid(event.relatedTarget)?event.relatedTarget:(valid(opener)?opener:(valid(brand)?brand:null));
       }
       sync();
-    } else if(pending) cancel();
+    } else if(pending && event.target!==document.body) cancel();
   },true);
   document.addEventListener('pointerdown',cancel,true);
+  document.addEventListener('pagehide',cancel,true);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden') cancel();},true);
+  window.addEventListener('pagehide',cancel,true);
+  window.addEventListener('blur',function(event){if(event.target===window) cancel();},true);
+  window.addEventListener('hashchange',cancel,true);
   document.addEventListener('compositionstart',function(){composing=true;cancel();},true);
   document.addEventListener('compositionend',function(){composing=false;},true);
   document.addEventListener('keydown',function(event){
-    if(event.key!=='Escape'){cancel();return;}
-    if(composing || event.isComposing || event.keyCode===229 || !toggle.checked || !search.contains(event.target) || !valid(previous)){cancel();return;}
-    pending={trigger:previous};
+    if(pending){cancel();return;}
+    if(event.key!=='Escape') return;
+    if(composing || event.isComposing || event.keyCode===229 || !toggle.checked || !search.contains(event.target)) return;
+    begin(previous);
   },true);
   document.addEventListener('focusout',function(event){
     if(!search.contains(event.target)) return;
     requestAnimationFrame(sync);
-    if(!pending || toggle.checked) return;
-    if(event.relatedTarget){cancel();return;}
-    var token=pending;
-    requestAnimationFrame(function(){
-      if(pending!==token || toggle.checked || document.activeElement!==document.body || !valid(token.trigger)){cancel();return;}
-      cancel();token.trigger.focus();
-    });
+    if(event.relatedTarget && event.relatedTarget!==document.body){cancel();return;}
+    if(pending){var token=pending;requestAnimationFrame(function(){restore(token);});}
   },true);
-  toggle.addEventListener('change',sync);
+  toggle.addEventListener('change',function(){if(toggle.checked) cancel();else if(pending){var token=pending;requestAnimationFrame(function(){restore(token);});}sync();});
   mobile.addEventListener('change',sync);
   sync();
 })();

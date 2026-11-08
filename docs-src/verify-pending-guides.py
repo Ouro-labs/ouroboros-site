@@ -13,15 +13,220 @@ NAMES = {'megacode-guide.md', 'settings-gui-guide.md', 'en/settings-gui-guide.md
 BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
 def sha(data): return hashlib.sha256(data).hexdigest()
+def verify_pending_gate(manifest, pending):
+    if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
+        raise ValueError('Pending extension requires closed gate')
+
+SEARCH_HEADER_CSS_BLOCK = b'''\n/* Keep Material's desktop search overlay anchored to the header's search slot. */
+@media screen and (min-width: 60em) {
+  .ouro-top-inner > .md-search {
+    flex: 0 0 11.7rem;
+    width: 11.7rem;
+    min-width: 0;
+  }
+}
+
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  .ouro-top-inner {
+    height: auto;
+    min-height: 64px;
+    padding-block: 8px;
+    gap: 12px;
+  }
+  .ouro-top-inner > .ouro-brand {
+    flex-shrink: 0;
+  }
+  .ouro-top-inner > .ouro-nav {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-inline: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+}
+'''
+SEARCH_HEADER_TEST_CONSTANTS = b'''\nDESKTOP_SEARCH_SLOT_RULE = \'''@media screen and (min-width: 60em) {
+  .ouro-top-inner > .md-search {
+    flex: 0 0 11.7rem;
+    width: 11.7rem;
+    min-width: 0;
+  }
+}\'''
+COMPACT_DESKTOP_HEADER_RULE = \'''@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  .ouro-top-inner {
+    height: auto;
+    min-height: 64px;
+    padding-block: 8px;
+    gap: 12px;
+  }
+  .ouro-top-inner > .ouro-brand {
+    flex-shrink: 0;
+  }
+  .ouro-top-inner > .ouro-nav {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-inline: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+}\'''\n'''
+SEARCH_HEADER_TEST_METHODS = b'''\n    def test_desktop_search_uses_fixed_header_slot_once(self):
+        self.assertEqual(CSS.read_text().count(DESKTOP_SEARCH_SLOT_RULE), 1)
+
+    def test_compact_desktop_header_rule_is_present_once(self):
+        self.assertEqual(CSS.read_text().count(COMPACT_DESKTOP_HEADER_RULE), 1)
+'''
+SEARCH_HEADER_TEST_ANCHOR = b"RULE = '[data-md-toggle=\"search\"]:not(:checked) ~ .md-header .md-search__overlay { pointer-events: none; }'\n"
+SEARCH_HEADER_BASE_METHOD = b"    def test_closed_only_rule_is_present_once(self):\n        self.assertEqual(CSS.read_text().count(RULE), 1)\n"
+
+SEARCH_DRAWER_CURRENT = b'''(function(){
+  var toggle=document.getElementById('__drawer');
+  var button=document.querySelector('.ouro-drawer');
+  var sidebar=document.querySelector('.md-sidebar--primary');
+  var searchToggle=document.getElementById('__search');
+  var search=document.querySelector('[data-md-component="search"]');
+  if(!toggle || !button || !sidebar) return;
+  sidebar.id='ouro-navigation';
+  var mobile=window.matchMedia('(max-width: 76.2344em)');
+  function syncDrawer(){
+    var open=toggle.checked && mobile.matches;
+    sidebar.inert=mobile.matches && !open;
+    button.setAttribute('aria-expanded',String(open));
+    button.setAttribute('aria-label',open ? button.dataset.labelClose : button.dataset.labelOpen);
+  }
+  button.addEventListener('click',function(){toggle.click();syncDrawer();});
+  toggle.addEventListener('change',syncDrawer);
+  mobile.addEventListener('change',syncDrawer);
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape' && !event.defaultPrevented && !event.isComposing && event.keyCode!==229 && toggle.checked && mobile.matches){
+      if(search && search.contains(event.target)) return;
+      toggle.click();syncDrawer();button.focus();
+    }
+  });
+  syncDrawer();
+})();'''
+SEARCH_DRAWER_PRIOR = b'''(function(){
+  var toggle=document.getElementById('__drawer');
+  var button=document.querySelector('.ouro-drawer');
+  var sidebar=document.querySelector('.md-sidebar--primary');
+  if(!toggle || !button || !sidebar) return;
+  sidebar.id='ouro-navigation';
+  var mobile=window.matchMedia('(max-width: 76.2344em)');
+  function syncDrawer(){
+    var open=toggle.checked && mobile.matches;
+    sidebar.inert=mobile.matches && !open;
+    button.setAttribute('aria-expanded',String(open));
+    button.setAttribute('aria-label',open ? button.dataset.labelClose : button.dataset.labelOpen);
+  }
+  button.addEventListener('click',function(){toggle.click();syncDrawer();});
+  toggle.addEventListener('change',syncDrawer);
+  mobile.addEventListener('change',syncDrawer);
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape' && toggle.checked && mobile.matches){
+      toggle.click();syncDrawer();button.focus();
+    }
+  });
+  syncDrawer();
+})();'''
+
+def verify_search_header(root, overlay):
+    def reject_symlink_ancestors(path, boundary):
+        path=Path(path).absolute(); boundary=Path(boundary).absolute()
+        try: relative=path.relative_to(boundary)
+        except ValueError: raise ValueError('Search header path escaped allowed root')
+        current=boundary
+        if current.is_symlink(): raise ValueError('Search header path has symlink ancestor: '+str(current))
+        for part in relative.parts:
+            current=current/part
+            if current.is_symlink(): raise ValueError('Search header path has symlink ancestor: '+str(current))
+    for name in ('pending-search-header.json','pending-search-header-review.md',
+                 'pending-search-overlay.json','pending-search-overlay-review.md'):
+        path=root/name
+        reject_symlink_ancestors(path,root)
+        if path.is_symlink() or not path.is_file():
+            raise ValueError('Evidence input is not a regular non-symlink file: '+name)
+    header = json.loads((root/'pending-search-header.json').read_text())
+    if header.get('status') != 'pending': raise ValueError('Search header status changed')
+    current_names={'docs-src/content/assets/site.css','docs-src/tests/test_search_overlay.py'}
+    if set(header.get('files',{})) != current_names: raise ValueError('Search header file set changed')
+    overlay_json=(root/'pending-search-overlay.json').read_bytes()
+    overlay_summary_path=(root/'pending-search-overlay-review.md').read_bytes()
+    if sha(overlay_json)!=header.get('overlay_record_sha256'): raise ValueError('Search header overlay record changed')
+    if sha(overlay_summary_path)!=header.get('overlay_summary_sha256'): raise ValueError('Search header overlay summary changed')
+    summary=(root/'pending-search-header-review.md').read_bytes()
+    if sha(summary)!=header.get('summary_sha256'): raise ValueError('Search header summary changed')
+    decoded=summary.decode('utf-8')
+    rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',decoded,re.MULTILINE)
+    expected={**header['files'],
+              'docs-src/pending-search-overlay.json':header['overlay_record_sha256'],
+              'docs-src/pending-search-overlay-review.md':header['overlay_summary_sha256']}
+    if len(rows)!=len(expected) or dict(rows)!=expected: raise ValueError('Search header summary rows mismatch')
+    if 'does not approve semantic review or publication' not in decoded:
+        raise ValueError('Search header summary approval boundary missing')
+
+    css_path=root.parent/'docs-src/content/assets/site.css'
+    test_path=root.parent/'docs-src/tests/test_search_overlay.py'
+    reject_symlink_ancestors(css_path,root.parent)
+    reject_symlink_ancestors(test_path,root.parent)
+    if css_path.is_symlink() or not css_path.is_file(): raise ValueError('Search header CSS is not a regular file')
+    if test_path.is_symlink() or not test_path.is_file(): raise ValueError('Search header test is not a regular file')
+    css=css_path.read_bytes(); test=test_path.read_bytes()
+    if sha(css)!=header['files']['docs-src/content/assets/site.css']:
+        raise ValueError('Search header CSS changed')
+    if sha(test)!=header['files']['docs-src/tests/test_search_overlay.py']:
+        raise ValueError('Search header test changed')
+
+    anchor=b'[data-ouro-result-language]{display:inline-block;margin-inline-start:.5em;padding:.1em .4em;border:1px solid currentColor;border-radius:.4em;font-size:.7em;font-weight:600;vertical-align:middle}\n'
+    if css.count(SEARCH_HEADER_CSS_BLOCK)!=1 or css.count(anchor)!=1 or css.index(SEARCH_HEADER_CSS_BLOCK)!=css.index(anchor)+len(anchor):
+        raise ValueError('Search header CSS block missing, duplicated, or moved')
+    prior_css=css.replace(SEARCH_HEADER_CSS_BLOCK,b'',1)
+    css_name='docs-src/content/assets/site.css'
+    if sha(prior_css)!=overlay['files'][css_name]: raise ValueError('Search overlay prior CSS bytes changed')
+
+    if test.count(SEARCH_HEADER_TEST_CONSTANTS)!=1 or test.count(SEARCH_HEADER_TEST_METHODS)!=1:
+        raise ValueError('Search header test additions missing, duplicated, or moved')
+    if test.count(SEARCH_HEADER_TEST_ANCHOR)!=1 or test.count(SEARCH_HEADER_BASE_METHOD)!=1:
+        raise ValueError('Search header test insertion anchor missing or duplicated')
+    if test.index(SEARCH_HEADER_TEST_CONSTANTS)!=test.index(SEARCH_HEADER_TEST_ANCHOR)+len(SEARCH_HEADER_TEST_ANCHOR)-1:
+        raise ValueError('Search header test constants moved')
+    if test.index(SEARCH_HEADER_TEST_METHODS)!=test.index(SEARCH_HEADER_BASE_METHOD)+len(SEARCH_HEADER_BASE_METHOD):
+        raise ValueError('Search header test methods moved')
+    prior_test=test.replace(SEARCH_HEADER_TEST_CONSTANTS,b'\n',1).replace(SEARCH_HEADER_TEST_METHODS,b'',1)
+    reinserted=prior_test.replace(SEARCH_HEADER_TEST_ANCHOR,SEARCH_HEADER_TEST_ANCHOR[:-1]+SEARCH_HEADER_TEST_CONSTANTS,1)
+    reinserted=reinserted.replace(SEARCH_HEADER_BASE_METHOD,SEARCH_HEADER_BASE_METHOD+SEARCH_HEADER_TEST_METHODS,1)
+    if reinserted!=test:
+        raise ValueError('Search header test round trip changed')
+    test_name='docs-src/tests/test_search_overlay.py'
+    if sha(prior_test)!=overlay['files'][test_name]: raise ValueError('Search overlay prior test bytes changed')
+    return header, prior_css, prior_test
+
+def restore_search_javascript(data, expected_prior_hash):
+    marker=b"(function(){\n  var toggle=document.getElementById('__drawer');"
+    starts=[m.start() for m in re.finditer(re.escape(marker),data)]
+    if len(starts)!=1: raise ValueError('Search drawer block missing or duplicated')
+    start=starts[0]; end=data.find(b"\n\n// Material's search listens",start)
+    if end<0: raise ValueError('Search drawer block boundary missing')
+    current=data[start:end]
+    if current != SEARCH_DRAWER_CURRENT:
+        raise ValueError('Search drawer block changed or moved')
+    restored=data[:start]+SEARCH_DRAWER_PRIOR+data[end:]
+    starts=[m.start() for m in re.finditer(re.escape(b'// Search keyboard operation and Escape focus restoration.'),restored)]
+    if len(starts)!=1: raise ValueError('Search Escape block missing or duplicated')
+    s=starts[0]; e=restored.find(b'// Annotate only reviewed result URLs.',s)
+    if e<0: raise ValueError('Search Escape block boundary missing')
+    old_search=b"// The Material search opener is a label; make it operable from the keyboard.\n(function(){\n  var opener=document.querySelector('[data-ouro-search-open]');\n  if(!opener) return;\n  opener.addEventListener('keydown',function(event){\n    if(event.key==='Enter' || event.key===' '){event.preventDefault();opener.click();}\n  });\n})();\n\n"
+    restored=restored[:s]+old_search+restored[e:]
+    if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
+    return restored
+
 def verify(root=ROOT):
-    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md', 'pending-translated-recovery.json', 'pending-translated-recovery-review.md', 'pending-search-focus.json', 'pending-search-focus-review.md', 'pending-preflight.json', 'pending-preflight-review.md', 'pending-worktree-input.json', 'pending-worktree-input-review.md', 'pending-landing.json', 'pending-landing-review.md', 'pending-descriptions.json', 'pending-descriptions-review.md', 'pending-seed-order.json', 'pending-seed-order-review.md', 'pending-megacode-warning.json', 'pending-megacode-warning-review.md', 'pending-trace-warning.json', 'pending-trace-warning-review.md', 'pending-venv-direct.json', 'pending-venv-direct-review.md', 'pending-diagnostics-version.json', 'pending-diagnostics-version-review.md', 'pending-diagnostics-auto-id.json', 'pending-diagnostics-auto-id-review.md', 'pending-seed-source.json', 'pending-seed-source-review.md', 'pending-zh-status.json', 'pending-zh-status-review.md', 'pending-home-readability.json', 'pending-home-readability-review.md', 'pending-setup-split.json', 'pending-setup-split-review.md', 'pending-seed-flow.json', 'pending-seed-flow-review.md', 'pending-home-source-labels.json', 'pending-home-source-labels-review.md', 'pending-windows-codex.json', 'pending-windows-codex-review.md', 'pending-worktree-warning.json', 'pending-worktree-warning-review.md', 'pending-mcp-query.json', 'pending-mcp-query-review.md', 'pending-worktree-id.json', 'pending-worktree-id-review.md', 'pending-windows-codex-cli.json', 'pending-windows-codex-cli-review.md', 'pending-check-package-result.json', 'pending-check-package-result-review.md', 'pending-concepts-detail.json', 'pending-concepts-detail-review.md', 'pending-codex-plugin.json', 'pending-codex-plugin-review.md', 'pending-codex-plugin-zh.json', 'pending-codex-plugin-zh-review.md', 'pending-en-chain-summary.json', 'pending-en-chain-summary-review.md', 'pending-ko-navigation.json', 'pending-ko-navigation-review.md', 'pending-seed-example.json', 'pending-seed-example-review.md', 'pending-host-setup.json', 'pending-host-setup-review.md', 'pending-config-qa.json', 'pending-config-qa-review.md', 'pending-cal-receipt.json', 'pending-cal-receipt-review.md', 'pending-job-wait.json', 'pending-job-wait-review.md', 'pending-chain-cancel.json', 'pending-chain-cancel-review.md', 'pending-manual-table.json', 'pending-manual-table-review.md', 'pending-quick-nav.json', 'pending-quick-nav-review.md', 'pending-quick-sequence.json', 'pending-quick-sequence-review.md', 'pending-run-preflight.json', 'pending-run-preflight-review.md', 'pending-cli-readability.json', 'pending-cli-readability-review.md', 'pending-search-shortcut.json', 'pending-search-shortcut-review.md', 'pending-ai-entry.json', 'pending-ai-entry-review.md', 'pending-event-display.json', 'pending-event-display-review.md', 'pending-search-overlay.json', 'pending-search-overlay-review.md', 'pending-quickstart-eval.json', 'pending-quickstart-eval-review.md', 'pending-job-wait-clarification.json', 'pending-job-wait-clarification-review.md', 'pending-worktree-scope.json', 'pending-worktree-scope-review.md', 'pending-mcp-visibility.json', 'pending-mcp-visibility-review.md', 'pending-en-manual-update.json', 'pending-en-manual-update-review.md', 'pending-search-escape.json', 'pending-search-escape-review.md'):
+    for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md', 'pending-translated-recovery.json', 'pending-translated-recovery-review.md', 'pending-search-focus.json', 'pending-search-focus-review.md', 'pending-preflight.json', 'pending-preflight-review.md', 'pending-worktree-input.json', 'pending-worktree-input-review.md', 'pending-landing.json', 'pending-landing-review.md', 'pending-descriptions.json', 'pending-descriptions-review.md', 'pending-seed-order.json', 'pending-seed-order-review.md', 'pending-megacode-warning.json', 'pending-megacode-warning-review.md', 'pending-trace-warning.json', 'pending-trace-warning-review.md', 'pending-venv-direct.json', 'pending-venv-direct-review.md', 'pending-diagnostics-version.json', 'pending-diagnostics-version-review.md', 'pending-diagnostics-auto-id.json', 'pending-diagnostics-auto-id-review.md', 'pending-seed-source.json', 'pending-seed-source-review.md', 'pending-zh-status.json', 'pending-zh-status-review.md', 'pending-home-readability.json', 'pending-home-readability-review.md', 'pending-setup-split.json', 'pending-setup-split-review.md', 'pending-seed-flow.json', 'pending-seed-flow-review.md', 'pending-home-source-labels.json', 'pending-home-source-labels-review.md', 'pending-windows-codex.json', 'pending-windows-codex-review.md', 'pending-worktree-warning.json', 'pending-worktree-warning-review.md', 'pending-mcp-query.json', 'pending-mcp-query-review.md', 'pending-worktree-id.json', 'pending-worktree-id-review.md', 'pending-windows-codex-cli.json', 'pending-windows-codex-cli-review.md', 'pending-check-package-result.json', 'pending-check-package-result-review.md', 'pending-concepts-detail.json', 'pending-concepts-detail-review.md', 'pending-codex-plugin.json', 'pending-codex-plugin-review.md', 'pending-codex-plugin-zh.json', 'pending-codex-plugin-zh-review.md', 'pending-en-chain-summary.json', 'pending-en-chain-summary-review.md', 'pending-ko-navigation.json', 'pending-ko-navigation-review.md', 'pending-seed-example.json', 'pending-seed-example-review.md', 'pending-host-setup.json', 'pending-host-setup-review.md', 'pending-config-qa.json', 'pending-config-qa-review.md', 'pending-cal-receipt.json', 'pending-cal-receipt-review.md', 'pending-job-wait.json', 'pending-job-wait-review.md', 'pending-chain-cancel.json', 'pending-chain-cancel-review.md', 'pending-manual-table.json', 'pending-manual-table-review.md', 'pending-quick-nav.json', 'pending-quick-nav-review.md', 'pending-quick-sequence.json', 'pending-quick-sequence-review.md', 'pending-run-preflight.json', 'pending-run-preflight-review.md', 'pending-cli-readability.json', 'pending-cli-readability-review.md', 'pending-search-shortcut.json', 'pending-search-shortcut-review.md', 'pending-ai-entry.json', 'pending-ai-entry-review.md', 'pending-event-display.json', 'pending-event-display-review.md', 'pending-search-overlay.json', 'pending-search-overlay-review.md', 'pending-search-header.json', 'pending-search-header-review.md', 'pending-quickstart-eval.json', 'pending-quickstart-eval-review.md', 'pending-job-wait-clarification.json', 'pending-job-wait-clarification-review.md', 'pending-worktree-scope.json', 'pending-worktree-scope-review.md', 'pending-mcp-visibility.json', 'pending-mcp-visibility-review.md', 'pending-en-manual-update.json', 'pending-en-manual-update-review.md', 'pending-search-escape.json', 'pending-search-escape-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():
             raise ValueError('Evidence input is not a regular non-symlink file: '+name)
     manifest, evidence = load(root)
     pending = json.loads((root/'pending-new-guides.json').read_text())
-    if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
-        raise ValueError('Pending extension requires closed gate')
+    verify_pending_gate(manifest,pending)
     # Bind the newest concepts detail page, then restore the prior manifest
     # so check-package and every older stage retain their existing checks.
     escape = json.loads((root/'pending-search-escape.json').read_text())
@@ -271,6 +476,7 @@ def verify(root=ROOT):
     if sha(summary)!=overlay['summary_sha256']: raise ValueError('Search overlay summary changed')
     rows=re.findall(r'^\| ([^|]+?) \| ([0-9a-f]{64}) \|$',summary.decode(),re.MULTILINE)
     if len(rows)!=len(names) or dict(rows)!=overlay['files']: raise ValueError('Search overlay summary rows mismatch')
+    header, overlay_css, overlay_test = verify_search_header(root, overlay)
     focus = json.loads((root/'pending-search-focus.json').read_text())
     if focus.get('status') != 'pending': raise ValueError('Search focus status changed')
     focus_files={'docs-src/content/assets/site.css','docs-src/tests/test_search_focus.py'}
@@ -283,11 +489,10 @@ def verify(root=ROOT):
         path=root.parent/name
         if name == 'docs-src/content/assets/site.css':
             rule=b'\n/* A closed search overlay must not intercept clicks during its fade-out. */\n[data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__overlay { pointer-events: none; }\n'
-            if path.is_symlink() or not path.is_file() or path.read_bytes().count(rule)!=1 or overlay['prior_css_sha256']!=expected or sha(path.read_bytes().replace(rule,b''))!=expected: raise ValueError('Accessibility file changed: '+name)
+            if overlay_css.count(rule)!=1 or overlay['prior_css_sha256']!=expected or sha(overlay_css.replace(rule,b''))!=expected: raise ValueError('Accessibility file changed: '+name)
         elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Accessibility file changed: '+name)
-    for name, expected in overlay['files'].items():
-        path=root.parent/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes()) != expected: raise ValueError('Search overlay file changed: '+name)
+    if sha(overlay_css)!=overlay['files']['docs-src/content/assets/site.css'] or sha(overlay_test)!=overlay['files']['docs-src/tests/test_search_overlay.py']:
+        raise ValueError('Search overlay historical bytes changed')
     shortcut = json.loads((root/'pending-search-shortcut.json').read_text())
     if shortcut.get('status') != 'pending': raise ValueError('Search shortcut not pending')
     expected={'docs-src/mkdocs.yml','docs-src/content/assets/ouro-search-shortcut.js','docs-src/tests/test_search_shortcut.cjs'}
@@ -1319,10 +1524,9 @@ def verify(root=ROOT):
         if name == 'content/assets/site.css':
             if expected != access['prior_css_sha256']: raise ValueError('Accessibility prior CSS mismatch')
         elif name == 'content/assets/ouro-theme.js':
-            old_block=b"// The Material search opener is a label; make it operable from the keyboard.\n(function(){\n  var opener=document.querySelector('[data-ouro-search-open]');\n  if(!opener) return;\n  opener.addEventListener('keydown',function(event){\n    if(event.key==='Enter' || event.key===' '){event.preventDefault();opener.click();}\n  });\n})();\n\n"
             if path.is_symlink() or not path.is_file(): raise ValueError('Search file changed: '+name)
-            data=path.read_bytes(); start=data.find(b'// Search keyboard operation and Escape focus restoration.'); end=data.find(b'// Annotate only reviewed result URLs.',start)
-            if start<0 or end<0 or escape['prior_js_sha256']!=expected or sha(data[:start]+old_block+data[end:])!=expected: raise ValueError('Search file changed: '+name)
+            if escape['prior_js_sha256']!=expected: raise ValueError('Search file changed: '+name)
+            restore_search_javascript(path.read_bytes(),expected)
         elif path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('Search file changed: '+name)
     for name, expected in escape['files'].items():
         path=root.parent/name
@@ -1450,7 +1654,7 @@ def verify(root=ROOT):
             raise ValueError('Prior verifier changed: '+name)
     locale_evidence = copy.deepcopy(evidence)
     locale_evidence['static_content_sha256']['assets/ouro-theme.js'] = escape['files']['docs-src/content/assets/ouro-theme.js']
-    locale_evidence['static_content_sha256']['assets/site.css'] = overlay['files']['docs-src/content/assets/site.css']
+    locale_evidence['static_content_sha256']['assets/site.css'] = header['files']['docs-src/content/assets/site.css']
     locale_evidence['static_content_sha256']['assets/ouro-search-shortcut.js'] = shortcut['files']['docs-src/content/assets/ouro-search-shortcut.js']
     verify_content_tree(root/'content', current_manifest, locale_evidence)
     print('Pending summary, manifest and generated bytes match; canonical source is not checked here. Gate remains closed.')

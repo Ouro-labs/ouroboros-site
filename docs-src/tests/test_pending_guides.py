@@ -140,6 +140,54 @@ class PendingGuidesTest(unittest.TestCase):
             message = 'Windows Codex CLI snapshot chain mismatch'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def rebind_search_escape_javascript(self, data):
+        name='docs-src/content/assets/ouro-theme.js'
+        record_path=self.root/'pending-search-escape.json'
+        summary_path=self.root/'pending-search-escape-review.md'
+        record=json.loads(record_path.read_text())
+        old=record['files'][name];new=hashlib.sha256(data).hexdigest()
+        record['files'][name]=new
+        summary=summary_path.read_bytes().replace(old.encode(),new.encode())
+        record['summary_sha256']=hashlib.sha256(summary).hexdigest()
+        (self.root/'content/assets/ouro-theme.js').write_bytes(data)
+        summary_path.write_bytes(summary)
+        record_path.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+    def test_full_verifier_baseline_with_pending_search_evidence(self):
+        mod.verify(self.root)
+    def test_full_verifier_rejects_rebound_drawer_change(self):
+        path=self.root/'content/assets/ouro-theme.js';data=path.read_bytes()
+        block=mod.SEARCH_DRAWER_CURRENT
+        self.assertEqual(data.count(block),1)
+        changed=block.replace(b'button.focus();',b'button.blur();')
+        self.assertNotEqual(changed,block)
+        self.rebind_search_escape_javascript(data.replace(block,changed,1))
+        with self.assertRaisesRegex(ValueError,'Search drawer block changed or moved'):
+            mod.verify(self.root)
+    def test_full_verifier_rejects_rebound_css_outside_overlay(self):
+        path=self.root/'content/assets/site.css';path.write_bytes(path.read_bytes()+b'\n/* unrelated external change */\n')
+        header_path=self.root/'pending-search-header.json'
+        summary_path=self.root/'pending-search-header-review.md'
+        header=json.loads(header_path.read_text())
+        name='docs-src/content/assets/site.css';old=header['files'][name]
+        new=hashlib.sha256(path.read_bytes()).hexdigest();header['files'][name]=new
+        summary=summary_path.read_bytes().replace(old.encode(),new.encode())
+        header['summary_sha256']=hashlib.sha256(summary).hexdigest()
+        summary_path.write_bytes(summary)
+        header_path.write_text(json.dumps(header,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Search overlay prior CSS bytes changed'):
+            mod.verify(self.root)
+    def test_full_verifier_rejects_gate_open(self):
+        path=self.root/'content-manifest.json';manifest=json.loads(path.read_text())
+        manifest['semantic_links_reviewed']=True
+        path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Pending extension requires closed gate'):
+            mod.verify(self.root)
+    def test_full_verifier_rejects_pending_status_change(self):
+        path=self.root/'pending-new-guides.json';record=json.loads(path.read_text())
+        record['status']='approved'
+        path.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Pending extension requires closed gate'):
+            mod.verify(self.root)
     def test_concepts_detail_outer_manifest_tamper(self):
         p=self.root/'content-manifest.json';m=json.loads(p.read_text());m['pages']['concepts-detail.md']['page_sha256']='a'*64;p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');self.rejected('Concepts detail manifest or pending status changed')
     def test_concepts_detail_summary_tamper(self):
@@ -473,9 +521,9 @@ class PendingGuidesTest(unittest.TestCase):
         self.rejected('Search focus prior CSS mismatch')
 
     def test_changed_accessibility_css(self):
-        (self.root/'content/assets/site.css').write_text('altered');self.rejected('Accessibility file changed')
+        (self.root/'content/assets/site.css').write_text('altered');self.rejected('Search header CSS changed')
     def test_accessibility_css_symlink(self):
-        p=self.root/'content/assets/site.css';p.unlink();p.symlink_to(self.root/'content/assets/ouro-theme.js');self.rejected('Accessibility file changed')
+        p=self.root/'content/assets/site.css';p.unlink();p.symlink_to(self.root/'content/assets/ouro-theme.js');self.rejected('Search header path has symlink ancestor')
     def test_changed_accessibility_prior_css(self):
         p=self.root/'pending-accessibility.json';e=json.loads(p.read_text());e['prior_css_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Accessibility prior CSS mismatch')
     def test_changed_evaluation_summary(self):
@@ -969,7 +1017,7 @@ class PendingGuidesTest(unittest.TestCase):
     def test_symlink_file(self):
         p=self.root/'content/dashboard-guide.md';p.unlink();p.symlink_to(self.root/'content/megacode-guide.md');self.rejected('Symlink in content tree')
     def test_symlink_root(self):
-        p=self.root/'content'; other=self.root/'moved';p.rename(other);p.symlink_to(other,target_is_directory=True);self.rejected('Content root is a symlink')
+        p=self.root/'content'; other=self.root/'moved';p.rename(other);p.symlink_to(other,target_is_directory=True);self.rejected('Search header path has symlink ancestor')
 
 class SeedOrderPriorTamperTest(unittest.TestCase):
     def test_forgery_reaches_previous_boundary(self):

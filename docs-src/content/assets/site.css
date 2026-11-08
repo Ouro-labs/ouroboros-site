@@ -45,6 +45,34 @@ html[data-theme=dark] .md-nav__link{color:var(--ouro-ink)!important}html[data-th
 [data-ouro-search-open]:focus-visible{outline:3px solid var(--ouro-accent);outline-offset:3px}
 [data-ouro-result-language]{display:inline-block;margin-inline-start:.5em;padding:.1em .4em;border:1px solid currentColor;border-radius:.4em;font-size:.7em;font-weight:600;vertical-align:middle}
 
+/* Keep Material's desktop search overlay anchored to the header's search slot. */
+@media screen and (min-width: 60em) {
+  .ouro-top-inner > .md-search {
+    flex: 0 0 11.7rem;
+    width: 11.7rem;
+    min-width: 0;
+  }
+}
+
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  .ouro-top-inner {
+    height: auto;
+    min-height: 64px;
+    padding-block: 8px;
+    gap: 12px;
+  }
+  .ouro-top-inner > .ouro-brand {
+    flex-shrink: 0;
+  }
+  .ouro-top-inner > .ouro-nav {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-inline: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+}
+
 /* The code block has a dark background in both themes; set every Material
    syntax-token color against that background instead of inheriting the light palette. */
 .md-typeset pre > code {
