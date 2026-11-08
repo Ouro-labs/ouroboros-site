@@ -231,7 +231,24 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_install_title_fixture(root):
+    path=root/'pending-install-title.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Install title evidence unsafe')
+    if sha(path.read_bytes())!='9668ba6a72610e46edc9b16f8f91c09856da35c64634b66ff392ff081c5b91a9': raise ValueError('Install title evidence changed')
+    delta=json.loads(path.read_text())
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!={'content/quickstart.md','content-manifest.json'}:
+        raise ValueError('Install title pending shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Install title path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Install title current bytes')
+    manifest=json.loads((root/'content-manifest.json').read_text())
+    if manifest.get('semantic_links_reviewed') is not False: raise ValueError('Install title requires closed gate')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    path.unlink()
+
 def restore_search_locale_fixture(root):
+    if (root/'pending-install-title.json').exists(): restore_install_title_fixture(root)
     record_path=root/'pending-search-locale.json'
     if record_path.is_symlink() or not record_path.is_file(): raise ValueError('Search locale evidence unsafe')
     if sha(record_path.read_bytes())!='810076c353de29b0b88e349d28cbcd46341ccc82b0792f617ccf790245cb4c7e': raise ValueError('Search locale evidence changed')
@@ -286,6 +303,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-install-title.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_install_title_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-search-locale.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:

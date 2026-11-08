@@ -7,7 +7,9 @@ spec=importlib.util.spec_from_file_location('uninstall_pending',ROOT/'verify-pen
 class UninstallDeltaTest(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)/'docs-src'
-  shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'));(self.root.parent/'site').mkdir()
+  shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
+  if (self.root/'pending-install-title.json').exists(): M.restore_install_title_fixture(self.root)
+  (self.root.parent/'site').mkdir()
   for n in ('index.html','llms.txt'):shutil.copyfile(ROOT.parent/'site'/n,self.root.parent/'site'/n)
  def test_normal(self):M.verify(self.root)
  def test_page_change(self):

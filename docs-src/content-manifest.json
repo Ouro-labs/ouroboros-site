@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "16606fb1826f64af621757930d93178336bb4e2890d46b67e3d42e6fe823f92b",
-      "page_sha256": "41638339d83fc0d0b589948fcfe5056388f3303a0ab60af9416883da7b4d6115"
+      "source_sha256": "0519e010bb45a97dbb74cf8daa5c9f01e5331d649f3e882a9cd416c85ce2a09a",
+      "page_sha256": "25cd635ee0b37cd05486a0358cf851a76b8d7516c3b0b0d85a0622d78415b092"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
