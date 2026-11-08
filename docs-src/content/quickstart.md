@@ -148,6 +148,8 @@ ouroboros setup --runtime codex</code></pre>
 !!! warning "실행 전 관리 worktree 경로 확인"
     관리 worktree를 새로 준비하거나 저장된 workspace를 복구하는 실행은 관리 경로 `<worktree_root>/<저장소 이름>/<durable_id>`가 이미 있지만 대상 저장소에 Git worktree로 등록되지 않았다면 재귀 삭제를 시도할 수 있습니다. 기본 root는 `~/.ouroboros/worktrees`입니다. 새 CLI 실행과 ID가 별도 제공되지 않은 일반 MCP 실행은 새 준비 중 ID를 생성하므로 정확한 새 경로를 미리 알 수 없습니다. 실행 전에 실제 관리 root와 저장소별 디렉터리, 진행 중 작업과 보존 자료를 살펴보세요. 대상이 Git 저장소일 때만 그 저장소에서 `git worktree list --porcelain`으로 등록도 확인하세요. 재개는 새 worktree 준비와 별도로 저장된 workspace를 복구할 수 있으므로 실제 세션 ID와 저장된 workspace 경로를 대조하세요. 새 작업 폴더가 Git 저장소가 아니면 신규 실행은 managed-worktree 준비를 건너뛰지만, 같은 폴더에서 실행될 수 있어 격리를 보장하지 않습니다. 확인할 수 없으면 실행을 보류하고 임의로 삭제하거나 덮어쓰지 마세요. 확인 후에도 동시 변경에 따른 위험은 남으며 모든 경로의 삭제 성공을 뜻하지 않습니다. [source](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L328-L357) [CLI main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L843-L860) · [CLI release](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L843-L860) · [MCP main](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1250-L1278)
 
+경로 선택: [Claude Code](#plugin-first-task) · [Codex](#codex-first-task) · [독립 CLI](#cli-first-task)
+
 **진행 순서:** Claude Code는 설정 → Interview → Seed 생성 → 공통 검토, Codex는 플러그인·MCP 연결 확인 → Interview → Seed 생성 → 공통 검토, 독립 CLI는 준비 → Interview → Seed 생성 승인 → 공통 검토 순서입니다.
 
 <span id="plugin-first-task"></span>**Claude Code 플러그인:** 새 세션에서 작업 폴더를 열고 호스트 **대화에** 설정을 요청합니다.

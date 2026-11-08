@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index("    en_chain_summary=json.loads((root/'pending-en-chain-summary.json').read_text())")
+    start=code.index("    ko_navigation=json.loads((root/'pending-ko-navigation.json').read_text())")
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    ko=json.loads((root/'pending-ko-navigation.json').read_text())
+    for name,entry in ko['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest KO navigation current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=ko['prior_manifest_sha256']: raise AssertionError('Latest KO navigation prior snapshot mismatch')
     en=json.loads((root/'pending-en-chain-summary.json').read_text())
     for name,entry in en['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest EN chain current mismatch: '+name)
@@ -120,9 +125,9 @@ class PendingGuidesTest(unittest.TestCase):
             'test_concepts_detail_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'EN chain summary manifest or pending status changed'
+            message = 'KO navigation manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'EN chain summary manifest or pending status changed'
+            message = 'KO navigation manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         elif self._testMethodName == 'test_concepts_detail_current_tamper':
