@@ -520,6 +520,8 @@ Cancel a stuck or orphaned execution. Cancel a specific execution by session ID,
 | `--reason / -r` | str | 아니요 | Reason for cancellation. |
 | `--list / -l` | boolean | 아니요 | List active executions and exit without prompting or cancelling. |
 
+**취소 ID와 결과 확인:** 위 help의 `EXECUTION_ID`라는 이름과 달리, 고정 main/release의 이 명령은 전달값을 실행 세션의 `session_id`로 복원합니다. `ouroboros cancel execution --list`에 표시된 세션 ID(예: `orch_...`)를 확인해 사용하고, 상태 조회용 `execution_id`·백그라운드 `job_id`·Interview 저장 ID를 그대로 대신 넣지 마세요. `--list`는 취소하지 않지만 EventStore 초기화가 일어날 수 있습니다. ID 지정과 `--all`은 대화형 선택·확인 경로를 거치지 않습니다. `Cancellation requested`는 요청 접수이며 완료가 아니므로 같은 세션 상태와 남은 작업·외부 효과를 다시 확인하세요. 종료 코드 0이나 취소 기록만으로 프로세스 종료·변경 되돌림을 판단하지 않습니다. [복구와 취소 경계](/docs/recovery-detail/) · [main 취소 ID 복원](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/cancel.py#L139-L145) · [release 세션 이벤트 복원](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator/session.py#L1298-L1328).
+
 ## `ouroboros cleanup`
 
 Prune leftover auto-session worktrees, branches, locks, and state files.

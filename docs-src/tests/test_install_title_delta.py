@@ -16,6 +16,7 @@ class InstallTitleDelta(unittest.TestCase):
         self.root=Path(self.temp.name)/'docs-src'
         shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         shutil.copytree(ROOT.parent/'site',self.root.parent/'site',ignore=shutil.ignore_patterns('docs'))
+        if (self.root/'pending-cancel-warning.json').exists(): M.restore_cancel_warning_fixture(self.root)
     def test_normal(self): M.verify(self.root)
     def test_changed_page(self):
         with (self.root/'content/quickstart.md').open('a') as f:f.write('// tamper')

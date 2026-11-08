@@ -119,8 +119,8 @@
     },
     "cli-reference-detail.md": {
       "source": "content/cli-reference-detail.md",
-      "source_sha256": "09ebef9091c55ca186e4c51cde8de2203c92143bd64df15df2e55d252eb357a1",
-      "page_sha256": "8a53ced024562e4a281a1f17d1f315007a809dd975c031e1e453db71305cb683"
+      "source_sha256": "cc936677781e904c4c716bfd1933a25f06693091a16307e2b76bce1361045119",
+      "page_sha256": "6338a9ef7e6d8dc215fb2f58b6241dd10f0aa4ea5819d2b46677f049d5fdce3f"
     },
     "mcp-reference-detail.md": {
       "source": "content/mcp-reference-detail.md",
