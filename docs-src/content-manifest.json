@@ -239,8 +239,8 @@
     },
     "check-package-detail.md": {
       "source": "content/check-package-detail.md",
-      "source_sha256": "400f1174352d682f3d6bb0caabd826223864ca8fda24e5ca7eeaa9d738d80aa4",
-      "page_sha256": "b1e253afd40a79d1dc16334ff330f4498571357170937c2a9aeef5e3a23bccf9"
+      "source_sha256": "1db9ff55706bda4701fa4e185c67dfc98a1c87f97e1a2968bc60a47229bc7619",
+      "page_sha256": "a20aa75a981aba3c295333fafc5cf5db1da3040cf48e9d970e70263dc885477b"
     },
     "cleanup-detail.md": {
       "source": "content/cleanup-detail.md",

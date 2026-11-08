@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index("    windows_codex_cli=json.loads((root/'pending-windows-codex-cli.json').read_text())")
+    start=code.index("    check_package=json.loads((root/'pending-check-package-result.json').read_text())")
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    check=json.loads((root/'pending-check-package-result.json').read_text())
+    for name,entry in check['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest check-package current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=check['prior_manifest_sha256']: raise AssertionError('Latest check-package prior snapshot mismatch')
     windows=json.loads((root/'pending-windows-codex-cli.json').read_text())
     for name,entry in windows['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest Windows Codex CLI current mismatch: '+name)
@@ -91,21 +96,34 @@ class PendingGuidesTest(unittest.TestCase):
             'test_worktree_scope_outer_manifest_tamper',
             'test_mcp_visibility_outer_manifest_tamper',
             'test_windows_codex_cli_outer_manifest_tamper',
+            'test_check_package_result_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'Windows Codex CLI manifest or pending status changed'
+            message = 'Check-package result manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'Windows Codex CLI manifest or pending status changed'
+            message = 'Check-package result manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         elif self._testMethodName == 'test_windows_codex_cli_outer_manifest_tamper':
-            message = 'Windows Codex CLI manifest or pending status changed'
+            message = 'Check-package result manifest or pending status changed'
         elif self._testMethodName == 'test_windows_codex_cli_prior_tamper':
             message = 'Windows Codex CLI summary prior hash mismatch'
         elif self._testMethodName == 'test_windows_codex_cli_snapshot_tamper':
             message = 'Windows Codex CLI snapshot chain mismatch'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_check_package_result_outer_manifest_tamper(self):
+        p=self.root/'content-manifest.json';m=json.loads(p.read_text());m['pages']['check-package-detail.md']['page_sha256']='a'*64;p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');self.rejected('Check-package result manifest or pending status changed')
+    def test_check_package_result_summary_tamper(self):
+        (self.root/'pending-check-package-result-review.md').write_text('changed');self.rejected('Check-package result summary changed')
+    def test_check_package_result_prior_tamper(self):
+        p=self.root/'pending-check-package-result.json';e=json.loads(p.read_text());e['pages']['check-package-detail.md']['prior']['source_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Check-package result summary prior hash mismatch')
+    def test_check_package_result_snapshot_tamper(self):
+        p=self.root/'pending-check-package-result.json';e=json.loads(p.read_text());e['prior_manifest_sha256']='a'*64;p.write_text(json.dumps(e));self.rejected('Check-package result snapshot chain mismatch')
+    def test_check_package_result_missing_page(self):
+        p=self.root/'pending-check-package-result.json';e=json.loads(p.read_text());e['pages']={};p.write_text(json.dumps(e));self.rejected('Check-package result page set changed')
+    def test_check_package_result_symlink(self):
+        p=self.root/'pending-check-package-result.json';p.unlink();p.symlink_to(self.root/'pending-windows-codex-cli.json');self.rejected('Evidence input is not a regular non-symlink file')
     def test_mcp_visibility_outer_manifest_tamper(self):
         p=self.root/'content-manifest.json';m=json.loads(p.read_text());m['pages']['quickstart.md']['page_sha256']='a'*64
         p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');self.rejected('MCP visibility manifest or pending status changed')
