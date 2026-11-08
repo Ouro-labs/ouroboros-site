@@ -13,6 +13,20 @@ spec = importlib.util.spec_from_file_location('pending_guides', ROOT/'verify-pen
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
+def restore_uninstall_fixture(root):
+    path=root/'pending-uninstall-warning.json'
+    if not path.exists(): return
+    delta=json.loads(path.read_text())
+    manifest=json.loads((root/'content-manifest.json').read_text())
+    for name,item in delta['pages'].items():
+        if manifest['pages'][name]!=item['current']: raise AssertionError('Uninstall fixture current')
+        manifest['pages'][name]=item['prior']
+        (root/'content'/name).write_text(item['prior_text'])
+    data=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
+    if hashlib.sha256(data).hexdigest()!=delta['prior_manifest_sha256']: raise AssertionError('Uninstall fixture prior')
+    (root/'content-manifest.json').write_bytes(data)
+    path.unlink()
+
 def strip_latest_wait_stage(code):
     start=code.index("    # Restore the three newly synchronized quickstarts to the exact site HEAD")
     end=code.index("    # Bind the newest concepts detail page",start)
@@ -22,6 +36,14 @@ def strip_latest_wait_stage(code):
     return code[:start]+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    delta_path=root/'pending-uninstall-warning.json'
+    if delta_path.is_file():
+        delta=json.loads(delta_path.read_text())
+        for name,item in delta['pages'].items():
+            if manifest['pages'].get(name)!=item['current']: raise AssertionError('Uninstall fixture current metadata')
+            manifest['pages'][name]=item['prior']
+            (root/'content'/name).write_text(item['prior_text'])
+        if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=delta['prior_manifest_sha256']: raise AssertionError('Uninstall fixture prior manifest')
     tui=json.loads((root/'pending-codex-tui.json').read_text())
     for name,entry in tui['pages'].items():
         if manifest['pages'].get(name)!=entry['current']:
@@ -102,6 +124,7 @@ class PendingGuidesTest(unittest.TestCase):
         self.root = Path(self.tmp.name)/'docs-src'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
         (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
+        restore_uninstall_fixture(self.root)
     def rejected(self, message):
         outer_boundary_tests = {
             'test_forged_browser_example_source_hash',

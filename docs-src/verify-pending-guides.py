@@ -231,7 +231,45 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
-def verify(root=ROOT):
+def verify_uninstall_delta(root):
+    import tempfile, shutil
+    for entry in (root,root/'content',root/'content-manifest.json'):
+        if entry.is_symlink(): raise ValueError('Uninstall delta unsafe ancestor')
+    path=root/'pending-uninstall-warning.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Uninstall delta unsafe')
+    if sha(path.read_bytes()) != 'ff5578fd1f662369d4934fca00626999aa72fbfa13b3dbf9819359864dee0640': raise ValueError('Uninstall delta evidence changed')
+    delta=json.loads(path.read_text())
+    manifest=json.loads((root/'content-manifest.json').read_text())
+    if delta.get('status')!='pending' or manifest.get('semantic_links_reviewed') is not False:
+        raise ValueError('Pending extension requires closed gate')
+    if set(delta.get('pages',{}))!={'operations-detail.md','cli-reference-detail.md'}:
+        raise ValueError('Uninstall delta page set')
+    if sha((root/'content-manifest.json').read_bytes())!=delta['manifest_sha256']:
+        return False # Historical tamper fixtures still run their unchanged boundaries.
+    prior=copy.deepcopy(manifest)
+    for name,item in delta['pages'].items():
+        page=root/'content'/name
+        if page.is_symlink() or not page.is_file() or page.read_bytes()!=item['current_text'].encode():
+            raise ValueError('Uninstall delta current bytes')
+        if manifest['pages'][name]!=item['current'] or sha(page.read_bytes())!=item['current']['page_sha256']:
+            raise ValueError('Uninstall delta current metadata')
+        if sha(item['prior_text'].encode())!=item['prior']['page_sha256']:
+            raise ValueError('Uninstall delta prior bytes')
+        prior['pages'][name]=item['prior']
+    prior_bytes=(json.dumps(prior,ensure_ascii=False,indent=2)+'\n').encode()
+    if sha(prior_bytes)!=delta['prior_manifest_sha256'] or delta['prior_manifest_sha256']!='258487737d17401dea71952f2ed4a1da13612becf922b5fa50db0f4c4b16cddb':
+        raise ValueError('Uninstall delta prior chain')
+    with tempfile.TemporaryDirectory() as tmp:
+        restored=Path(tmp)/'docs-src'
+        shutil.copytree(root,restored,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+        shutil.copytree(root.parent/'site',restored.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+        (restored/'content-manifest.json').write_bytes(prior_bytes)
+        for name,item in delta['pages'].items(): (restored/'content'/name).write_text(item['prior_text'])
+        verify(restored,_uninstall=False)
+    return True
+
+def verify(root=ROOT, _uninstall=True):
+    if _uninstall and (root/'pending-uninstall-warning.json').is_file() and verify_uninstall_delta(root): return
     for name in ('content-manifest.json', 'link-review-evidence.json', 'pending-new-guides.json', 'pending-new-guides-review.md', 'pending-journey.json', 'pending-journey-review.md', 'pending-latest.json', 'pending-latest-review.md', 'pending-install.json', 'pending-install-review.md', 'pending-locale.json', 'pending-locale-review.md', 'pending-search.json', 'pending-search-review.md', 'pending-worktree.json', 'pending-worktree-review.md', 'pending-discovery.json', 'pending-discovery-review.md', 'pending-evaluation.json', 'pending-evaluation-review.md', 'pending-accessibility.json', 'pending-accessibility-review.md', 'pending-details.json', 'pending-details-review.md', 'pending-permissions.json', 'pending-permissions-review.md', 'pending-job-diagnostic.json', 'pending-job-diagnostic-review.md', 'pending-package.json', 'pending-package-review.md', 'pending-seed.json', 'pending-seed-review.md', 'pending-interview.json', 'pending-interview-review.md', 'pending-seed-version.json', 'pending-seed-version-review.md', 'pending-runtime.json', 'pending-runtime-review.md', 'pending-home.json', 'pending-home-review.md', 'pending-session.json', 'pending-session-review.md', 'pending-headings.json', 'pending-headings-review.md', 'pending-example.json', 'pending-example-review.md', 'pending-interview-search.json', 'pending-interview-search-review.md', 'pending-worktree-result.json', 'pending-worktree-review-result.md', 'pending-seed-verification.json', 'pending-seed-verification-review.md', 'pending-browser-example.json', 'pending-browser-example-review.md', 'pending-initial-commit.json', 'pending-initial-commit-review.md', 'pending-sidecar.json', 'pending-sidecar-review.md', 'pending-megacode-claim.json', 'pending-megacode-claim-review.md', 'pending-ai-manual.json', 'pending-ai-manual-review.md', 'pending-ko-venv.json', 'pending-ko-venv-review.md', 'pending-recovery-navigation.json', 'pending-recovery-navigation-review.md', 'pending-translated-recovery.json', 'pending-translated-recovery-review.md', 'pending-search-focus.json', 'pending-search-focus-review.md', 'pending-preflight.json', 'pending-preflight-review.md', 'pending-worktree-input.json', 'pending-worktree-input-review.md', 'pending-landing.json', 'pending-landing-review.md', 'pending-descriptions.json', 'pending-descriptions-review.md', 'pending-seed-order.json', 'pending-seed-order-review.md', 'pending-megacode-warning.json', 'pending-megacode-warning-review.md', 'pending-trace-warning.json', 'pending-trace-warning-review.md', 'pending-venv-direct.json', 'pending-venv-direct-review.md', 'pending-diagnostics-version.json', 'pending-diagnostics-version-review.md', 'pending-diagnostics-auto-id.json', 'pending-diagnostics-auto-id-review.md', 'pending-seed-source.json', 'pending-seed-source-review.md', 'pending-zh-status.json', 'pending-zh-status-review.md', 'pending-home-readability.json', 'pending-home-readability-review.md', 'pending-setup-split.json', 'pending-setup-split-review.md', 'pending-seed-flow.json', 'pending-seed-flow-review.md', 'pending-home-source-labels.json', 'pending-home-source-labels-review.md', 'pending-windows-codex.json', 'pending-windows-codex-review.md', 'pending-worktree-warning.json', 'pending-worktree-warning-review.md', 'pending-mcp-query.json', 'pending-mcp-query-review.md', 'pending-worktree-id.json', 'pending-worktree-id-review.md', 'pending-windows-codex-cli.json', 'pending-windows-codex-cli-review.md', 'pending-check-package-result.json', 'pending-check-package-result-review.md', 'pending-concepts-detail.json', 'pending-concepts-detail-review.md', 'pending-codex-plugin.json', 'pending-codex-plugin-review.md', 'pending-codex-plugin-zh.json', 'pending-codex-plugin-zh-review.md', 'pending-en-chain-summary.json', 'pending-en-chain-summary-review.md', 'pending-ko-navigation.json', 'pending-ko-navigation-review.md', 'pending-seed-example.json', 'pending-seed-example-review.md', 'pending-host-setup.json', 'pending-host-setup-review.md', 'pending-config-qa.json', 'pending-config-qa-review.md', 'pending-cal-receipt.json', 'pending-cal-receipt-review.md', 'pending-job-wait.json', 'pending-job-wait-review.md', 'pending-chain-cancel.json', 'pending-chain-cancel-review.md', 'pending-manual-table.json', 'pending-manual-table-review.md', 'pending-quick-nav.json', 'pending-quick-nav-review.md', 'pending-quick-sequence.json', 'pending-quick-sequence-review.md', 'pending-run-preflight.json', 'pending-run-preflight-review.md', 'pending-cli-readability.json', 'pending-cli-readability-review.md', 'pending-search-shortcut.json', 'pending-search-shortcut-review.md', 'pending-ai-entry.json', 'pending-ai-entry-review.md', 'pending-event-display.json', 'pending-event-display-review.md', 'pending-search-overlay.json', 'pending-search-overlay-review.md', 'pending-search-header.json', 'pending-search-header-review.md', 'pending-quickstart-eval.json', 'pending-quickstart-eval-review.md', 'pending-job-wait-clarification.json', 'pending-job-wait-clarification-review.md', 'pending-worktree-scope.json', 'pending-worktree-scope-review.md', 'pending-mcp-visibility.json', 'pending-mcp-visibility-review.md', 'pending-en-manual-update.json', 'pending-en-manual-update-review.md', 'pending-search-escape.json', 'pending-search-escape-review.md', 'pending-codex-tui.json', 'pending-codex-tui-review.md'):
         path = root/name
         if path.is_symlink() or not path.is_file():

@@ -119,8 +119,8 @@
     },
     "cli-reference-detail.md": {
       "source": "content/cli-reference-detail.md",
-      "source_sha256": "ebb8d9076f98d04ae42fd44e2386808e8824359373c3af3108c3c45eeb9924ce",
-      "page_sha256": "9affdb5f49c19940104b51d31e1498aae4c7704548feaae21a23fd9f9270980f"
+      "source_sha256": "09ebef9091c55ca186e4c51cde8de2203c92143bd64df15df2e55d252eb357a1",
+      "page_sha256": "8a53ced024562e4a281a1f17d1f315007a809dd975c031e1e453db71305cb683"
     },
     "mcp-reference-detail.md": {
       "source": "content/mcp-reference-detail.md",
@@ -214,8 +214,8 @@
     },
     "operations-detail.md": {
       "source": "content/operations-detail.md",
-      "source_sha256": "1cfb951a4440e7cfd501c72ac7ba29ad6ee8ab705a2f59e043ba2dcb91f14567",
-      "page_sha256": "9cff210ee79dfbb33ff03274f784ba56eb301d083d2c050c1054c421b0e6cc1e"
+      "source_sha256": "a305c6366de31925b965efb75b9c010157663dd89706272212029e4f9e17c295",
+      "page_sha256": "4c84547e44761c0953ea09dd9f484bb176ec2efc581ccf11f82160b1a2c5cf15"
     },
     "runtime-support-detail.md": {
       "source": "content/runtime-support-detail.md",

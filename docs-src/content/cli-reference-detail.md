@@ -821,7 +821,7 @@ Update Ouroboros to the latest version.
 | `update --dry-run`, `--yes/-y` | 둘 다 기본 false. dry-run은 실행할 업데이트 명령의 미리보기이며 최신 버전 조회는 수행한다. `--yes`는 확인 질문만 건너뛰고 실제 업데이트를 막지 않는다. |
 | `update --prerelease/--no-prerelease`, `--runtime/-r` | prerelease는 미지정 시 현재 버전이 사전 릴리스인 경우에 포함한다. runtime 기본은 `auto`; `all`은 Claude·Codex 통합을 갱신하고 `none`은 통합 갱신을 생략한다. 설치 방식·부분 실패는 [업데이트 안내](/docs/update-detail/)를 참조한다. |
 | `uninstall --dry-run`, `--yes/-y` | 둘 다 기본 false. dry-run은 탐지한 제거 대상을 표시하고 삭제를 수행하지 않는다. `--yes`는 확인만 생략하며 삭제를 막지 않는다. 이 명령은 Python 패키지 자체를 제거하지 않는다. |
-| `uninstall --keep-data` | 기본 false. 지정하면 홈 `~/.ouroboros/` 보존을 요청하지만 현재 작업 디렉터리의 `.ouroboros/`는 별도 제거 대상이다. 홈에서 실행하면 같은 경로가 프로젝트 대상으로 취급될 수 있으므로 [제거 전 보존 범위](/docs/operations-detail/)를 먼저 확인한다. |
+| `uninstall --keep-data` | 기본 false. 지정하면 홈 `~/.ouroboros/` 보존을 요청하지만 현재 작업 디렉터리의 `.ouroboros/`와 `CODEX_HOME`을 반영한 Codex home의 존재하는 관리 rules/skills는 별도 제거 대상이다. 삭제 실패 가능성, 홈에서 실행할 때의 경로 중복 및 관리 자산의 사용자 수정 보존은 [제거 전 보존 범위](/docs/operations-detail/)를 먼저 확인한다. |
 
 이 표는 고정 소스의 옵션과 분기를 대조한 설명이며 모든 런타임·환경 조합을 실행한 결과는 아니다. [setup 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/setup.py), [update 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/update.py), [uninstall 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/uninstall.py).
 
