@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index("    codex_plugin_zh=json.loads((root/'pending-codex-plugin-zh.json').read_text())")
+    start=code.index("    en_chain_summary=json.loads((root/'pending-en-chain-summary.json').read_text())")
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    en=json.loads((root/'pending-en-chain-summary.json').read_text())
+    for name,entry in en['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest EN chain current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=en['prior_manifest_sha256']: raise AssertionError('Latest EN chain prior snapshot mismatch')
     zh=json.loads((root/'pending-codex-plugin-zh.json').read_text())
     for name,entry in zh['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest Codex plugin ZH current mismatch: '+name)
@@ -115,9 +120,9 @@ class PendingGuidesTest(unittest.TestCase):
             'test_concepts_detail_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'Codex plugin ZH manifest or pending status changed'
+            message = 'EN chain summary manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'Codex plugin ZH manifest or pending status changed'
+            message = 'EN chain summary manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         elif self._testMethodName == 'test_concepts_detail_current_tamper':
