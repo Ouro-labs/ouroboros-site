@@ -14,11 +14,19 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index('    # Bind this newest translated-wait clarification')
+    start=code.index('    worktree_scope = json.loads(')
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    scope=json.loads((root/'pending-worktree-scope.json').read_text())
+    for name,entry in scope['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']:
+            raise AssertionError('Latest worktree-scope current metadata mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    restored=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
+    if hashlib.sha256(restored).hexdigest()!=scope['prior_manifest_sha256']:
+        raise AssertionError('Latest worktree-scope prior snapshot mismatch')
     record=json.loads((root/'pending-job-wait-clarification.json').read_text())
     for name, entry in record['pages'].items():
         if manifest['pages'].get(name)!=entry['current']:
@@ -62,15 +70,35 @@ class PendingGuidesTest(unittest.TestCase):
             'test_seed_order_forged_current_source',
             'test_worktree_input_forged_current_source',
             'test_translated_recovery_forged_hash',
+            'test_job_wait_outer_manifest_tamper',
+            'test_worktree_scope_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'Job wait clarification manifest or pending status changed'
+            message = 'Worktree scope manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
             message = 'Job wait clarification manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_worktree_scope_outer_manifest_tamper(self):
+        p=self.root/'content-manifest.json';m=json.loads(p.read_text());m['pages']['quickstart.md']['page_sha256']='a'*64
+        p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');self.rejected('Worktree scope manifest or pending status changed')
+    def test_worktree_scope_outer_summary_tamper(self):
+        (self.root/'pending-worktree-scope-review.md').write_text('altered')
+        self.rejected('Worktree scope summary changed')
+    def test_worktree_scope_outer_previous_snapshot_tamper(self):
+        p=self.root/'pending-worktree-scope.json';r=json.loads(p.read_text());r['prior_manifest_sha256']='a'*64
+        p.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n');self.rejected('Worktree scope snapshot chain mismatch')
+    def test_worktree_scope_page_set_tamper(self):
+        p=self.root/'pending-worktree-scope.json';r=json.loads(p.read_text());del r['pages']['zh/quickstart.md']
+        p.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n');self.rejected('Worktree scope page set changed')
+    def test_worktree_scope_current_tamper(self):
+        p=self.root/'pending-worktree-scope.json';r=json.loads(p.read_text());r['pages']['en/quickstart.md']['current']['page_sha256']='a'*64
+        p.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n');self.rejected('Worktree scope current metadata mismatch: en/quickstart.md')
+    def test_worktree_scope_symlink(self):
+        p=self.root/'pending-worktree-scope.json';p.unlink();p.symlink_to(self.root/'pending-ai-entry.json')
+        self.rejected('Evidence input is not a regular non-symlink file')
     def test_job_wait_outer_manifest_tamper(self):
         p=self.root/'content-manifest.json'; m=json.loads(p.read_text()); m['pages']['zh/troubleshooting.md']['page_sha256']='a'*64
         p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
