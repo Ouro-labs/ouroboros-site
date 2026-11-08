@@ -14,11 +14,16 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
-    start=code.index('    mcp_visibility=json.loads(')
+    start=code.index('    en_manual_update=json.loads(')
     end=code.index("    landing = json.loads(",start)
     return code[:start]+'    current_manifest = manifest\n'+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    latest=json.loads((root/'pending-en-manual-update.json').read_text())
+    for name,entry in latest['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest EN manual current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=latest['prior_manifest_sha256']: raise AssertionError('Latest EN manual prior snapshot mismatch')
     record=json.loads((root/'pending-mcp-visibility.json').read_text())
     for name,entry in record['pages'].items():
         if manifest['pages'].get(name)!=entry['current']:
@@ -83,9 +88,9 @@ class PendingGuidesTest(unittest.TestCase):
             'test_mcp_visibility_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'MCP visibility manifest or pending status changed'
+            message = 'EN manual update manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'MCP visibility manifest or pending status changed'
+            message = 'EN manual update manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
@@ -171,6 +176,12 @@ class PendingGuidesTest(unittest.TestCase):
         p=self.root/'pending-event-display.json'; e=json.loads(p.read_text()); e['pages']['query-projections-detail.md']['prior']['source_sha256']='a'*64; p.write_text(json.dumps(e)); self.rejected('Event display snapshot chain mismatch')
     def test_event_display_symlink(self):
         p=self.root/'pending-event-display.json'; p.unlink(); p.symlink_to(self.root/'pending-ai-entry.json'); self.rejected('Evidence input is not a regular non-symlink file')
+    def test_en_manual_update_summary_tamper(self):
+        (self.root/'pending-en-manual-update-review.md').write_text('changed'); self.rejected('EN manual update summary changed')
+    def test_en_manual_update_prior_tamper(self):
+        p=self.root/'pending-en-manual-update.json'; e=json.loads(p.read_text()); e['pages']['en/ai-troubleshooting.md']['prior']['source_sha256']='a'*64; p.write_text(json.dumps(e)); self.rejected('EN manual update summary prior hash mismatch')
+    def test_en_manual_update_symlink(self):
+        p=self.root/'pending-en-manual-update.json'; p.unlink(); p.symlink_to(self.root/'pending-mcp-visibility.json'); self.rejected('Evidence input is not a regular non-symlink file')
     def test_landing_summary_tamper(self):
         (self.root/'pending-landing-review.md').write_text('changed');self.rejected('Landing summary changed')
     def test_landing_prior_tamper(self):
