@@ -231,7 +231,23 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_todo_language_fixture(root):
+    path=root/'pending-todo-language.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Todo language evidence unsafe')
+    if sha(path.read_bytes())!='0227e7f2a5d1e3280f718a95d23e05df8ae78fad23a3546607edf8e64bfd5288': raise ValueError('Todo language evidence changed')
+    delta=json.loads(path.read_text())
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!={'augment-search.py'}:
+        raise ValueError('Todo language pending shape')
+    target=root/'augment-search.py';item=delta['files']['augment-search.py']
+    if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Todo language path unsafe')
+    if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Todo language current bytes')
+    if json.loads((root/'content-manifest.json').read_text()).get('semantic_links_reviewed') is not False:
+        raise ValueError('Todo language requires closed gate')
+    target.write_text(item['prior'])
+    path.unlink()
+
 def restore_auto_status_fixture(root):
+    if (root/'pending-todo-language.json').exists(): restore_todo_language_fixture(root)
     path=root/'pending-auto-status.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Auto status evidence unsafe')
     if sha(path.read_bytes())!='b55c3a440236ac77a470cdb178a1731e16df2bab7c73c6fcb287df5dd6b3411d': raise ValueError('Auto status evidence changed')
@@ -337,6 +353,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-todo-language.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_todo_language_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-auto-status.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:

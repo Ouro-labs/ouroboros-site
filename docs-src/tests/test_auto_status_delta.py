@@ -16,6 +16,7 @@ class AutoStatusDelta(unittest.TestCase):
         self.root=Path(self.temp.name)/'docs-src'
         shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
         shutil.copytree(ROOT.parent/'site',self.root.parent/'site',ignore=shutil.ignore_patterns('docs'))
+        if (self.root/'pending-todo-language.json').exists(): M.restore_todo_language_fixture(self.root)
     def test_normal(self): M.verify(self.root)
     def test_changed_page(self):
         with (self.root/'content/auto-detail.md').open('a') as f:f.write('// tamper')
