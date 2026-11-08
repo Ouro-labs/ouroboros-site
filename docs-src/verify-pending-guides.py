@@ -231,7 +231,24 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_auto_status_fixture(root):
+    path=root/'pending-auto-status.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Auto status evidence unsafe')
+    if sha(path.read_bytes())!='b55c3a440236ac77a470cdb178a1731e16df2bab7c73c6fcb287df5dd6b3411d': raise ValueError('Auto status evidence changed')
+    delta=json.loads(path.read_text())
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!={'content/auto-detail.md','content-manifest.json'}:
+        raise ValueError('Auto status pending shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Auto status path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Auto status current bytes')
+    manifest=json.loads((root/'content-manifest.json').read_text())
+    if manifest.get('semantic_links_reviewed') is not False: raise ValueError('Auto status requires closed gate')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    path.unlink()
+
 def restore_cancel_warning_fixture(root):
+    if (root/'pending-auto-status.json').exists(): restore_auto_status_fixture(root)
     path=root/'pending-cancel-warning.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Cancel warning evidence unsafe')
     if sha(path.read_bytes())!='8dbedf717696405d051cebd74a7d8278c2dd9c3692140e7f23a9e3325f6d532a': raise ValueError('Cancel warning evidence changed')
@@ -320,6 +337,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-auto-status.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_auto_status_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-cancel-warning.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:
