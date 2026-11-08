@@ -12,6 +12,18 @@ NAMES = {'megacode-guide.md', 'settings-gui-guide.md', 'en/settings-gui-guide.md
          'model-routing-guide.md', 'harness-traces-guide.md', 'dashboard-guide.md'}
 BASE = 'ce90835b5bc460c172c1b85c1101ec037a0471763cfb8aeeea5fc48a7a56adf2'
 
+PUBLIC_INDEX_SCOPE_ADDITION = b"That historical scope applies to the original `/learn/` guides, not to every page under `/docs/`. The first-task quickstarts and AI troubleshooting manual identify their own product-source and release boundaries, including main `592c667f` and release `0.59.9`. Follow the source revision stated on the page you read; do not apply historical `722172ef` detail-page behavior to a current-source instruction without comparison. The canonical repository's legacy `content/llms.txt` uses a different set of relative paths and is not this public index.\n\n"
+
+PUBLIC_INDEX_SCOPE_BEFORE = b'The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe as their reference. Installed CLI packages, host plugins, and MCP servers can have different versions. Check the installed version and the product repository\'s current installation and command documentation before applying instructions.\n\n'
+PUBLIC_INDEX_SCOPE_AFTER = b'- Getting started and installation: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md\n'
+
+def restore_public_index_prior(data):
+    # Pending-only exact additive delta; historical evidence remains unchanged.
+    bound=PUBLIC_INDEX_SCOPE_BEFORE+PUBLIC_INDEX_SCOPE_ADDITION+PUBLIC_INDEX_SCOPE_AFTER
+    if data.count(PUBLIC_INDEX_SCOPE_ADDITION) != 1 or data.count(bound) != 1:
+        raise ValueError("AI manual file changed: site/llms.txt (pending scope delta)")
+    return data.replace(bound,PUBLIC_INDEX_SCOPE_BEFORE+PUBLIC_INDEX_SCOPE_AFTER,1)
+
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify_pending_gate(manifest, pending):
     if manifest.get('semantic_links_reviewed') is not False or pending.get('status') != 'pending':
@@ -499,7 +511,10 @@ def verify(root=ROOT):
     if len(rows)!=len(manual_files) or dict(rows)!=manual['files']: raise ValueError('AI manual rows mismatch')
     for name, expected in manual['files'].items():
         path=root.parent/name
-        if path.is_symlink() or not path.is_file() or sha(path.read_bytes())!=expected: raise ValueError('AI manual file changed: '+name)
+        if path.is_symlink() or not path.is_file(): raise ValueError('AI manual file changed: '+name)
+        data=path.read_bytes()
+        if name == 'site/llms.txt': data=restore_public_index_prior(data)
+        if sha(data)!=expected: raise ValueError('AI manual file changed: '+name)
     overlay = json.loads((root/'pending-search-overlay.json').read_text())
     if overlay.get('status') != 'pending': raise ValueError('Search overlay status changed')
     names={'docs-src/content/assets/site.css','docs-src/tests/test_search_overlay.py'}

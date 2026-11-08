@@ -17,6 +17,8 @@
 
 The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe as their reference. Installed CLI packages, host plugins, and MCP servers can have different versions. Check the installed version and the product repository's current installation and command documentation before applying instructions.
 
+That historical scope applies to the original `/learn/` guides, not to every page under `/docs/`. The first-task quickstarts and AI troubleshooting manual identify their own product-source and release boundaries, including main `592c667f` and release `0.59.9`. Follow the source revision stated on the page you read; do not apply historical `722172ef` detail-page behavior to a current-source instruction without comparison. The canonical repository's legacy `content/llms.txt` uses a different set of relative paths and is not this public index.
+
 - Getting started and installation: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
 - CLI reference: https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md
 - Seed guide (Korean; reviewed against product main 592c667f): https://ouroboros.page/docs/seed-guide/
