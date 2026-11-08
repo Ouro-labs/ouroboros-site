@@ -10,6 +10,8 @@
 
 在出错的原宿主会话中，分别确认插件/服务器是否启用，以及症状属于服务器启动失败、连接失败、工具未发现还是认证失败。只查看相关设置与日志行即可；分享前遮盖令牌、凭据、私人路径、项目名和提示内容。不要发送完整配置、环境变量转储或凭据。若 CLI 不存在或其版本不支持下列命令，先查看宿主自己的安装/连接状态和当前版本帮助，不要为了猜测宿主服务器版本而另装一份。
 
+**Codex 插件会话：**按 main `592c667f` 和 release `0.59.9` 的源码，welcome 的 `CODEX_SETUP_REQUIRED` 基于配置文件等条件检查，并非对当前插件会话的实时连接检查；即使插件 MCP 已启用也可能出现。不要只因该提示或 `mcp list` 中缺项就反复运行 setup。先在出错的同一会话确认插件、服务器和可用工具；列表中有工具也不保证调用成功。setup 可能改变 MCP、runtime、model、受管理的 skills 和 rules；`preserve` 需要已有可用的 Ouroboros MCP 注册，否则设置不会保存。实际宿主行为未验证。依据：[main welcome](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/welcome/SKILL.md#L545-L592)、[release welcome](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/welcome/SKILL.md#L545-L592)、[main preserve](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/setup.py#L1248-L1277) 和 [release preserve](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/setup.py#L1248-L1277)。
+
 有受支持的独立 CLI 时，才在对应安装的终端查看 `ouroboros mcp doctor` 失败的检查项。按源码 `592c667f`，默认命令检查启动前的环境条件，不会启动服务器；它不证明宿主已连接、认证有效或模型调用成功。检查自身也可能初始化本地记录或尝试网络访问。`ouroboros status health` 的健康行同样不能证明认证有效或任务成功。诊断通过只说明该项检查通过。
 
 `ouroboros mcp doctor --probe-local-stdio` 是额外检查：它会启动临时本地子进程并探测服务器启动和工具发现；不会验证宿主配置的启动器、宿主认证或模型调用。其 Python 层面的限制不等同于操作系统隔离。Codex 的 `ouroboros codex doctor --live-mcp` 会启动配置中的 stdio 服务器；执行前先检查其命令和可能的网络/其他副作用，而且它不验证 URL 传输或模型调用。只有确认所用版本支持且确有必要时才运行这些选项。安装诊断可能显示启动参数；任何输出分享前都要脱敏。
