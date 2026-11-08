@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "307b3b1862e696dfe4307a63a5ecaa88782897b9d7a8fc65fd5a5dc0ca045bbf",
+  "prior_manifest_sha256": "45fbf7accf25f610819653693c1c4c380a97571dd12aa6cd44c3254311666d32",
+  "summary_sha256": "74f2a47bd412e8d6fe0db0beef5a22aaaf401aadaa000f83f8e1913cf53b2f97",
+  "pages": {
+    "concepts-detail.md": {
+      "prior": {
+        "source": "content/concepts-detail.md",
+        "source_sha256": "ba39ff8453febb9612cabe9807bbeb827cabbf738e77fbed98e0d1be79a25c46",
+        "page_sha256": "14c80a06b6444bfaf8a6b983740170d81c417861b5aa4de507b25b2dd70b7d5f"
+      },
+      "current": {
+        "source": "content/concepts-detail.md",
+        "source_sha256": "9a5f54adf4473158983d4240283f938cdd1b2406dbe6f181466387ec91c1c9fb",
+        "page_sha256": "d415d16e91a05c54eb28f74443ed59ca620e5f802f886baaa3999bfda423c979"
+      }
+    }
+  }
+}

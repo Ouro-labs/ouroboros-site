@@ -6,7 +6,7 @@
 
 ## Seed는 무엇인가
 
-Seed는 목표, 제약, 완료 조건을 담은 YAML 작업 명세입니다. 인터뷰는 불명확한 요구를 구체화하고 Seed 생성은 그 합의를 실행 입력으로 고정합니다. 호스트에서는 `ooo interview` 뒤 `ooo seed`가 필요합니다. [첫 실행](/docs/first-run-detail/)에서 두 경로를 구분합니다.
+Seed는 목표, 제약, 검증 가능한 성공 기준을 담는 YAML 작업 명세입니다. 요구가 불명확하면 `ooo interview`로 먼저 구체화한 뒤 `ooo seed`를 요청할 수 있습니다. 이미 목표·제약·성공 기준이 합의됐다면 인터뷰를 반복하지 않고 Seed 생성을 요청할 수 있습니다. 응답에 YAML이 보이는지와 실제 파일이 저장됐는지는 별도로 확인하세요. [첫 실행](/docs/first-run-detail/)에서 호스트와 독립 CLI 경로를 구분하고, [고정 main Seed 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/seed/SKILL.md), [release 0.59.9 Seed 스킬](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/seed/SKILL.md), [722 Seed 스킬](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/skills/seed/SKILL.md)의 구체 동작을 비교할 수 있습니다. 현재 설치의 응답과 파일 경로를 확인하세요.
 
 ## 모호도 점수와 문턱값은 어떻게 다른가
 

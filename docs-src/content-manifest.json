@@ -209,8 +209,8 @@
     },
     "concepts-detail.md": {
       "source": "content/concepts-detail.md",
-      "source_sha256": "ba39ff8453febb9612cabe9807bbeb827cabbf738e77fbed98e0d1be79a25c46",
-      "page_sha256": "14c80a06b6444bfaf8a6b983740170d81c417861b5aa4de507b25b2dd70b7d5f"
+      "source_sha256": "9a5f54adf4473158983d4240283f938cdd1b2406dbe6f181466387ec91c1c9fb",
+      "page_sha256": "d415d16e91a05c54eb28f74443ed59ca620e5f802f886baaa3999bfda423c979"
     },
     "operations-detail.md": {
       "source": "content/operations-detail.md",
