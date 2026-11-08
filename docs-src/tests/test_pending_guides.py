@@ -14,11 +14,21 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 def strip_latest_wait_stage(code):
+    start=code.index("    # Restore the three newly synchronized quickstarts to the exact site HEAD")
+    end=code.index("    # Bind the newest concepts detail page",start)
+    code=code[:start]+'    current_manifest = manifest\n'+code[end:]
     start=code.index("    ko_navigation=json.loads((root/'pending-ko-navigation.json').read_text())")
     end=code.index("    landing = json.loads(",start)
-    return code[:start]+'    current_manifest = manifest\n'+code[end:]
+    return code[:start]+code[end:]
 
 def restore_latest_wait_manifest(root, manifest):
+    tui=json.loads((root/'pending-codex-tui.json').read_text())
+    for name,entry in tui['pages'].items():
+        if manifest['pages'].get(name)!=entry['current']:
+            raise AssertionError('Latest Codex TUI current mismatch: '+name)
+        manifest['pages'][name]=entry['prior']
+    if hashlib.sha256((json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest()!=tui['prior_manifest_sha256']:
+        raise AssertionError('Latest Codex TUI prior snapshot mismatch')
     ko=json.loads((root/'pending-ko-navigation.json').read_text())
     for name,entry in ko['pages'].items():
         if manifest['pages'].get(name)!=entry['current']: raise AssertionError('Latest KO navigation current mismatch: '+name)
@@ -125,9 +135,9 @@ class PendingGuidesTest(unittest.TestCase):
             'test_concepts_detail_outer_manifest_tamper',
         }
         if self._testMethodName in outer_boundary_tests:
-            message = 'KO navigation manifest or pending status changed'
+            message = 'Codex TUI manifest or pending status changed'
         elif self._testMethodName == 'test_changed_manifest':
-            message = 'KO navigation manifest or pending status changed'
+            message = 'Codex TUI manifest or pending status changed'
         elif self._testMethodName == 'test_quickstart_eval_current_tamper':
             message = 'Quickstart evaluation current metadata mismatch: en/quickstart.md'
         elif self._testMethodName == 'test_concepts_detail_current_tamper':
@@ -140,6 +150,27 @@ class PendingGuidesTest(unittest.TestCase):
             message = 'Windows Codex CLI snapshot chain mismatch'
         with self.assertRaisesRegex(ValueError, message): mod.verify(self.root)
     def test_baseline(self): mod.verify(self.root)
+    def test_codex_tui_current_metadata_tamper(self):
+        p=self.root/'pending-codex-tui.json';e=json.loads(p.read_text())
+        e['pages']['en/quickstart.md']['current']['page_sha256']='a'*64
+        p.write_text(json.dumps(e,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Codex TUI current metadata mismatch: en/quickstart.md'):
+            mod.verify(self.root)
+    def test_codex_tui_prior_snapshot_tamper(self):
+        p=self.root/'pending-codex-tui.json';e=json.loads(p.read_text())
+        e['prior_manifest_sha256']='a'*64
+        p.write_text(json.dumps(e,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Codex TUI snapshot chain mismatch'):
+            mod.verify(self.root)
+    def test_codex_tui_summary_tamper(self):
+        (self.root/'pending-codex-tui-review.md').write_text('altered')
+        with self.assertRaisesRegex(ValueError,'Codex TUI summary changed'):
+            mod.verify(self.root)
+    def test_codex_tui_status_stays_pending(self):
+        p=self.root/'pending-codex-tui.json';e=json.loads(p.read_text())
+        e['status']='approved';p.write_text(json.dumps(e,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Codex TUI status changed'):
+            mod.verify(self.root)
     def rebind_search_escape_javascript(self, data):
         name='docs-src/content/assets/ouro-theme.js'
         record_path=self.root/'pending-search-escape.json'
@@ -181,6 +212,29 @@ class PendingGuidesTest(unittest.TestCase):
         manifest['semantic_links_reviewed']=True
         path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
         with self.assertRaisesRegex(ValueError,'Pending extension requires closed gate'):
+            mod.verify(self.root)
+    def test_full_verifier_rejects_rebound_manifest_page_hash(self):
+        manifest_path=self.root/'content-manifest.json'
+        manifest=json.loads(manifest_path.read_text())
+        manifest['pages']['quickstart.md']['page_sha256']='a'*64
+        manifest_bytes=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
+        manifest_path.write_bytes(manifest_bytes)
+        record_path=self.root/'pending-codex-tui.json'
+        record=json.loads(record_path.read_text())
+        prior=record['pages']['quickstart.md']['prior']
+        old_current=record['pages']['quickstart.md']['current']
+        old_row='| quickstart.md | '+prior['source_sha256']+' | '+prior['page_sha256']+' | '+old_current['source_sha256']+' | '+old_current['page_sha256']+' |'
+        record['manifest_sha256']=hashlib.sha256(manifest_bytes).hexdigest()
+        record['pages']['quickstart.md']['current']=manifest['pages']['quickstart.md']
+        summary_path=self.root/'pending-codex-tui-review.md'
+        summary=summary_path.read_text()
+        new_row='| quickstart.md | '+prior['source_sha256']+' | '+prior['page_sha256']+' | '+record['pages']['quickstart.md']['current']['source_sha256']+' | '+'a'*64+' |'
+        self.assertIn(old_row,summary)
+        summary=summary.replace(old_row,new_row,1)
+        summary_path.write_text(summary)
+        record['summary_sha256']=hashlib.sha256(summary_path.read_bytes()).hexdigest()
+        record_path.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+        with self.assertRaisesRegex(ValueError,'Content hash does not match: quickstart.md'):
             mod.verify(self.root)
     def test_full_verifier_rejects_pending_status_change(self):
         path=self.root/'pending-new-guides.json';record=json.loads(path.read_text())
@@ -1006,8 +1060,10 @@ class PendingGuidesTest(unittest.TestCase):
         mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n');p['manifest_sha256']=hashlib.sha256(mpath.read_bytes()).hexdigest();ppath.write_text(json.dumps(p))
         self.rejected('Translated recovery current metadata mismatch')
     def test_changed_manifest(self):
-        with (self.root/'content-manifest.json').open('a') as f: f.write(' ')
-        self.rejected('Translated recovery manifest or pending status changed')
+        path=self.root/'content-manifest.json';manifest=json.loads(path.read_text())
+        manifest['pages']['quickstart.md']['page_sha256']='a'*64
+        path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+        self.rejected('Codex TUI manifest or pending status changed')
     def test_extra_file(self):
         (self.root/'content/unlisted.txt').write_text('unreviewed'); self.rejected('Content tree differs')
     def test_missing_file(self):

@@ -158,7 +158,7 @@ ouroboros setup --runtime codex</code></pre>
 ooo setup
 ```
 
-설정 질문에 답해 완료하세요. <span id="codex-first-task"></span>**Codex 플러그인:** 새 Codex 세션에서 작업 폴더를 여세요. Codex CLI/TUI 대화에서는 `/mcp`를 입력해 활성 서버 목록에 Ouroboros 관련 서버가 나타나는지 확인합니다. 표시 이름은 플러그인과 서버 버전에 따라 다를 수 있으며, 목록에 보이는 것만으로 도구 호출이 정상 동작하거나 모델 작업이 성공한다고 확인되는 것은 아닙니다. 서버가 없거나 연결 오류가 보이면 [MCP 진단 안내](/docs/ai-troubleshooting/#mcp)를 따르세요. Codex Desktop에서 같은 UI가 있다고 가정하지 마세요. [Codex MCP 공식 안내](https://learn.chatgpt.com/docs/extend/mcp?surface=cli#configure-with-the-cli). Codex용 독립 CLI 설정은 별도 경로입니다.
+설정 질문에 답해 완료하세요. <span id="codex-first-task"></span>**Codex 플러그인:** 새 Codex 세션에서 작업 폴더를 여세요. Codex CLI의 대화형 TUI에서는 `/mcp`를 입력해 활성 서버 목록에 Ouroboros 관련 서버가 나타나는지 확인합니다. 표시 이름은 플러그인과 서버 버전에 따라 다를 수 있으며, 목록에 보이는 것만으로 도구 호출이 정상 동작하거나 모델 작업이 성공한다고 확인되는 것은 아닙니다. 서버가 없거나 연결 오류가 보이면 [MCP 진단 안내](/docs/ai-troubleshooting/#mcp)를 따르세요. Codex Desktop에서 같은 UI가 있다고 가정하지 마세요. [Codex MCP 공식 안내](https://learn.chatgpt.com/docs/extend/mcp?surface=cli#configure-with-the-cli). Codex용 독립 CLI 설정은 별도 경로입니다.
 
 준비가 끝나면 호스트 대화의 다음 메시지로 Interview를 요청합니다.
 
