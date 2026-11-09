@@ -91,6 +91,18 @@ ooo evaluate <实际 SESSION_ID> [产物或输出]
 
 状态显示、执行工作者完成和验收通过是不同结果。每次都检查真实产物、实际检查证据和最终评估状态。
 
+## 恢复、取消或重试前 {#recovery-preflight}
+
+保留原始启动响应，并区分其中的 `job_id`、Interview `session_id`、执行 `session_id`、`execution_id` 和 `auto_session_id`。在同一宿主和服务器上，对同一记录使用对应 ID 查询状态/结果。独立 CLI 的 `ouroboros job wait JOB_ID` 默认是即时快照（`--timeout-seconds 0`）。若要短暂等待，传入 `job status` 或上一次 wait 返回的最新 cursor，例如 `ouroboros job wait JOB_ID --cursor CURSOR --timeout-seconds 5`。等待超时不代表任务已终止。非终止 job 也可以查询 `job result`，但此时结果不可用；查询成功不代表任务完成。同一个 job 到达终止状态后，再用原 ID 查询最终结果。宿主 MCP 的工具名和参数可能不同；先查看当前连接服务器的 schema。
+
+找不到结果或列表为空，并不能证明没有工作正在运行。保留原始回执，并确认同一宿主/服务器、实际所有者进程、Seed 路径、响应中报告的工作目录或 `worktree_path`、branch、已变更文件和外部操作。记录中的 `running` 不能证明进程仍存活；`failed` 或 `cancelled` 也不能证明文件变更或外部操作已回滚。release `0.59.9` 的 missing-handle 响应可能带有 `is_terminal: true` 和 `lifecycle_status: invalid`；这些字段描述的是本次查询响应，不证明 worker 已停止，也不证明可以安全地重复启动。main `592c667f` 只有在存在且匹配该 job 的 pending receipt 时，才可能返回非终止的 `acceptance_pending`；该响应表示 worker 状态未知且没有可用结果。继续用同一 job ID 查询，不要重复启动。不要把任一响应推广到其他情形。
+
+`resume --list` 只列出候选项，不会恢复任务。实际恢复可能写入状态或启动新一轮尝试；已终止的 `failed`、`cancelled` 或 `completed` 任务不保证以同一轮次恢复。取消操作的响应本身不能证明所有 worker 都已停止，也不代表既有影响已撤销。如果 job 结果给出 `chained_evaluate_job_id` 或 `chained_ralph_job_id`，应分别查询每个实际返回的 job，直到终止并读取结果；父 job 停止不代表后续 job 也停止。
+
+评估结果与运行结果是两回事。把 `unverified`、缺少检查、覆盖范围不清或评估错误视为尚未批准；检查真实文件、实际执行的命令、退出码和逐条验收证据。评估可能运行项目命令并调用模型，因此需要时间且可能产生费用。在 main `592c667f` 和 release `0.59.9` 中，启用 `auto_evolve` 时，`final_approved` 为 false（包括 `unverified`）可能排入 Ralph 后续任务。检查实际返回的后续 job ID 和状态；新评估设置 `auto_evolve: false` 不会停止已有链。应从真实工作目录和证据确认需求行为，不能只看状态标签或启动回执。
+
+本节是对照固定 main `592c667f` 与 release `0.59.9` 的恢复要点补充，并非完整翻译，也不代表真实宿主恢复测试通过。参见[恢复详细指南（韩文）](/docs/recovery-detail/)与[版本说明](/docs/version-guide/)。
+
 ## 更完整的指南（目前只有韩文）
 
 本页范围之外的详细 ID/状态规则、恢复情形和评估/演进判定目前只提供韩文说明：

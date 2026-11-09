@@ -6,6 +6,7 @@ class InterfaceEntryDelta(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)/'docs-src'
   shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'));shutil.copytree(ROOT.parent/'site',self.root.parent/'site',ignore=shutil.ignore_patterns('docs'))
+  if (self.root/'pending-recovery-translation.json').exists(): M.restore_recovery_translation_fixture(self.root)
  def test_normal(self):M.verify(self.root)
  def test_each_page_and_manifest(self):
   for name in ['content/cli-reference-detail.md','content/mcp-reference-detail.md','content/config-reference-guide.md','content-manifest.json']:

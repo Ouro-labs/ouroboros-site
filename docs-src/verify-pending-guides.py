@@ -231,7 +231,24 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_recovery_translation_fixture(root):
+    path=root/'pending-recovery-translation.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Recovery translation evidence unsafe')
+    if sha(path.read_bytes())!='8f7bbebd3f9fbf5520e30679b5f5407d881e7a4b81e1aa8be8dead4c325f7c3d': raise ValueError('Recovery translation evidence changed')
+    delta=json.loads(path.read_text())
+    expected={'content/en/troubleshooting.md','content/zh/troubleshooting.md','content-manifest.json'}
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!=expected: raise ValueError('Recovery translation shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Recovery translation path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Recovery translation current bytes')
+    if json.loads((root/'content-manifest.json').read_text()).get('semantic_links_reviewed') is not False:
+        raise ValueError('Recovery translation requires closed gate')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    path.unlink()
+
 def restore_interface_entry_fixture(root):
+    if (root/'pending-recovery-translation.json').exists(): restore_recovery_translation_fixture(root)
     path=root/'pending-interface-entry.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Interface entry evidence unsafe')
     if sha(path.read_bytes())!='ec21c761e3fe1c905d17f31d62a3b9ea819a3f99a6618893f2283baf21eb0804': raise ValueError('Interface entry evidence changed')
@@ -370,6 +387,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-recovery-translation.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_recovery_translation_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-interface-entry.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:
