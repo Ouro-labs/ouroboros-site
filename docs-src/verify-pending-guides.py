@@ -231,7 +231,24 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_search_results_inert_fixture(root):
+    path=root/'pending-search-results-inert.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Search results inert evidence unsafe')
+    if sha(path.read_bytes())!='03e6e4ee23fafed98cf574044eab38ebe1bac146e347a9a1f5b6b88256fd260f': raise ValueError('Search results inert evidence changed')
+    delta=json.loads(path.read_text())
+    expected={'content/assets/ouro-theme.js', 'tests/test_search_escape.cjs'}
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!=expected: raise ValueError('Search results inert shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Search results inert path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Search results inert current bytes')
+    if json.loads((root/'content-manifest.json').read_text()).get('semantic_links_reviewed') is not False:
+        raise ValueError('Search results inert requires closed gate')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    path.unlink()
+
 def restore_doctor_scope_fixture(root):
+    if (root/'pending-search-results-inert.json').exists(): restore_search_results_inert_fixture(root)
     path=root/'pending-doctor-scope.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Doctor scope evidence unsafe')
     if sha(path.read_bytes())!='aa6fa3bb66218c1402ecf19096ef61438c942903a0f25232efa2f3033d4471ec': raise ValueError('Doctor scope evidence changed')
@@ -421,6 +438,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-search-results-inert.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_search_results_inert_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-doctor-scope.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:
