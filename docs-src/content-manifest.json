@@ -99,8 +99,8 @@
     },
     "config-reference-guide.md": {
       "source": "content/config-reference-guide.md",
-      "source_sha256": "6ded05d27548f468ff40ca79944c8ddece198e5de55af819e290002cd52e56e2",
-      "page_sha256": "9b1ecf4c5001824510aa31af102fed57e455ebfa245edc0919cf67eb65588b0b"
+      "source_sha256": "a269b4036c54cab7d746ef488a5725bc691d9f59bfdf1e434a79598b9725b6e2",
+      "page_sha256": "788dc36db89ccce958910733ff20d0b374f5f790fa77e2355e2c784587fbd279"
     },
     "version-guide.md": {
       "source": "content/version-guide.md",
@@ -119,13 +119,13 @@
     },
     "cli-reference-detail.md": {
       "source": "content/cli-reference-detail.md",
-      "source_sha256": "cc936677781e904c4c716bfd1933a25f06693091a16307e2b76bce1361045119",
-      "page_sha256": "6338a9ef7e6d8dc215fb2f58b6241dd10f0aa4ea5819d2b46677f049d5fdce3f"
+      "source_sha256": "9c124794a4f0086f2c543ceee55af50de6c4c01cad228ca715792f862021755c",
+      "page_sha256": "9a2644a281eb6f298574dfe535ac35c0ad126e688d0af82a2fc86eb74c9996d4"
     },
     "mcp-reference-detail.md": {
       "source": "content/mcp-reference-detail.md",
-      "source_sha256": "09d2638bff9f62a3a327e46281276dc7f5049d102b97d6636357d906e7f064d6",
-      "page_sha256": "cee5dea8a207f2e25eb57403097cefa976ce4a70455240406a3a87175a0147f8"
+      "source_sha256": "392e3e81524f0886c2798b28259fd551491435b527d1c4323ba252326f7e26d1",
+      "page_sha256": "a4f659a0bfc5c1339b8b652dc34491ba6a5037b15fc374c2552100596c83f9e8"
     },
     "config-reference-detail.md": {
       "source": "content/config-reference-detail.md",

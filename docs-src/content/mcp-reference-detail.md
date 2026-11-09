@@ -174,7 +174,7 @@ Build and verify a substantial change end-to-end. Use when: the work spans sever
 | `ouroboros_session_status` | `session_id` 필수 | 세션의 단계·진행 상태를 조회한다. 작업 ID를 이 인자로 넣지 않는다. |
 | `ouroboros_job_status` | `job_id` 필수, `view=full` | 작업 snapshot과 `meta`의 `status`, `is_terminal`, `result_available`, `cursor`, 연결 ID를 확인한다. `summary`·`compact`는 텍스트 상세도 선택이다. 종료 자체가 성공을 의미하지 않으며 실패·취소·중단과 결과 payload 오류는 `is_error`로 표시될 수 있다. |
 | `ouroboros_job_wait` | `job_id` 필수, `cursor=0`, `timeout_seconds=0`, `view=full`, `stream=progress`, `wait_for=raw` | 기본은 즉시 snapshot; 명시적 timeout은 최대 5초로 제한된다. cursor·timeout은 음수가 아닌 정수여야 한다. 다음 호출에 반환 cursor를 넘긴다. `linked`는 연결된 스트림을 포함하지만 한 번에 모든 과거 이벤트를 받는다는 보장은 없다. 자세한 wakeup 조건과 페이지 경계는 [진행 조회](/docs/progress-detail/)를 본다. |
-| `ouroboros_job_result` | `job_id` 필수 | 미종결이면 `is_error=false`일 수 있지만 `result_available=false`이므로 성공 결과가 아니다. 종결이면 보존된 결과와 오류 상태를 확인하고, handle이 없으면 결과를 사용할 수 없다는 오류가 발생할 수 있다. |
+| `ouroboros_job_result` | `job_id` 필수 | 미종결이면 `is_error=false`일 수 있지만 `result_available=false`이므로 성공 결과가 아니다. 종결이면 보존된 결과와 오류 상태를 확인하고, handle이 없으면 결과를 사용할 수 없다는 오류가 발생할 수 있다. 원래 시작 응답이 `detached_job_acceptance_pending`이면, release `0.59.9`의 missing-handle `is_terminal=true`를 worker 종료로 해석하지 않는다. matching pending 영수증이 있을 때의 main `592c667f` 분기와 구분해 [판본별 조회·중복 실행 방지 경고](/docs/ai-troubleshooting/#recovery)를 먼저 확인한다. |
 | `ouroboros_cancel_job` | `job_id` 필수 | 취소를 **요청**하고 반환된 상태를 관찰한다. 응답의 `is_error=false`만으로 모든 외부 효과가 중단되거나 되돌려졌다고 단정하지 않는다. |
 | `ouroboros_cancel_execution` | `execution_id` 필수, `reason` 선택 | 이미 종결된 실행은 거부된다. 살아 있는 로컬 소유자에게 취소를 요청하면 `cancellation_requested`와 `in_flight=true`가 반환될 수 있으므로 최종 상태를 다시 확인한다. 다른 살아 있는 소유자가 가진 실행은 그 소유자를 통해 취소해야 할 수 있다. [복구 안내](/docs/recovery-detail/)에서 부작용과 재개 경계를 확인한다. |
 

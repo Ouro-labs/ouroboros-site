@@ -436,6 +436,8 @@ Set a configuration value. Use dot notation for nested keys (e.g., orchestrator.
 | `KEY` | str | 예 | Configuration key (dot notation). |
 | `VALUE` | str | 예 | Value to set. |
 
+**불리언 값의 판본 차이:** 키 검증과 값 해석은 별개입니다. 고정 release `0.59.9`의 불리언 변환은 `on`이나 오타를 false로 저장할 수 있고, 고정 main `592c667f`는 유효하지 않은 불리언 값을 거부합니다. 입력 전 [설정 안내의 main/release 경고](/docs/config-reference-guide/)를 확인하고 `true`/`false`를 사용한 뒤 같은 환경에서 저장값을 다시 확인하세요.
+
 ## `ouroboros config undo`
 
 기존 `config.yaml.bak`과 현재 `config.yaml`을 교환한다. 도움말은 성공한 `config set`도 백업을 만든다고 설명하지만 이 고정 구현의 `config set`은 직접 YAML을 다시 쓰며 백업을 만들지 않는다. 따라서 이전 백업이 없으면 undo가 실패하고, 오래된 백업이 있으면 직전 변경 전 상태가 아닐 수 있다. 자세한 관찰과 변경 전 보존은 [설정 운영 안내](/docs/operations-detail/)를 확인한다.
