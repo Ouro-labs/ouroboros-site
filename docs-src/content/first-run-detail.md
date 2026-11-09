@@ -148,6 +148,8 @@ uv pip install --python .venv/bin/python . &&
 
 ## 확인
 
+하위 프로젝트를 대상으로 했다면 [worktree 루트와 실제 실행 디렉터리](/docs/existing-project-detail/#subproject-result)를 먼저 구분합니다.
+
 Seed에 `add`·`list`와 테스트 조건이 들어 있는지 먼저 읽으세요. 실행 뒤에는 응답의 `worktree_path`·`worktree_branch` 또는 독립 CLI가 출력하는 `Task worktree`·`Task branch`가 있는지 확인하고, 실제 보고된 작업 위치에서 결과를 살펴보세요. 모든 실행에 별도 worktree가 있다고 가정하지 말고 경로가 보고되지 않으면 실행 결과와 프로젝트 경로를 확인합니다. 그다음 [호스트 상태 조회](/docs/progress-detail/#host-status) 또는 [CLI 상태 조회](/docs/progress-detail/#cli-status)에서 같은 ID의 단계와 검증 결과를 읽고, 생성된 프로젝트에서 기능을 직접 실행해 입력한 작업이 목록에 나타나는지 확인하세요.
 
 ## 다음 행동

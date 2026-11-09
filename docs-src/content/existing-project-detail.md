@@ -113,6 +113,17 @@ Seed의 작업 경로가 의도한 저장소인지, 완료 조건에 유지할 �
 
 위 Git 조회 명령은 임시 합성 저장소에서만 검증한 읽기 예시이며 실제 호스트의 자동 커밋이나 모든 worktree 동작을 보장하지 않습니다.
 
+
+### 하위 프로젝트의 실행 위치 구분 {#subproject-result}
+
+Git 저장소 안의 하위 프로젝트를 작업 대상으로 선택했다면 **worktree 루트와 앱 실행·검증 디렉터리가 다를 수 있습니다**. 제품 main `592c667f`와 release `0.59.9`의 관리 worktree 준비는 원본 저장소 기준의 상대 하위 경로를 유지합니다. 예를 들어 실제 선택된 원본 프로젝트가 `/repo/apps/web`이고 반환된 `worktree_path`가 `/managed/task`라면 작업 디렉터리는 `/managed/task/apps/web`가 될 수 있습니다. 이 예시 경로를 그대로 사용하지 마세요.
+
+두 판본의 CLI 실행 경로는 `workspace.effective_cwd`를 런타임·worker·실행 작업 디렉터리에 사용합니다. 조사한 MCP in-process 실행 분기도 이를 사용하지만 결과 메타데이터의 `worktree_path`는 worktree **루트**입니다. `effective_cwd`가 모든 응답에 별도 필드로 제공된다고 가정하지 마세요. 실제 선택된 원본 프로젝트, 저장소 루트, 실행 기록과 반환 worktree를 대조해 대응하는 하위 디렉터리를 확인합니다. 프로젝트가 다른 경로로 해석되었거나 기록이 불충분하면 README·테스트 경로를 임의로 정하지 말고 실제 실행 위치부터 확인합니다. 다른 호스트 위임·worktree 비사용 경로에 같은 변환을 무조건 적용하지 않습니다.
+
+Git 변경 검토는 worktree 전체를 대상으로 하되, 앱의 README·패키지 설정·시작·종료·테스트 명령은 실제 실행한 하위 프로젝트를 기준으로 확인합니다. 루트의 다른 앱을 실행하거나 테스트한 결과를 해당 Seed의 검증으로 대신하지 마세요. 모노레포의 실행 규약이 대상 지정 또는 저장소 전체 검사를 루트에서 실행하도록 한다면 그 유효한 루트 명령을 사용할 수 있습니다. 명령의 작업 디렉터리와 실제 대상·검증 범위를 함께 확인합니다. 상대 검증 설정과 명령도 이 차이를 고려해 확인합니다. 원본 프로젝트에서 새로 생성한 미추적 설정이 worktree로 자동 전달된다는 뜻은 아닙니다.
+
+근거: [main 경로 보존](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/core/worktree.py#L716-L760), [main CLI 실행 위치](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L889-L958), [release CLI 실행 위치](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L889-L958), [main MCP 실행 위치](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/execution_handlers.py#L1583-L1590). 이는 고정 소스의 정적 대조이며 실제 하위 프로젝트의 모델 실행·앱 검증은 미시험입니다.
+
 ## 다음 행동
 
 대상과 검증 명령이 맞으면 [진행상태 확인](/docs/progress-detail/)에서 같은 실행을 추적합니다. 테스트나 실행이 실패하면 [실패 복구](/docs/recovery-detail/)로 이동하세요. 작업 범위가 잘못됐다면 실행 전에 Seed와 검증 명령을 수정합니다.

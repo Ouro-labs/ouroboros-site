@@ -231,7 +231,24 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_subproject_result_fixture(root):
+    path=root/'pending-subproject-result.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Subproject result evidence unsafe')
+    if sha(path.read_bytes())!='6acdfa775fbde700c8baf56b2da4d741677176284e3ac663574804c95c14a98d': raise ValueError('Subproject result evidence changed')
+    delta=json.loads(path.read_text())
+    expected={'content/quickstart.md', 'content/first-run-detail.md', 'content/zh/quickstart.md', 'content/existing-project-detail.md', 'content-manifest.json', 'content/en/quickstart.md'}
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!=expected: raise ValueError('Subproject result shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Subproject result path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Subproject result current bytes')
+    if json.loads((root/'content-manifest.json').read_text()).get('semantic_links_reviewed') is not False:
+        raise ValueError('Subproject result requires closed gate')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    path.unlink()
+
 def restore_search_results_inert_fixture(root):
+    if (root/'pending-subproject-result.json').exists(): restore_subproject_result_fixture(root)
     path=root/'pending-search-results-inert.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Search results inert evidence unsafe')
     if sha(path.read_bytes())!='03e6e4ee23fafed98cf574044eab38ebe1bac146e347a9a1f5b6b88256fd260f': raise ValueError('Search results inert evidence changed')
@@ -438,6 +455,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-subproject-result.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_subproject_result_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-search-results-inert.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:

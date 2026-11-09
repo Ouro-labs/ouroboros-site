@@ -44,8 +44,8 @@
     },
     "quickstart.md": {
       "source": "content/quickstart.md",
-      "source_sha256": "d843638a920561ddedb447191bee31289c34303a5e3d2698aa41b9bd27e92ea9",
-      "page_sha256": "5618308b6ebd878c8eba41ed2adab64a08f9b698462157861e85f77ab8e8b1e2"
+      "source_sha256": "af364cb1db55c940c8f3bf77e64deeb0b60900ad29bdbdf35192f65a88dca761",
+      "page_sha256": "be5dc16e500ef5ab60bf69215523db4d8b4b745a5c1540d5ebbd05a7642da286"
     },
     "interview-guide.md": {
       "source": "content/interview-guide.md",
@@ -64,13 +64,13 @@
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
-      "source_sha256": "1f10ffcbe74eac7bb2f8e44270071ee469a3017cf4a8f64af92f04ccd1260912",
-      "page_sha256": "453916f0994a20bc99830dc7d2f7663af4e07d49e0f8d5a58b5b3701acc294d4"
+      "source_sha256": "369c6e0f5016a6b5617e7a1c709acebfb4f37a73b43d5e34269e808f8ca39a6d",
+      "page_sha256": "e11c0f8b7646b9aaba01380f1660d15b093dccbbc7cbef7985ae76cd7a018717"
     },
     "zh/quickstart.md": {
       "source": "content/quickstart-zh.md",
-      "source_sha256": "69b4ec2d3ee967fdae295ca89e72b21d5e1e5b20e5c17b9bf99af6dd629acd48",
-      "page_sha256": "bdecd2612320609a0f70922cd428fbd8d3c5f05392cf411603a8792a88df5763"
+      "source_sha256": "67e754c5ea59561a27a406306e80f3402755d634d256d2e515ffe109efb53abe",
+      "page_sha256": "2073bcc8b00ad9229021f3823a270e026e4180577a3cee942af87403b9ebf1b6"
     },
     "en/troubleshooting.md": {
       "source": "content/troubleshooting-en.md",
@@ -174,8 +174,8 @@
     },
     "first-run-detail.md": {
       "source": "content/first-run-detail.md",
-      "source_sha256": "73560ad1e1417ae812c91126608ede50b953c2ded8bce3468fe05a8ef8e039ab",
-      "page_sha256": "571e97027b9f4d72302e1c1a8db150db8f1ad6155287e19884cef00c43995d61"
+      "source_sha256": "63378434aa652fbd21b9a5e708ec803de049a7ab5c2ec8f271a34c0cee30d878",
+      "page_sha256": "ac843662b82caac7dbb2fc5446b733a7781b1e1b202915c672806fe817150742"
     },
     "interview-detail.md": {
       "source": "content/interview-detail.md",
@@ -189,8 +189,8 @@
     },
     "existing-project-detail.md": {
       "source": "content/existing-project-detail.md",
-      "source_sha256": "e037c35c0011cf48c5889f36e6cc508ebfd050493f73ccf40bc5310cdfb25652",
-      "page_sha256": "d7cfdfbab7ad6351996f51a642c2708c73a7f185c6b028c308441edb00928660"
+      "source_sha256": "2fe296b7cbb9dca1f61d9cabcef0cca96c631752d4714e846203eb049258f8d4",
+      "page_sha256": "f0b8717df8ae0315565d90df62863ac3e5d4e4539b0060fc9d157ce1df625640"
     },
     "progress-detail.md": {
       "source": "content/progress-detail.md",
