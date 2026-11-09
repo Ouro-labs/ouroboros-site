@@ -245,11 +245,21 @@ If this is a newly initialized Git repository and the normal MCP background path
 
 **Automatic follow-up evaluation：** Formal evaluation does not always start after a run. In a normal MCP run, it attempts to enqueue a formal evaluation job when `auto_evaluate` is enabled and the run result is eligible. It may not start if the setting is off, the result is ineligible, or enqueueing fails, so check the actual evaluation status and job ID. After evaluation starts, in a normal MCP evaluation job, when `auto_evolve` is enabled and `final_approved` is `false`, both `rejected` and `unverified` results may trigger an attempt to enqueue a bounded Ralph continuation. Whether it actually runs depends on conditions including Seed availability and the enqueue result; it can add time and model costs. Check its status and final result.
 
-In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. In the standalone CLI, use the actual generated path in the terminal: `ouroboros run <Seed file path>`. Do not type an example path with angle brackets literally. In Windows PowerShell, quote the actual path and run:
+In a plugin conversation, ask Ouroboros to run the reviewed Seed YAML or specify its actual file path. **For a new standalone CLI exercise**, explicitly select the new folder with `--project-dir`. **For an existing project**, first read the [existing-project guidance (Korean)](/docs/existing-project-detail/), preserve existing changes, and confirm the Seed target and branch; use that original project's path instead of copying the new-folder example. Replace both paths below with actual absolute paths. Keep the quotes so each path remains one argument even when it contains spaces.
+
+macOS/Linux/WSL POSIX shell, with the standalone CLI environment activated:
+
+```bash
+ouroboros run "/actual/Seed drafts/task.yaml" --project-dir "/actual/first project"
+```
+
+Windows PowerShell, using the venv interpreter identified earlier:
 
 ```powershell
-& $OuroborosPython -m ouroboros run "<actual Seed file path>"
+& $OuroborosPython -m ouroboros run "C:\actual\Seed drafts\task.yaml" --project-dir "C:\actual\first project"
 ```
+
+The Seed's storage folder is not necessarily the intended project. Fixed main `592c667f` and release `0.59.9` prioritize explicit `--project-dir`; otherwise Seed path information and storage location can affect the execution and verification target. This option is not OS isolation. If a worktree is created, inspect its actual returned path. [main path resolution](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L290-L354) · [release path resolution](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L290-L354)
 
 Execution can change code and files and start commands and model calls.
 

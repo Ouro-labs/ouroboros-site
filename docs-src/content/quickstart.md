@@ -218,11 +218,21 @@ README 수용 기준이 의존성 설치, 앱 실행 명령, 실제 URL·포트,
 
 **자동 후속 평가：** 완료 후 자동 평가가 항상 시작되는 것은 아닙니다. 일반 MCP 실행에서는 `auto_evaluate`가 켜져 있고 실행 결과가 평가 대상일 때 정식 평가 job 등록을 시도합니다. 설정이 꺼져 있거나 결과가 평가 대상이 아니거나 등록이 실패할 수 있으므로 실제 평가 상태와 job ID를 확인하세요. 평가가 시작된 뒤 일반 MCP 평가 job에서 `auto_evolve`가 켜져 있고 `final_approved`가 `false`이면 `rejected`뿐 아니라 `unverified`도 제한된 Ralph 후속 등록을 시도할 수 있습니다. 실제 후속 실행 여부는 Seed 등 조건과 등록 결과에 따라 달라지며, 실행되면 추가 시간과 모델 비용이 들 수 있습니다. 상태와 최종 결과를 확인하세요.
 
-플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. 독립 CLI에서는 실제 생성 경로를 사용해 터미널에서 `ouroboros run <Seed 파일 경로>`를 실행합니다. 꺾쇠 괄호를 포함한 예시 경로를 그대로 입력하지 마세요. Windows PowerShell에서는 실제 경로를 큰따옴표로 감싸고 다음처럼 실행합니다.
+플러그인 대화에서는 검토한 Seed YAML 또는 실제 파일 경로를 지정해 `ooo run`을 요청합니다. **독립 CLI의 새 실습**은 선택한 새 폴더를 `--project-dir`로 명시합니다. **기존 프로젝트 변경**이라면 새 폴더 예시를 그대로 쓰지 말고 [기존 프로젝트 안내](/docs/existing-project-detail/)를 먼저 읽고, 보존할 변경과 Seed의 작업 대상·branch를 확인한 원래 프로젝트 경로를 지정하세요. 아래 Seed·프로젝트 경로는 모두 실제 절대 경로로 바꾸며, 공백이 있어도 각각 한 인자가 되도록 따옴표를 유지합니다.
+
+macOS/Linux/WSL의 POSIX 셸(독립 CLI 환경 활성화 후):
+
+```bash
+ouroboros run "/actual/Seed drafts/task.yaml" --project-dir "/actual/first project"
+```
+
+Windows PowerShell(앞서 확인한 가상환경 인터프리터):
 
 ```powershell
-& $OuroborosPython -m ouroboros run "<실제 Seed 파일 경로>"
+& $OuroborosPython -m ouroboros run "C:\actual\Seed drafts\task.yaml" --project-dir "C:\actual\first project"
 ```
+
+Seed 저장 위치가 작업 폴더와 같다고 가정하지 마세요. 고정 main `592c667f`와 release `0.59.9`는 명시한 `--project-dir`을 우선하고, 미지정이면 Seed의 경로 정보·저장 위치 등에 따라 실행·검증 대상을 정합니다. 이 옵션은 OS 격리가 아니며, worktree가 만들어지면 반환된 실제 작업 위치를 다시 확인합니다. [main path resolution](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L290-L354) · [release path resolution](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L290-L354)
 
 실행은 코드와 파일을 변경하고 명령 및 모델 호출을 시작할 수 있습니다.
 

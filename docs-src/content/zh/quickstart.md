@@ -245,11 +245,21 @@ Windows PowerShell（项目目录中）：
 
 **自动后续评估：** 运行完成后不一定会启动正式评估。普通 MCP 运行只有在 `auto_evaluate` 已开启且运行结果符合评估条件时，才会尝试登记正式评估 job。设置关闭、结果不符合条件或登记失败时，评估可能不会启动；请核对实际评估状态和 job ID。评估启动后，普通 MCP 评估 job 中若 `auto_evolve` 已开启且 `final_approved` 为 `false`，`rejected` 和 `unverified` 都可能触发对有次数限制的 Ralph 后续任务的登记尝试。是否实际运行取决于 Seed 是否可用及登记结果等条件；运行时可能产生额外时间和模型费用。请检查状态和最终结果。
 
-在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。使用独立 CLI 时，请在终端中使用实际生成路径运行 `ouroboros run <Seed 文件路径>`。不要原样输入带尖括号的示例路径。Windows PowerShell 中，请将实际路径放在双引号内并运行：
+在插件对话中，请求 Ouroboros 运行已检查的 Seed YAML，或指定其实际文件路径。**独立 CLI 的新练习**应使用 `--project-dir` 明确选择新文件夹。**修改现有项目**时，先阅读[现有项目指南（韩文）](/docs/existing-project-detail/)，保留已有变更并确认 Seed 的目标和 branch，然后指定原项目路径，不要照抄新文件夹示例。将下面两个路径都替换为真实绝对路径，并保留引号，使含空格的路径仍各自作为一个参数。
+
+macOS/Linux/WSL 的 POSIX shell（已激活独立 CLI 环境）：
+
+```bash
+ouroboros run "/actual/Seed drafts/task.yaml" --project-dir "/actual/first project"
+```
+
+Windows PowerShell（使用前面确认的虚拟环境解释器）：
 
 ```powershell
-& $OuroborosPython -m ouroboros run "<实际 Seed 文件路径>"
+& $OuroborosPython -m ouroboros run "C:\actual\Seed drafts\task.yaml" --project-dir "C:\actual\first project"
 ```
+
+Seed 的存放目录不一定是目标项目。固定 main `592c667f` 和 release `0.59.9` 优先使用显式 `--project-dir`；未指定时，Seed 中的路径信息及存放位置等会影响执行和验证目标。此选项不是 OS 隔离；若创建了 worktree，还应检查实际返回的工作路径。 [main path resolution](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py#L290-L354) · [release path resolution](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/run.py#L290-L354)
 
 执行过程可能会更改代码和文件，并启动命令及模型调用。
 
