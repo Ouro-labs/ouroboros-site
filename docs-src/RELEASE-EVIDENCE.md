@@ -76,3 +76,21 @@ provenance; historical byte integrity is enforced by the unchanged pending chain
 The tests use clearly labelled synthetic approvals only inside disposable test
 fixtures to exercise the technical success path. They do not create approval
 files in the real worktree and do not authorize publication.
+
+
+## Manual dispatch boundary
+
+The deploy job requires `github.ref == 'refs/heads/main'`. This prevents an
+accidental non-main manual dispatch of this reviewed workflow from starting the
+deployment job. The `github-pages` environment remains unchanged. This guard is
+not a defense against a repository writer who can modify the branch workflow,
+remove the guard or gate, and select another environment. The existing
+environment's main-only rule applies to jobs referencing that environment;
+it is not a repository-wide guarantee that every Pages deployment uses it.
+
+Administrator followup: explicitly define trusted workflow writers/deployers and
+review repository/branch/environment policies against that trust boundary. Main
+protection or required environment reviewers can strengthen their own paths but
+do not alone prevent an alternate branch workflow/environment. No permissions or
+environment settings were changed for this guard. Final user deployment approval
+and actual release evidence remain required; this ref check supplies neither.

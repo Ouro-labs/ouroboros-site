@@ -8,6 +8,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+
+import yaml
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -80,6 +82,11 @@ class ReleaseEvidenceTest(unittest.TestCase):
 
     def test_missing_mac_report_and_workflow_gate(self):
         workflow = (self.root/'.github/workflows/pages.yml').read_text()
+        deploy = yaml.safe_load(workflow)['jobs']['deploy']
+        # Prevent accidental non-main dispatch of the reviewed workflow.
+        # A writer who rewrites this workflow can also remove this guard.
+        self.assertEqual(deploy['if'], "github.ref == 'refs/heads/main'")
+        self.assertEqual(deploy['environment']['name'], 'github-pages')
         gate = 'python docs-src/verify-release-content.py'
         self.assertEqual(workflow.count(gate), 1)
         self.assertLess(workflow.index(gate), workflow.index('python -m mkdocs build --strict'))
