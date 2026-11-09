@@ -6,6 +6,22 @@
 
 기준: 2026-11-04, 고정 소스 [`722172ef096767583679d04aef5e847458fee6b2`](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2). 아래는 이 커밋의 독립 CLI [update 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/update.py)을 설명한다. 배포 패키지 `0.59.9`를 비롯한 설치본이 이 소스와 같다고 가정하지 말고, **해당 설치 환경의** `ouroboros --version`, `ouroboros update --help`, 설치 관리자와 호스트 설정을 먼저 확인한다. 호스트에 설치한 플러그인의 갱신과 독립 CLI 패키지의 갱신은 서로 다른 경로일 수 있다. [설치 경로](/docs/first-run-detail/#install-check), [런타임별 차이](/docs/runtime-support-detail/).
 
+## 플러그인과 CLI의 갱신 대상을 먼저 구분하기 {#plugin-only-update}
+
+아래는 제품 main `592c667f`와 release `0.59.9`의 소스·스킬을 대조한 범위입니다. **호스트에 plugin만 설치했다면 터미널에 `ouroboros`가 없어도 정상일 수 있습니다.** 명령이 없거나 도움말을 실행할 수 없다는 이유만으로 구형 설치·손상이라고 단정하지 마세요. `ooo update` 스킬은 별도 CLI의 `ouroboros update` 호출을 전제로 하므로 plugin-only 설치에서 그대로 동작한다고 보장할 수 없습니다.
+
+| 실제 설치 형태 | 먼저 확인할 대상 | 갱신 후 확인할 것 |
+| --- | --- | --- |
+| 호스트 plugin만 사용 | 같은 호스트의 실제 plugin 출처·참조와 MCP launcher의 command/args. 별도 CLI 존재를 가정하지 않습니다. | 해당 호스트가 지원하는 plugin 갱신의 범위·기존 pin을 확인합니다. 전역 CLI 신규 설치나 pin 해제를 자동 복구로 대신하지 않습니다. |
+| 독립 CLI | 실제 실행 파일과 그 환경의 설치 관리자·extras·원래 설치 기록. `--check`는 원격 정보를 조회합니다. | 같은 환경의 패키지 버전과 실패 단계. 다른 CLI 환경의 성공을 해당 설치의 갱신으로 세지 않습니다. |
+| CLI와 호스트 plugin 모두 사용 | CLI 패키지, 설치된 plugin metadata, 그 plugin이 띄우는 MCP 서버를 별도 식별합니다. | 패키지 갱신, 호스트 통합 refresh, 실제 연결된 서버의 도구·판본을 각각 확인합니다. 하나의 버전 일치나 종료 0이 나머지 성공을 보장하지 않습니다. |
+
+고정 Codex descriptor `.mcp.codex.json`은 서버 의존성을 `ouroboros-ai[mcp]==0.59.9`로 지정합니다. plugin을 refresh해도 **선택된 descriptor에 그 pin이 남아 있으면** 별도 CLI 업그레이드가 그 서버 의존성을 바꾸지 않습니다. 반면 조사한 Claude `.mcp.json`의 의존성은 무버전 `ouroboros-ai[mcp]`이므로 두 host의 판본 선택을 같은 방식으로 가정하지 않습니다. 설치된 plugin version 표시는 실제 서버 프로세스 버전·schema 검증을 대신하지 않습니다.
+
+이 두 제품 판본의 updater는 패키지가 최신이면 runtime refresh 분기 전에 반환하므로 `--runtime all`을 붙여 재실행해도 plugin 갱신을 강제하지 않습니다. 업그레이드가 진행되는 경우에도 `--runtime codex`의 setup/rules·skills refresh와 `--runtime all` 분기의 별도 Codex marketplace refresh는 구분해야 합니다. plugin 하나의 문제를 해결하려고 관련 없는 host까지 `all`로 갱신하거나 기존 marketplace 참조를 임의로 해제하지 마세요. 부분 실패의 실제 단계와 범위부터 확인합니다.
+
+근거: [main update 스킬](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/skills/update/SKILL.md), [release update 스킬](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/skills/update/SKILL.md), [main updater](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/update.py#L1052-L1070), [release updater](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/update.py#L1051-L1069), [Codex descriptor](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/.mcp.codex.json), [Claude descriptor](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/.mcp.json). 이는 정적 대조이며 실제 host 갱신·서버 재연결·모델 실행은 시험하지 않았습니다.
+
 ## 무엇을 확인하고 변경하는가
 
 | 명령/옵션 | 이 소스의 동작과 범위 |

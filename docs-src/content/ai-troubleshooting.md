@@ -79,7 +79,7 @@ Codex에서 `CODEX_SETUP_REQUIRED` 또는 `codex mcp list`의 항목 누락만�
 
 **Interview 입력 판본 차이:** 고정 main `592c667f`의 `ouroboros_interview`는 비어 있지 않은 `calibration_input`을 `answer`·재개보다 먼저 처리합니다. release `0.59.9`의 schema와 handler에는 `calibration_input`과 `interview_calibration`이 없으며, 지원하지 않는 인자가 handler까지 전달된 경우 `initial_context` 없이 `session_id`와 해당 calibration 인자만 있으면 재개 분기, `answer`도 있으면 답변 분기로 갈 수 있습니다. 호스트나 schema가 먼저 인자를 거부할 수도 있습니다. release에는 두 인자를 보내지 말고 기존 호스트 대화에서 설명을 요청하세요. 세션 ID와 진행 상태를 보존하고 추가 모델 호출·비용 가능성을 확인하세요. 설치된 서버의 실제 schema와 호스트 동작은 미검증입니다. [main 분기](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py#L2100-L2125) · [main 입력](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/interview_calibration.py#L22-L42) · [release 분기](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/authoring_handlers.py#L2093-L2115)
 
-**후속 작업은 별도로 확인:** 원래 job이나 세션의 취소가 이미 연결된 평가·Ralph job의 중단을 보장하지 않습니다. 원래 result의 `chained_evaluate_job_id`와 그 평가 result의 `chained_ralph_job_id`가 실제로 반환됐는지 확인하고 각 job의 같은 서버·소유자·상태를 따로 확인하세요. 사용자가 명시적으로 중단을 요청한 경우에만 정확한 후속 job ID마다 해당 서버의 `ouroboros_cancel_job` 계약에 따라 개별 취소를 요청합니다. 각 작업이 terminal이면 result와 이미 발생한 파일·외부 효과도 확인하세요. 체인이나 ID가 항상 있는 것은 아니며, ID·상태가 없거나 다른 호스트라면 추측하거나 중복 실행하지 말고 기존 기록과 소유자를 확인합니다. [상세 확인 순서](/docs/status-guide/) · [평가 연결](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/run_evaluate_chain.py#L150-L175) · [Ralph 연결](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluate_ralph_chain.py#L462-L472)
+원래 실행에 연결된 평가·Ralph 작업은 별도로 계속될 수 있습니다. 중지가 끝났는지 판단하기 전에 [후속 작업의 ID와 종료 상태](#chained-job-checks)를 확인하세요.
 
 연결이 끊겼다고 기존 작업이 중단됐다고 단정하지 마세요. 원래 호스트 대화의 시작 도구와 실제 반환 필드명을 먼저 확인하고, `job_id`, `session_id`, `execution_id`, `auto_session_id`를 구분하세요. `session_id`라는 필드명만으로 실행 세션이라고 단정할 수 없습니다. Interview MCP 시작 응답의 `session_id`는 `state.interview_id`이며, 오케스트레이터 실행 세션과 다른 ID입니다. 아래 실행 세션 명령에 넣지 마세요. CLI `ouroboros status run --session-id`는 오케스트레이터 세션 ID만 받습니다. MCP 도구 `ouroboros_session_status`는 오케스트레이터 세션을 조회하고 `auto_<id>`도 받아 auto 세션 상태를 반환합니다. Interview ID는 별도 유형입니다. [main Interview 시작 응답](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/authoring_handlers.py#L2661-L2713) · [main 상태 조회 범위](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/query_handlers.py#L291-L323) · [main 세션 재구성 조건](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/orchestrator/session.py#L1298-L1342) · [CLI run 상태 옵션](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/status.py#L374-L389). 같은 범위는 release `v0.59.9`에서도 대조했습니다([Interview 응답](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/authoring_handlers.py#L2686-L2738), [상태 조회](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/query_handlers.py#L291-L323), [재구성 조건](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/orchestrator/session.py#L1298-L1342), [CLI 옵션](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/status.py#L374-L389)).
 
@@ -103,7 +103,21 @@ Interview를 이어가려면 원래 호스트/MCP에서 같은 `session_id`를 `
 
 재개·취소·새 실행 전에는 기존 소유자와 최종 상태, Seed **파일 경로**, 작업 폴더·브랜치, 미커밋 파일 및 이미 발생한 외부 효과를 확인합니다. 응답이 사라진 것만으로 새 실행을 만들지 마세요. 이 기준 소스에서 `run workflow --resume`은 프로세스에만 있던 check package를 복구하지 못하는 특정 경우 이전 세션을 실패로 기록한 뒤 새 시도를 시작할 수 있습니다. 현재 설치의 동작과 대상 경로를 확인하고 선택하세요. 취소가 이미 발생한 외부 효과를 되돌리는 것도 아닙니다. [실행 재개 구현](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/run.py), [복구 안내](/docs/recovery-detail/).
 
+
+### 별도로 이어진 후속 작업 확인 {#chained-job-checks}
+
+원래 job이나 실행의 취소가 별도로 등록된 평가·Ralph job의 중단을 보장하지는 않습니다. 중지가 끝났다고 판단하기 전에 다음 순서로 확인하세요.
+
+1. 원래 실행의 최종 결과에 `chained_evaluate_job_id`가 있으면 같은 서버에서 그 평가 job의 상태를 조회하고, 종결 상태일 때 결과를 읽습니다.
+2. 평가 결과에 `chained_ralph_job_id`가 있으면 그 Ralph job도 같은 방법으로 확인합니다. 두 ID는 해당 후속 등록이 성공했을 때만 나타나므로, 모든 실행에 있다고 가정하거나 없는 ID를 추측하지 마세요.
+3. 사용자가 실행 중인 후속 작업도 멈추라고 명시적으로 요청했다면 정확한 ID와 소유자를 확인하고, 설치된 서버의 `ouroboros_cancel_job` 입력 schema에 맞춰 해당 job마다 취소를 요청합니다.
+4. 각 job의 상태와 종결 결과를 다시 조회하고 이미 발생한 파일 변경·외부 효과를 확인합니다. 취소 요청은 종료 완료나 변경 복구를 보장하지 않습니다. 상태나 소유자가 불확실하면 기존 기록과 작업 공간을 보존하고 대체 실행을 시작하지 마세요.
+
+고정 main과 release `v0.59.9`의 근거: [main 평가 연결](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/run_evaluate_chain.py#L150-L175) · [main Ralph 연결](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/evaluate_ralph_chain.py#L462-L472) · [main job 취소](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/mcp/tools/job_handlers.py#L2148-L2189) · [release 평가 연결](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/run_evaluate_chain.py#L150-L175) · [release Ralph 연결](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/mcp/tools/evaluate_ralph_chain.py#L462-L472). 실제 설치 판본·호스트 연동은 다를 수 있습니다.
+
 ## 업데이트가 부분 실패했을 때 {#update}
+
+**갱신 대상부터 구분하세요.** plugin-only 설치는 전역 `ouroboros` 명령이 없어도 정상일 수 있고, `ooo update` 스킬은 별도 CLI를 전제로 합니다. CLI 부재·도움말 오류만으로 구형 설치라고 단정하거나 새 전역 설치를 자동 처방하지 마세요. CLI 패키지·호스트 plugin·실제 MCP 서버를 따로 식별하고, 고정 Codex descriptor의 `==0.59.9` pin과 plugin 참조를 확인합니다. 패키지가 최신이면 updater는 runtime refresh 전에 반환하므로 반복 실행·`--runtime all`로 plugin/server 복구를 강제할 수 없습니다. [설치 형태별 갱신 경계](/docs/update-detail/#plugin-only-update)를 먼저 확인하세요.
 
 `ouroboros update --check`는 원격 배포 정보를 조회하므로 오프라인 검사가 아닙니다. 갱신 전 설치 관리자, 실제 실행 파일, 선택된 호스트와 진행 중인 작업을 확인하세요. 설정·플러그인 refresh는 파일을 바꿀 수 있습니다.
 

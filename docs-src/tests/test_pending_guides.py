@@ -13,6 +13,12 @@ spec = importlib.util.spec_from_file_location('pending_guides', ROOT/'verify-pen
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
+def copy_current_site_fixture(root):
+    # Latest exact delta includes landing/learn HTML; copy before restoring it.
+    shutil.copytree(ROOT.parent/'site', root.parent/'site',
+                    symlinks=True, ignore=shutil.ignore_patterns('docs'))
+
+
 def restore_uninstall_fixture(root):
     path=root/'pending-uninstall-warning.json'
     if not path.exists(): return
@@ -123,8 +129,8 @@ class PendingGuidesTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)/'docs-src'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
+        copy_current_site_fixture(self.root)
         if (self.root/'pending-search-locale.json').is_file(): mod.restore_search_locale_fixture(self.root)
-        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         restore_uninstall_fixture(self.root)
     def rejected(self, message):
         outer_boundary_tests = {
@@ -1103,8 +1109,8 @@ class SeedOrderPriorTamperTest(unittest.TestCase):
     def test_forgery_reaches_previous_boundary(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
+            copy_current_site_fixture(root)
             if (root/'pending-search-locale.json').is_file(): mod.restore_search_locale_fixture(root)
-            (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
             mpath=root/'content-manifest.json';m=restore_latest_wait_manifest(root,json.loads(mpath.read_text()));quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
             for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
@@ -1190,8 +1196,8 @@ class WorktreePriorTamperTest(unittest.TestCase):
     def test_forgery_reaches_previous_boundary(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'docs-src';shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
+            copy_current_site_fixture(root)
             if (root/'pending-search-locale.json').is_file(): mod.restore_search_locale_fixture(root)
-            (root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',root.parent/'site/index.html')
             mpath=root/'content-manifest.json';m=restore_latest_wait_manifest(root,json.loads(mpath.read_text()));quick_eval=json.loads((root/'pending-quickstart-eval.json').read_text())
             for name,entry in quick_eval['pages'].items():m['pages'][name]=entry['prior']
             self.assertEqual(hashlib.sha256((json.dumps(m,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),quick_eval['prior_manifest_sha256'])
@@ -1283,8 +1289,8 @@ class TranslatedPriorTamperTest(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)/'docs-src';shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('__pycache__'))
+        copy_current_site_fixture(self.root)
         if (self.root/'pending-search-locale.json').is_file(): mod.restore_search_locale_fixture(self.root)
-        (self.root.parent/'site').mkdir();shutil.copy2(ROOT.parent/'site/llms.txt',self.root.parent/'site/llms.txt');shutil.copy2(ROOT.parent/'site/index.html',self.root.parent/'site/index.html')
         manifest=restore_latest_wait_manifest(self.root,json.loads((self.root/'content-manifest.json').read_text()))
         quick_eval=json.loads((self.root/'pending-quickstart-eval.json').read_text())
         for name,entry in quick_eval['pages'].items(): manifest['pages'][name]=entry['prior']
@@ -1403,10 +1409,8 @@ class PriorStageTamperTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)/'docs-src'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('__pycache__'))
+        copy_current_site_fixture(self.root)
         if (self.root/'pending-search-locale.json').is_file(): mod.restore_search_locale_fixture(self.root)
-        (self.root.parent/'site').mkdir()
-        shutil.copy2(ROOT.parent/'site/llms.txt', self.root.parent/'site/llms.txt')
-        shutil.copy2(ROOT.parent/'site/index.html', self.root.parent/'site/index.html')
         nav = json.loads((self.root/'pending-recovery-navigation.json').read_text())
         manifest = json.loads((self.root/'content-manifest.json').read_text())
         manifest = restore_latest_wait_manifest(self.root,json.loads((self.root/'content-manifest.json').read_text()))

@@ -30,7 +30,7 @@ jobs:
       - name: Build documentation
         run: |
           python -m pip install -r docs-src/requirements.txt
-          python docs-src/verify-content.py
+          python docs-src/verify-release-content.py
           python -m mkdocs build --strict --config-file docs-src/mkdocs.yml
           python docs-src/augment-search.py
           python docs-src/check-sitemaps.py

@@ -231,7 +231,31 @@ def restore_search_javascript(data, expected_prior_hash):
     if sha(restored)!=expected_prior_hash: raise ValueError('Search file changed: content/assets/ouro-theme.js')
     return restored
 
+def restore_release_readiness_fixture(root):
+    path=root/'pending-release-readiness.json'
+    if path.is_symlink() or not path.is_file(): raise ValueError('Release readiness evidence unsafe')
+    if sha(path.read_bytes())!='e045ff0f18ffbcbe56edb17a6233a5f6b46221ece36375c25016a55fc36ab294': raise ValueError('Release readiness evidence changed')
+    delta=json.loads(path.read_text())
+    expected={'content-manifest.json', 'content/ai-troubleshooting.md', 'content/zh/troubleshooting.md', 'content/update-detail.md', 'content/en/ai-troubleshooting.md'}
+    if delta.get('status')!='pending' or set(delta.get('files',{}))!=expected: raise ValueError('Release readiness shape')
+    for name,item in delta['files'].items():
+        target=root/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Release readiness path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Release readiness current bytes')
+    if json.loads((root/'content-manifest.json').read_text()).get('semantic_links_reviewed') is not False:
+        raise ValueError('Release readiness requires closed gate')
+    expected_site={'site/learn/en/troubleshooting/index.html', 'site/learn/first-loop/index.html', 'site/learn/architecture/index.html', 'site/learn/zh/troubleshooting/index.html', 'site/learn/en/execute/index.html', 'site/learn/en/existing-project/index.html', 'site/learn/zh/evaluate/index.html', 'site/learn/glossary/index.html', 'site/learn/why-ouroboros/index.html', 'site/learn/en/why-ouroboros/index.html', 'site/learn/en/loop-engineering/index.html', 'site/learn/zh/index.html', 'site/learn/index.html', 'site/learn/existing-project/index.html', 'site/learn/zh/why-ouroboros/index.html', 'site/learn/en/evolve/index.html', 'site/learn/evaluate/index.html', 'site/learn/what-is-ouroboros/index.html', 'site/learn/en/glossary/index.html', 'site/learn/en/evaluate/index.html', 'site/learn/zh/evolve/index.html', 'site/learn/zh/existing-project/index.html', 'site/learn/en/install/index.html', 'site/learn/zh/architecture/index.html', 'site/learn/en/index.html', 'site/index.html', 'site/learn/zh/glossary/index.html', 'site/learn/troubleshooting/index.html', 'site/learn/interview/index.html', 'site/learn/evolve/index.html', 'site/learn/zh/interview/index.html', 'site/learn/en/seed/index.html', 'site/learn/start/index.html', 'site/learn/how-it-works/index.html', 'site/learn/zh/execute/index.html', 'site/learn/zh/what-is-ouroboros/index.html', 'site/learn/en/interview/index.html', 'site/learn/execute/index.html', 'site/learn/install/index.html', 'site/learn/en/architecture/index.html', 'site/learn/seed/index.html', 'site/learn/en/what-is-ouroboros/index.html', 'site/learn/zh/install/index.html', 'site/learn/zh/seed/index.html'}
+    if set(delta.get('site_files',{}))!=expected_site: raise ValueError('Release readiness site shape')
+    for name,item in delta['site_files'].items():
+        target=root.parent/name
+        if target.is_symlink() or any(p.is_symlink() for p in target.parents): raise ValueError('Release readiness site path unsafe')
+        if not target.is_file() or target.read_bytes()!=item['current'].encode(): raise ValueError('Release readiness site current bytes')
+    for name,item in delta['files'].items(): (root/name).write_text(item['prior'])
+    for name,item in delta['site_files'].items(): (root.parent/name).write_bytes(item['prior'].encode())
+    path.unlink()
+
 def restore_subproject_result_fixture(root):
+    if (root/'pending-release-readiness.json').exists(): restore_release_readiness_fixture(root)
     path=root/'pending-subproject-result.json'
     if path.is_symlink() or not path.is_file(): raise ValueError('Subproject result evidence unsafe')
     if sha(path.read_bytes())!='6acdfa775fbde700c8baf56b2da4d741677176284e3ac663574804c95c14a98d': raise ValueError('Subproject result evidence changed')
@@ -455,6 +479,15 @@ def verify_uninstall_delta(root):
     return True
 
 def verify(root=ROOT, _uninstall=True):
+    if (root/'pending-release-readiness.json').exists():
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            prior=Path(tmp)/'docs-src'
+            shutil.copytree(root,prior,symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
+            shutil.copytree(root.parent/'site',prior.parent/'site',symlinks=True,ignore=shutil.ignore_patterns('docs'))
+            restore_release_readiness_fixture(prior)
+            verify(prior,_uninstall=_uninstall)
+        return
     if (root/'pending-subproject-result.json').exists():
         import tempfile, shutil
         with tempfile.TemporaryDirectory() as tmp:

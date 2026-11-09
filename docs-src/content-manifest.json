@@ -59,8 +59,8 @@
     },
     "ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting.md",
-      "source_sha256": "9af21a759415143da3de8f554438abddae88e0cd0ce39e83684be6402022c4c1",
-      "page_sha256": "42ef9e92ee808441f1d146bb05c55ce18f5bc622f50156bb85f119ab388936a5"
+      "source_sha256": "3a68320369fff2fc079af174438015fc4baefc137fd2c6021c85525f2eb07030",
+      "page_sha256": "3a35428d894d54d9336ea1f3942fa1022c898beaa369cc862f802ec9bf32002e"
     },
     "en/quickstart.md": {
       "source": "content/quickstart-en.md",
@@ -79,13 +79,13 @@
     },
     "zh/troubleshooting.md": {
       "source": "content/troubleshooting-zh.md",
-      "source_sha256": "366b7a2a35d61647a757a146480f1ce200da6b2c8db4f3e16a0b2b3e1ae20f1b",
-      "page_sha256": "a0522e06b010288b8a46c2d74449210b9bfcab1f6781498c6830a0f60ce669a1"
+      "source_sha256": "1c18dc0a269e55b81ad9b1879e0d2660d1e82d6cd91b9ef24bbbca0f20d31c33",
+      "page_sha256": "b40812537e7e06de3ee265d3fde9beab6f90e0da812ca1edb18b9a5e00fe5e99"
     },
     "en/ai-troubleshooting.md": {
       "source": "content/ai-troubleshooting-en.md",
-      "source_sha256": "a64186ed808563a72a4e1c9da621a69f5f4c5b9e04f25ce70a7d35dff81e4950",
-      "page_sha256": "365a7ccb28e8e586d2aa7cdfc0eea3a94fdb43f9780b4bf6358dd74fbea5fd9c"
+      "source_sha256": "d0071049a008d454576e91344380694b370b6f409952c8ede64412c06bcdd545",
+      "page_sha256": "08be01f80c4320e27048ebf00535ab068a87d25ee8a49c131b01b98f8ce49dea"
     },
     "cli-reference-guide.md": {
       "source": "content/cli-reference-guide.md",
@@ -164,8 +164,8 @@
     },
     "update-detail.md": {
       "source": "content/update-detail.md",
-      "source_sha256": "46ec99de26a37e4b99199d6386d274344f2eebdda051ff5d81daad177296ce35",
-      "page_sha256": "177b4965ab3c863c425e423b0cb20aa5b531d459099e84d8863bb5eba4f5e0ec"
+      "source_sha256": "467450a2a34b425ab1a0ab88ae760e09a47cca418deff4526803d0efbd09d96c",
+      "page_sha256": "5d008bf715374149e60ab9e007afeb31e421d78d7913d769f58073349bf8895c"
     },
     "diagnostics-detail.md": {
       "source": "content/diagnostics-detail.md",

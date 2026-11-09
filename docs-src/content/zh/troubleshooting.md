@@ -2,6 +2,8 @@
 
 本页补充[快速开始](/docs/zh/quickstart/)的首次安装/MCP 排查入口，以及刚完成或中断一次任务后的检查步骤。它只翻译了初学者需要的环境分辨、ID 识别、状态查询、评估和安全恢复要点；它不是完整的 CLI、MCP 或故障排除手册，也不是整份故障排除指南的翻译。
 
+安装、MCP 连接、认证和更新问题的完整 AI 诊断说明，请参阅[英文 AI 诊断指南](/docs/en/ai-troubleshooting/)或[韩文 AI 诊断指南](/docs/ai-troubleshooting/)。这两份指南也提供[后续评估与 Ralph 任务的检查步骤](/docs/en/ai-troubleshooting/#chained-job-checks)；目前没有完整的中文版 AI 诊断手册。
+
 > **版本与验证范围：**快速开始和状态说明以产品源码 [`592c667f`](https://github.com/Q00/ouroboros/tree/592c667f076c3dad7ef68d7844e91480d80135d0) 为参照。恢复与评估详细指南中的部分细节来自较早的固定提交 [`722172ef`](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2)，不能据此假定与当前 `main`、公开发行版 `0.59.9` 或你安装的插件/MCP 服务器完全相同。本文没有在真实模型和所有宿主上验证。先查看你所用版本的命令帮助和已连接服务器的工具/输入 schema。
 
 ## 安装或 MCP 连接异常：先区分环境

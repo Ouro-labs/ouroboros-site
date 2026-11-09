@@ -40,8 +40,9 @@ class ScopeDeltaTest(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp)/'docs-src'
    shutil.copytree(ROOT,root,ignore=shutil.ignore_patterns('__pycache__'))
-   (root.parent/'site').mkdir()
-   for name in ('index.html','llms.txt'):shutil.copyfile(ROOT.parent/'site'/name,root.parent/'site'/name)
+   # Nested pending restorers need the complete site fixture, not only the two
+   # files asserted directly by this suite.
+   shutil.copytree(ROOT.parent/'site',root.parent/'site',ignore=shutil.ignore_patterns('docs'))
    M.verify(root) # Ensure mutation reaches the real current verifier boundary.
    path=root.parent/'site/llms.txt'
    path.write_bytes(self.current.replace(M.PUBLIC_INDEX_SCOPE_ADDITION,b'')+M.PUBLIC_INDEX_SCOPE_ADDITION)
