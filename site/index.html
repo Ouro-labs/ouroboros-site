@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ouroboros — spec, run, verify AI coding work</title>
-<meta name="description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta name="description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <link rel="canonical" href="https://ouroboros.page/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ouroboros.page/">
 <meta property="og:title" content="Ouroboros — spec, run, verify AI coding work">
-<meta property="og:description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta property="og:description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <meta property="og:image" content="https://ouroboros.page/assets/ouroboros.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ouroboros — spec, run, verify AI coding work">
-<meta name="twitter:description" content="Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. Your coding agent writes the code; Ouroboros pins the spec and verifies the result.">
+<meta name="twitter:description" content="Ouroboros helps coding agents turn a goal into a specification, run the work, and evaluate the result. Explore the guides, installation paths, and references.">
 <meta name="twitter:image" content="https://ouroboros.page/assets/ouroboros.jpg">
 <link rel="stylesheet" href="/learn/learn.css?v=3">
 <link rel="icon" href="/assets/logo-snake.png">
@@ -51,6 +51,7 @@
 .cards a{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--paper)}
 .cards a strong{display:block;margin-bottom:6px}
 .cards a span{font-size:14px;color:var(--muted)}
+@media(max-width:800px){.top-inner{height:auto;min-height:64px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.top nav{width:100%;margin-left:0;flex-wrap:wrap;gap:8px 12px}.top nav a[data-aux]{display:inline}.top nav a,.top nav button{white-space:nowrap}}
 @media(max-width:720px){.demos{grid-template-columns:1fr}.hero{padding:40px 26px 36px}}
 @media(max-width:640px){.cards{grid-template-columns:1fr}}
 </style>
@@ -61,10 +62,10 @@
 <div class="top-inner">
 <a class="brand" href="/"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros</span></a>
 <nav aria-label="Main menu">
-<a href="/learn/en/">Guide</a>
+<a href="/docs/quickstart/" lang="ko">빠른 시작</a>
+<a href="/docs/en/quickstart/" lang="en">Quickstart</a>
+<a href="/docs/zh/quickstart/" lang="zh-Hans">快速入门</a>
 <a href="/roadmap/">Roadmap</a>
-<a href="/learn/">한국어</a>
-<a href="/learn/zh/">中文</a>
 <a data-aux href="https://github.com/Q00/ouroboros">GitHub</a>
 <button class="theme" data-theme-toggle type="button">Theme</button>
 </nav>
@@ -73,16 +74,28 @@
 <main id="content" class="home">
 <section class="hero">
 <div class="eyebrow">OPEN SOURCE · MIT</div>
-<h1>Your coding agent writes the code.<br>Ouroboros <em>verifies</em> the result.</h1>
-<p class="sub">Ouroboros manages the requirements, execution, evaluation, and records of AI coding work. It pins the spec before the run and verifies the result after it.</p>
+<h1>Your coding agent writes the code.<br>Ouroboros helps you <em>evaluate</em> the result.</h1>
+<p class="sub">For developers working with AI coding agents: turn a goal into a Seed specification, run the work, and review the evaluation and records.</p>
 <div class="cta">
-<a class="primary" href="#install">Install</a>
-<a class="ghost" href="/learn/en/">Read the guide</a>
+<a class="primary" href="#quickstart">Get started</a>
+<a class="ghost" href="/docs/en/quickstart/">Read the quickstart draft</a>
 </div>
 <div class="chips" aria-label="Supported runtimes">
 <span>Claude Code</span><span>Codex CLI</span><span>GitHub Copilot CLI</span><span>OpenCode</span><span>Hermes</span><span>Gemini</span><span>Kiro CLI</span><span>Pi CLI</span><span>Zcode</span><span>Goose</span><span>GJC</span><span>Antigravity CLI</span><span>Grok Build CLI</span>
 </div>
 </section>
+
+<div class="sect">
+<h2 id="quickstart">Start with a small task</h2>
+<p>Choose the installation path for your coding environment. The example below uses Claude Code; the <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">product getting-started guide</a> also covers Codex and the standalone CLI.</p>
+<ol>
+<li><a href="#install">Install the Claude Code plugin</a> and its prerequisites, then open a Claude Code session.</li>
+<li>Run <code>ooo setup</code>, then request <code>ooo interview</code> for a simple to-do web app that adds items and marks them complete.</li>
+<li>Answer the questions, request <code>ooo seed</code>, and review the Seed YAML and its acceptance criteria before asking for <code>ooo run</code>.</li>
+<li>Inspect the generated work and evaluation; check that the app can add an item and mark it complete. A completed run is evidence to review, not a substitute for your own judgment.</li>
+</ol>
+<p>Follow the quickstart in <a href="/docs/quickstart/" lang="ko">한국어</a>, <a href="/docs/en/quickstart/" lang="en">English</a>, or <a href="/docs/zh/quickstart/" lang="zh-Hans">中文</a>. For troubleshooting and recovery, see <a href="/docs/ai-troubleshooting/" lang="ko">한국어</a>, <a href="/docs/en/troubleshooting/" lang="en">English</a> (plus <a href="/docs/en/ai-troubleshooting/" lang="en">AI diagnostics</a>), or <a href="/docs/zh/troubleshooting/" lang="zh-Hans">中文</a>. These drafts refer to product source <code>592c667f</code>; check your installed version and host. The earlier <a href="/learn/en/troubleshooting/">0.51.5 troubleshooting chapter</a> remains available, as do <a href="https://github.com/Q00/ouroboros/issues">product issues</a>.</p>
+</div>
 
 <p class="demo-lead"><b>Four separate runs, four hosts.</b> Different tasks on purpose — the engine is what is shared, not the prompt.</p>
 <div class="demos">
@@ -100,17 +113,27 @@
 <pre><code>claude plugin marketplace add Q00/ouroboros
 claude plugin install ouroboros@ouroboros</code></pre>
 </div>
-<p class="foot-note">Requires Claude Code. No Python needed. Prefer a standalone CLI? <code>pip install ouroboros-ai</code> — see the <a href="/learn/en/install/">install guide</a>.</p>
+<p class="foot-note">Requires Claude Code and uv on the host. See the current <a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md">installation instructions</a> for prerequisites and other environments, including the standalone CLI. The <a href="/learn/en/install/">site install chapter</a> covers the guide’s earlier version.</p>
 
 <h2 id="how">How it works</h2>
 <figure class="diagram"><img src="/assets/learn/diagrams/what-io.png" alt="Diagram: an idea passes through Ouroboros, which produces a Seed and records, while the runtime produces code and tests" width="1536" height="1024"><figcaption>The input is an idea. Ouroboros manages the work. The runtime writes the code. The output is code plus records.</figcaption></figure>
 
 <h2 id="docs">Documentation</h2>
+<p>The three quickstart and troubleshooting drafts refer to product source <code>592c667f</code>; the English AI troubleshooting guide adds host and connection diagnostics. The earlier Korean and English learning guides describe 0.51.5; the Chinese learning guide is historical and its exact baseline is unconfirmed. Check your installed version and host for applicable commands and behavior.</p>
 <div class="cards">
-<a href="/learn/en/"><strong>Guide (English)</strong><span>What it is, install, and every step from Interview to Ralph.</span></a>
-<a href="/learn/"><strong>한국어 가이드</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
-<a href="/learn/zh/"><strong>中文指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
+<a href="/docs/quickstart/" lang="ko"><strong>한국어 빠른 시작 (초안)</strong><span>설치부터 첫 작업과 결과 확인까지.</span></a>
+<a href="/docs/en/quickstart/" lang="en"><strong>English quickstart draft</strong><span>Installation choices and a first task, based on source 592c667f.</span></a>
+<a href="/docs/zh/quickstart/" lang="zh-Hans"><strong>中文快速入门（草稿）</strong><span>选择安装方式并完成首个任务。</span></a>
+<a href="/docs/"><strong>한국어 작업 문서</strong><span>Interview, Seed와 문제 해결.</span></a>
+<a href="/learn/en/"><strong>English learning guide (0.51.5)</strong><span>Earlier chapters from Interview to Ralph.</span></a>
+<a href="/learn/"><strong>한국어 이전 가이드 (0.51.5)</strong><span>설치부터 Interview·Seed·실행·평가까지 장별 안내.</span></a>
+<a href="/learn/zh/"><strong>中文旧版指南</strong><span>它是什么、怎么装，以及判分断言为什么对 agent 隐藏。</span></a>
 <a href="/roadmap/"><strong>GTM Roadmap</strong><span>Evidence gates, proposed joint validation, and conditional enterprise horizons.</span></a>
+<a href="https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md"><strong>Getting started</strong><span>Product installation and first workflow.</span></a>
+<a href="/docs/en/troubleshooting/"><strong>English troubleshooting draft</strong><span>Partial first-task status, evaluation and recovery guidance, based on source 592c667f.</span></a>
+<a href="/learn/en/troubleshooting/"><strong>Earlier troubleshooting (0.51.5)</strong><span>Historical learning-guide chapter.</span></a>
+<a href="https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md"><strong>CLI reference</strong><span>Commands and options in the product repository.</span></a>
+<a href="/llms.txt"><strong>AI documentation index</strong><span>Guide and product documentation links for AI tools.</span></a>
 <a href="https://github.com/Q00/ouroboros"><strong>GitHub</strong><span>Source, official docs, CLI Reference, issues.</span></a>
 </div>
 </div>

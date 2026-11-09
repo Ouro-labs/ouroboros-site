@@ -13,22 +13,56 @@
 - Ourocode shell: https://github.com/Ouro-labs/ourocode
 - Plugin ecosystem: https://github.com/Ouro-labs/ouroboros-plugins
 
-## Install
+## Version scope and installation
 
-Inside Claude Code (no Python needed):
+The English and Korean guides identify Ouroboros 0.51.5 and upstream d103058fe as their reference. Installed CLI packages, host plugins, and MCP servers can have different versions. Check the installed version and the product repository's current installation and command documentation before applying instructions.
 
-    claude plugin marketplace add Q00/ouroboros
-    claude plugin install ouroboros@ouroboros
+That historical scope applies to the original `/learn/` guides, not to every page under `/docs/`. The first-task quickstarts and AI troubleshooting manual identify their own product-source and release boundaries, including main `592c667f` and release `0.59.9`. Follow the source revision stated on the page you read; do not apply historical `722172ef` detail-page behavior to a current-source instruction without comparison. The canonical repository's legacy `content/llms.txt` uses a different set of relative paths and is not this public index.
 
-Standalone CLI (any terminal):
+- Getting started and installation: https://github.com/Q00/ouroboros/blob/main/docs/getting-started.md
+- CLI reference: https://github.com/Q00/ouroboros/blob/main/docs/cli-reference.md
+- Seed guide (Korean; reviewed against product main 592c667f): https://ouroboros.page/docs/seed-guide/
+- Quickstart, including the separate plugin and CLI paths (Korean): https://ouroboros.page/docs/quickstart/
 
-    curl -fsSL https://raw.githubusercontent.com/Q00/ouroboros/main/scripts/install.sh | OUROBOROS_INSTALL_REF=llms bash
+The product AI index and full context linked below currently state that an Interview automatically creates a Seed. Do not rely on that claim. In the supported host conversation, complete the Interview and confirm the goal, then request `ooo seed` in the same conversation; inspect the actual Seed YAML before execution, using the returned path if saved, and check its goal, constraints, and acceptance criteria. The standalone CLI has a separate flow; follow the quickstart and check the installed version. Host behavior and installed versions may differ from the referenced source.
 
-After install, run `ooo setup` once inside your coding agent, then start with `ooo interview "<your goal>"`. Install guide: https://ouroboros.page/learn/en/install/
+The correction proposed at https://github.com/Q00/ouroboros/pull/2916 is an open, unmerged draft; it has not corrected product main yet.
 
-## Supported runtimes
+- Product AI index (see caveat above): https://github.com/Q00/ouroboros/blob/main/llms.txt
+- Full product AI context (see caveat above): https://github.com/Q00/ouroboros/blob/main/llms-full.txt
 
-Works with Claude Code, Codex CLI, GitHub Copilot CLI, OpenCode, Hermes, Gemini, Kiro CLI, Pi CLI, Zcode, Goose, GJC, Antigravity CLI, and Grok Build CLI.
+## Korean task documentation
+
+- Documentation home: https://ouroboros.page/docs/
+- Quickstart: https://ouroboros.page/docs/quickstart/
+- Interview: https://ouroboros.page/docs/interview-guide/
+- Seed: https://ouroboros.page/docs/seed-guide/
+- Troubleshooting: https://ouroboros.page/docs/ai-troubleshooting/
+
+Markdown source for these pages is available at:
+
+- https://ouroboros.page/docs/markdown/index.md
+- https://ouroboros.page/docs/markdown/quickstart.md
+- https://ouroboros.page/docs/markdown/interview-guide.md
+- https://ouroboros.page/docs/markdown/seed-guide.md
+- https://ouroboros.page/docs/markdown/ai-troubleshooting.md
+
+These pages describe their source revision and verification limits.
+
+## First-task guides in English and Chinese
+
+These are partial draft translations: the quickstarts describe the first task, and the short troubleshooting pages cover selected status, evaluation and recovery steps. Broader detail remains in Korean. The guides cite product source `592c667f` for current-source portions and `722172ef` for historical details; installed CLI, plugin, server and release versions may differ. The site pages are generated from the separate canonical documentation source, and each page states its own verification limits.
+
+- English quickstart: https://ouroboros.page/docs/en/quickstart/
+- English quickstart Markdown: https://ouroboros.page/docs/markdown/en/quickstart.md
+- English first-task troubleshooting: https://ouroboros.page/docs/en/troubleshooting/
+- English first-task troubleshooting Markdown: https://ouroboros.page/docs/markdown/en/troubleshooting.md
+- English AI troubleshooting manual for installation, MCP connection, execution and update problems (source 592c667f; check the installed version): https://ouroboros.page/docs/en/ai-troubleshooting/
+- English AI troubleshooting manual Markdown: https://ouroboros.page/docs/markdown/en/ai-troubleshooting.md
+- Chinese quickstart: https://ouroboros.page/docs/zh/quickstart/
+- Chinese quickstart Markdown: https://ouroboros.page/docs/markdown/zh/quickstart.md
+- Chinese first-task troubleshooting: https://ouroboros.page/docs/zh/troubleshooting/
+- Chinese first-task troubleshooting Markdown: https://ouroboros.page/docs/markdown/zh/troubleshooting.md
 
 ## Guides by language
 

@@ -1,0 +1,88 @@
+# 설정, 운영, 문제 진단
+
+> **판본과 검증 범위:** 이 안내는 2026-11-04에 조사한 Ouroboros 고정 소스 [`722172ef096767583679d04aef5e847458fee6b2`](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2)를 기준으로 한다. 2026-11-06에 확인한 upstream `main` (`592c667f076c3dad7ef68d7844e91480d80135d0`) 및 2026-11-07에 기록된 공개 릴리스 `v0.59.9`와 이 본문의 동등성은 확인하지 않았다. 설치된 호스트 플러그인·MCP 서버의 실제 동작도 미검증이다. 설치판의 도움말·설정·도구 스키마를 먼저 확인하고, 아래 시험 사례를 운영 성공이나 현재판 보장으로 일반화하지 않는다.
+
+기준은 [722172ef](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2), 조사일 2026-11-04다. 아래는 원본 소스·문서에 근거하며 실서비스 실행을 검증한 결과는 아니다. 설정값과 기본값은 설치 버전의 도움말 및 [전체 설정 참조](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/docs/config-reference.md)에서 확인한다.
+
+## 시작 전
+
+1. 호스트 플러그인인지 독립 CLI인지, 프로젝트 경로와 Git 변경 상태, 사용할 모델 런타임과 인증 상태를 확인한다. 다른 저장소에서 실행하지 않는다.
+2. Seed가 목표·비목표·검증 가능한 수용 기준을 담는지 확인한다. 기존 저장소에는 테스트와 작업 범위를 명시한다.
+3. 외부 모델 호출, 워커, 반복 횟수와 사용량이 비용 및 실행 시간을 좌우한다. 자동 실행이 안전한지와 권한을 확인한다.
+4. 비밀값이나 개인 자료를 모델 입력, 로그, 이슈에 넣지 않는다. 실행 권한과 데이터 처리 경계는 호스트·공급자 설정에 달려 있다.
+
+## 주요 설정의 역할
+
+| 영역 | 확인할 내용 |
+| --- | --- |
+| `orchestrator`, `execution` | 작업 분해·동시성 및 실행 제어. 프로젝트 지침과 실행 디렉터리 확인. |
+| `llm`, `models`, `llm_profiles`, `llm_role_profiles`, `economics` | 런타임과 모델 선택은 별도일 수 있다. 모델 식별자와 비용을 설치 환경에서 확인. |
+| `clarification`, `boundary`, `resilience` | 질문·실행 경계·막힘 처리. 자동 가정이 적절한지 검토. |
+| `evaluation`, `consensus` | 검사, 의미 평가, 합의 조건. 수용은 실제 실행 증거 필요. |
+| `persistence`, `drift`, `runtime_controls`, `logging` | 저장, 이탈 관측, 실행 제한, 로그. 로그에도 민감정보가 남을 수 있다. |
+
+이 표는 영역 안내다. 고정 source의 [설정 필드 색인](/docs/config-reference-detail/)은 모델의 선언과 Schema 기본값을 보여 준다. 설정 파일 위치와 우선순위, 환경 변수, 백엔드별 한도는 위 원본 참조를 사용한다. `config show`는 읽기용, `config set`과 `setup`은 설정 변경이다. `config show SECTION`은 해당 `config.yaml` 섹션의 원문 값을 출력하므로, 설정에 잘못 넣은 비밀값·개인 데이터가 포함될 수 있다. 출력 공유 전 내용을 확인하고 가린다. 격리된 임시 HOME에서 합성 문자열을 설정 섹션에 넣어 실제 CLI로 조회했을 때 종료 0이며 문자열이 출력에 그대로 나타났다. 이는 해당 섹션 출력에 대한 시험이며 `credentials.yaml`을 읽거나 모든 출력에서 비밀이 노출된다는 뜻이 아니다. 명령을 실행하기 전 `--help`로 설치 버전의 구문을 확인한다. `config show SECTION --json`은 이 판본에서 섹션 선택보다 JSON 분기가 우선해 지정한 섹션의 존재를 검사하지 않고 전체 유효 설정 뷰를 출력한다. 빈 임시 HOME에서 존재하지 않는 섹션을 지정한 실제 CLI 시험은 일반 출력에서 종료 1, `--json` 추가 시 전체 뷰 JSON과 종료 0이었다. 스크립트에서 섹션 존재나 출력 범위를 종료 코드만으로 판단하지 말고, 공유 전 출력 내용을 확인한다. 이 시험은 합성 설정과 telemetry opt-out으로 수행했으며 실제 비밀이나 사용자 설정을 사용하지 않았고 OS 네트워크 격리는 검증하지 않았다. [고정 CLI 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/config.py).
+
+### 설정 화면과 원격 접속
+
+호스트 스킬의 `ooo config` 또는 `/ouroboros:ouroboros-config`는 설정 화면이나 대화형 변경을 안내한다. 독립 CLI에서는 `ouroboros config`를 실행한다. 고정 소스에서 `--web`을 지정하거나, 출력이 TTY가 아니거나, `CLAUDECODE` 환경 변수가 공백을 제외하고 비어 있지 않으면 웹 화면을 선택한다. 그 외에는 전체 화면 TUI를 선택한다. 따라서 TTY에서도 `CLAUDECODE`가 있으면 웹 모드다. `--host`의 기본은 `localhost`, `--port`가 없거나 0이면 빈 포트를 고르고 `--no-browser`는 브라우저 자동 실행을 막는다. SSH 감지 시 웹 모드는 원격 브라우저를 열지 않고 주소와 터널 예시를 출력한다. 화면은 직접 중단할 때까지 서버로 실행된다.
+
+원격 컴퓨터의 설정을 자신의 브라우저에서 열려면, 원격에서 `ouroboros config --web --host localhost --no-browser`를 실행해 출력된 포트를 확인하고, **접속할 컴퓨터**에서 `ssh -L <포트>:localhost:<포트> <원격호스트>`로 터널을 연다. 해당 컴퓨터의 `http://localhost:<포트>`로 접속한 다음 설정을 저장하고 원격 서버는 Ctrl+C로 종료한다. 포트·호스트는 실제 출력과 접속 환경에 맞게 채운다. 원본 스킬은 `0.0.0.0`으로 외부 인터페이스에 바인딩하는 경로도 제시하지만, 이는 접근 가능 범위가 달라진다. 설정을 변경하는 화면이므로 인증·접근 제한이 확인되지 않았다면 외부 인터페이스에 노출하지 않는다. 이 문서에서는 웹 화면의 인증·접근 제어를 실험하지 않았다.
+
+화면을 열 수 없다면 `ouroboros config show`로 현재 값을 살피고 `ouroboros config set <키> <값>`으로 개별 변경 후 다시 확인할 수 있다. 백엔드 변경은 실행 중인 MCP 서버의 재연결이 필요할 수 있다. 표시·명령 이력에 민감한 값을 남기지 않도록 아래 변경 경계와 [설정 필드 색인](/docs/config-reference-detail/)을 먼저 확인한다. GUI 의존성이 없으면 설치 안내 또는 `uvx` 재실행 경로로 이어질 수 있으므로 자동 다운로드·설치 가능성을 고려한다. 이는 [설정 CLI](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/config.py), [런처](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/config_tui/launcher.py), [호스트 스킬](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/skills/config/SKILL.md)의 정적 대조다. 격리 임시 HOME에서 `--web --host 127.0.0.1 --port <빈 포트> --no-browser`로 실제 서버를 띄워 로컬 HTTP GET 200과 터널 안내를 확인하고 소유 프로세스를 종료했다. 시작 시 임시 로그가 생성됐다. 별도로 격리 임시 HOME에서 Textual 테스트 드라이버로 합성 런타임 목록을 주입하고 전역 런타임 선택을 `claude`에서 `codex`로 바꾼 뒤 Save 버튼을 클릭해 임시 설정 파일에 저장되는 것을 확인했다. 이 시험은 런타임 탐색·모델 갱신을 대역 처리했으며 웹 브라우저나 WebSocket을 통과하지 않았다. 추가로 별도의 임시 HOME과 실행 파일 탐색을 막은 PATH에서 같은 웹 서버에 headless Chromium으로 접속했을 때 localhost WebSocket 핸드셰이크 101과 프레임 송수신을 관찰하고 설정 화면이 렌더링된 스크린샷을 확인했다. 또 다른 격리 임시 HOME에서 headless Chromium의 실제 입력으로 런타임을 claude에서 codex로 선택하고 화면의 Save를 클릭한 뒤 임시 YAML의 `orchestrator.runtime_backend`와 `llm.backend`가 모두 `codex`로 기록된 것을 확인했다. 선택 후 Ctrl+S 키를 합성 전달한 두 번의 시도에서는 설정 파일이 생성되지 않았고, 화면 Save 클릭 후 생성됐다. 이 결과는 해당 headless 입력 경로에 한정하며 실제 키보드의 단축키 동작을 일반화하지 않는다. 인증과 SSH 터널은 시험하지 않았다. 자동 재설치 경로는 환경 변수로 비활성화했고, 외부 네트워크의 OS 수준 격리는 검증하지 않았다.
+
+### 설정 변경과 undo의 실제 범위
+
+고정 구현은 `config set` 성공 시 이전 값과 새 값을 출력한다. 따라서 민감한 값을 명령 인자에 직접 입력하거나 출력·명령 기록을 공유하지 말고, 해당 설정의 권장 자격증명 경로를 확인한다. 빈 임시 HOME에서 `logging.level`을 `info`에서 `debug`로 바꾸는 실제 CLI 시험에서 두 값이 성공 출력에 나타났다. 이 시험에는 합성 값만 사용했으며 모든 설정 필드나 인증 저장 방식을 검증하지 않았다. 독립 CLI의 `ouroboros config init`은 설정과 자격증명 파일 중 **없는 파일만 생성**하고 이미 존재하는 파일은 덮어쓰지 않는다. 두 파일이 모두 존재하면 초기화됐다고 표시하고 반환하며, 이는 기존 파일의 문법이나 인증이 유효하다는 뜻이 아니다. 손상된 파일 복구에는 기존 파일을 안전하게 보존하고 내용을 확인한 뒤 별도의 복구 절차를 적용한다. 빈 임시 HOME에서 일부러 잘못된 `config.yaml`을 둔 채 실행했을 때 종료 0과 초기화 메시지가 나왔지만 기존 파일 바이트는 그대로였고 누락된 `credentials.yaml`만 생성됐다(해당 임시 파일 권한 `0600`). 실제 사용자 자격증명은 사용하지 않았다. 이 시험은 부분 초기화의 한 사례이며 모든 권한 오류·병행 접근이나 OS 수준 네트워크 격리는 검증하지 않았다. [초기화 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/config.py).
+
+불리언 설정은 입력 전에 기존 설정을 안전하게 보존하고 `true` 또는 `false`만 사용하세요. 같은 설치·설정 환경에서 저장된 값을 다시 확인합니다. 고정 release `0.59.9`는 기존 값이 불리언인 경우 `true`·`1`·`yes` 외 입력을 false로 변환하므로 `on`이나 오타도 false가 될 수 있습니다. 고정 main `592c667f`는 불리언 입력을 Pydantic으로 검증해 유효하지 않은 값을 거부합니다. 이 설명은 해당 코드 경로의 정적 대조이며 설치판의 동작은 별도 확인하세요. [main 변환](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/config.py#L1147-L1168) · [release 변환](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/config.py#L1147-L1171)
+
+고정 구현의 독립 CLI `config set`은 기존 YAML을 읽어 전체를 다시 기록하므로 주석·서식이 바뀔 수 있다. 저장 후 설정 로드가 실패하면 원본 바이트로 되돌리지만, 성공한 변경의 이전 파일을 `config.yaml.bak`으로 생성하지는 않는다. 파일 쓰기는 임시 파일의 원자적 교체가 아닌 직접 쓰기이며, 쓰기 자체는 로드 실패 시 롤백하는 처리의 바깥에 있다. 따라서 쓰기 오류나 프로세스 중단 시 원본 복구를 보장하지 않는다. 격리된 임시 설정 파일에서 실제 `set_value` 함수를 호출하고 저장 함수 대역이 일부 바이트를 쓴 뒤 `OSError`를 발생시키도록 주입하자 예외가 전파되고 부분 파일이 남았다. 이는 쓰기 실패 시 롤백 경계의 합성 시험이며 실제 파일시스템 오류나 프로세스 중단의 재현은 아니다. 반면 `ouroboros config undo`는 **이미 존재하는** `config.yaml.bak`과 현재 파일을 교환한다. 도움말의 “모든 성공한 config set이 백업을 만든다”는 설명만 믿고 복구 가능성을 가정하지 않는다. 기존 백업이 오래됐다면 undo가 직전 상태가 아닌 다른 상태로 바꿀 수 있다. 변경 전 필요한 파일을 사용자가 지정한 안전한 위치에 보존하고 권한·민감정보를 확인한다. [고정 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/config.py).
+
+빈 임시 HOME에서 실제 CLI로 `config init`과 `config set logging.level debug`가 각각 종료 0인 후 `config undo`는 백업이 없다고 표시하고 종료 1이었다. 해당 실험에서는 백업 파일이 생성되지 않았다. 이 관찰은 해당 버전·초기 상태에 한정하며 GUI 저장, 다른 버전과 기존 백업 파일의 모든 상태를 시험하지 않았다. 별도의 빈 임시 HOME에서 `config init` 후 합성 주석을 추가한 설정에 유효하지 않은 `logging.level`을 지정했을 때 종료 1·롤백 표시와 기존 파일 바이트 복원을 확인했다. 이 실험은 설정 로드 실패의 한 사례이며 직접 쓰기 도중의 오류·프로세스 중단 복구를 검증하지 않는다. 또 다른 빈 임시 HOME에서 유효한 설정과 수동으로 준비한 백업으로 `config undo` 두 번이 각각 종료 0으로 두 파일의 바이트를 교환하고 원상태로 되돌리는 것을 확인했다. 유효하지 않은 백업에서는 종료 1이며 현재 파일이 복원되고 백업이 보존됐다. 처음 사용한 대문자 설정값은 유효하지 않아 실패했고 소문자 유효 값으로 다시 시험했다. 쓰기 오류·프로세스 중단과 OS 네트워크 격리는 시험하지 않았다. 사용자 설정을 변경하지 않았다.
+
+### 이벤트 DB 경로를 바꿀 때
+
+`persistence.database_path`의 상대 경로는 설정 파일의 부모 디렉터리 기준이다. 고정 구현에서는 설정된 DB 파일이 아직 없고 예전 `~/.ouroboros/ouroboros.db`가 파일로 있으면 기존 DB로 폴백한다. 따라서 설정 명령이 성공해도 데이터가 새 경로로 이관됐거나 실제로 새 경로를 사용한다고 단정하지 않는다. 새 DB와 기존 DB가 모두 있거나 경로가 파일이 아닌 경우 등은 실제 설치의 상태와 [경로 선택 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/config/models.py)을 확인하고, 데이터 이동 전 각 DB를 안전하게 보존한다.
+
+빈 임시 HOME에서 `config init` 후 빈 legacy SQLite 파일을 만들고 `config set persistence.database_path relative.db`를 실행하면 종료 0이었다. 이후 없는 job 조회는 종료 1이었으며 그 과정에서 legacy DB에 테이블 15개가 만들어졌고 설정된 `relative.db`는 만들어지지 않았다. 기존 데이터가 있는 DB나 양쪽 DB가 동시에 존재하는 경우, OS 네트워크 격리는 시험하지 않았다. 사용자 DB와 모델은 사용하지 않았다.
+
+### 런타임 백엔드 전환
+
+독립 CLI의 `ouroboros config backend`는 현재 backend와 확인된 CLI 경로를 표시한다. 인자를 주는 `ouroboros config backend codex` 같은 명령은 단순한 설정값 편집이 아니라 해당 backend의 전체 setup 경로에 위임한다. 선택한 backend에 따라 설정 파일, MCP 등록 또는 Codex 관련 파일이 변경될 수 있으므로 전환 전 작업 호스트·기존 설정과 복구할 사본을 확인한다. 지원하지 않는 backend나 필요한 CLI를 찾지 못하면 오류로 중단하며, 현재 backend와 같으면 setup을 다시 하지 않는다. 이 목록과 `opencode`의 수동 설정 안내는 설치 버전의 `--help`와 오류를 확인한다. [고정 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/config.py), [호스트 setup 범위](/docs/setup-host-detail/).
+
+setup 호출이 일부 오류를 출력한 경우 명령은 경고를 표시하고 정상 종료할 수 있다. 예외 또는 setup 실패에서는 실패를 보고하지만 이미 적용된 각 외부 설정이 언제나 원자적으로 복구된다고 가정하지 않는다. 결과 메시지와 실제 설정·MCP 등록을 확인하고, 복구 전에 기존 변경을 보존한다. 이 설명은 고정 소스의 정적 대조이며 실제 backend 전환·인증·외부 호스트 설정 변경은 시험하지 않았다.
+
+## 증상별 진단
+
+| 증상 | 먼저 확인 | 후속 행동 |
+| --- | --- | --- |
+| 명령을 찾을 수 없음 | 플러그인만 설치했는지, CLI가 PATH에 있는지 | [첫 실행](/docs/first-run-detail/)에서 설치 경로를 구분한다. |
+| 상태 ID가 없거나 결과가 다름 | job ID와 실행 세션 ID, workspace, 호스트를 혼동했는지 | [진행상태](/docs/progress-detail/)의 해당 조회 경로를 따른다. 다른 작업을 취소하지 않는다. |
+| `unverified` 또는 검사 모두 생략 | 기계적 검사가 실제로 실행됐는지, TOML과 실행 파일이 있는지 | 명령·경로·로그를 확인하고 유효한 검사 후 다시 평가한다. 모델 평가는 실행 증거의 대체가 아니다. |
+| 재접속 뒤 작업이 안 보임 | 백그라운드 프로세스와 DB가 실제로 남았는지, ID와 디렉터리가 같은지 | [복구](/docs/recovery-detail/)대로 상태를 확인한 후에만 재개한다. 프로세스가 살아 있다고 가정하지 않는다. |
+| 인증/모델 오류 | 선택한 런타임, 자격 증명 및 네트워크 오류 메시지 | 비밀값을 제거한 오류로 진단한다. 설정을 무작정 초기화하지 않는다. |
+| 교착 또는 종료 요청 | 실행 상태와 대상 ID | 상태를 조회한 뒤 대상별 취소를 사용한다. `cleanup`, `uninstall`, 강제 덮어쓰기는 파괴 범위를 확인하기 전 실행하지 않는다. |
+
+상태 표시, 실제 파일, 테스트, 평가 결과는 서로 다른 증거다. 하나가 다른 하나를 증명하지 않는다. 사용 중인 호스트별 차이는 [런타임 안내](https://github.com/Q00/ouroboros/tree/722172ef096767583679d04aef5e847458fee6b2/docs/runtime-guides)를 참고한다.
+
+## 제거 전에 보존 범위 확인
+
+독립 CLI `ouroboros uninstall`은 현재 작업 디렉터리의 `.ouroboros/` 전체를 재귀 삭제할 수 있다. 그 안에는 프로젝트별 `mechanical.toml`, artifact DB 등 보존할 파일이 있을 수 있다. **`--keep-data`는 홈 데이터 제거 단계만 생략하며 현재 작업 디렉터리의 `.ouroboros/` 삭제를 막지 않는다.** 특히 현재 작업 디렉터리가 HOME이거나 두 경로가 같은 디렉터리를 가리키면, 프로젝트 제거 단계가 보존 대상으로 표시된 `~/.ouroboros/` 자체를 삭제할 수 있다. 이 경우 `--keep-data`를 홈 데이터 보존 보장으로 사용하지 않는다. 실행 위치와 해당 디렉터리의 내용을 먼저 확인하고 일관된 백업 및 진행 중 작업에 대한 영향을 검토한다. [artifact 저장 위치](/docs/artifacts-detail/), [기존 프로젝트](/docs/existing-project-detail/).
+
+**Codex 자산도 별도 확인:** `--keep-data`는 Codex 관리 자산을 보존하는 옵션이 아니다. `CODEX_HOME`을 반영해 선택된 Codex home에서 관리 rules 파일·skills 디렉터리가 존재하면 별도 제거 대상으로 삼는다. 해당 경로의 사용자 수정·추가 내용을 비교해 자동 보존하지 않으며, 실제 삭제는 실패할 수 있다. `--dry-run`은 Codex 자산을 `Codex rules and skills (~/.codex/)`라는 고정 요약으로 표시하므로 이 출력만으로 실제 경로를 확정하지 않는다. 적용되는 `CODEX_HOME`과 해당 설치판의 관리 대상 경로를 별도로 확인하고 보존할 변경을 점검한다. dry-run 요약은 내용 보존이나 실제 삭제 성공 보장이 아니다. 이 제거 경로는 [main `592c667f`](https://github.com/Q00/ouroboros/blob/592c667f076c3dad7ef68d7844e91480d80135d0/src/ouroboros/cli/commands/uninstall.py#L141-L192)와 [release `0.59.9`](https://github.com/Q00/ouroboros/blob/5f5fca90662861201ff0a26f502edd22b272c4c6/src/ouroboros/cli/commands/uninstall.py#L141-L192)의 정적 소스 대조이며 실제 삭제 시험은 아니다. 모든 Codex 자산이나 인증 파일이 제거 대상이라는 뜻은 아니다.
+
+고정 구현의 `ouroboros uninstall --dry-run`은 찾은 대상 목록을 보여 주고 제거를 실행하지 않는다. 실제 제거는 기본 확인 질문이 **No**이며 `--yes`/`-y`는 그 확인을 건너뛴다. 명령은 호스트 MCP 설정과 관리된 Codex 자산 등도 변경할 수 있고, 각 제거가 독립적으로 실패할 수 있어 **부분 제거** 상태가 남을 수 있다. 출력과 실제 대상 파일을 확인한다. Python 패키지와 Claude Code 플러그인은 이 명령이 자동으로 제거하지 않는다. 위 동작은 [고정 uninstall 구현](https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/src/ouroboros/cli/commands/uninstall.py)의 소스 확인이며, 이 안내 작성 중 실제 제거는 실행하지 않았다. 다른 설치 버전의 도움말과 경로는 별도 확인한다.
+
+격리된 빈 임시 HOME과 별도 임시 프로젝트에 각각 더미 파일을 둔 뒤 실제 CLI `ouroboros uninstall --keep-data --dry-run`을 호출했을 때 종료 코드는 0이었다. 출력은 프로젝트 `.ouroboros/`를 제거 대상으로, 홈 `~/.ouroboros/`를 보존 대상으로 표시했고 두 더미 파일은 그대로였다. 이 관찰은 미리보기의 대상 표시와 파일 보존에 한정되며 실제 삭제·부분 실패 또는 사용자의 데이터 복원을 시험하지 않았다. 시험한 checkout의 uninstall 구현은 위 고정 소스와 차이가 없었다.
+
+## 격리 환경에서 확인한 진단 예
+
+2026-11-04 Linux 임시 HOME과 임시 디렉터리에서 PyPI `ouroboros-ai[mcp]==0.59.9`를 설치하고 외부 모델 호출 없이 다음을 확인했다. 이 결과는 다른 호스트의 설치나 실제 모델 작업을 보증하지 않는다.
+
+1. 설정 파일이 없을 때 `ouroboros config show`는 파일이 없다고 알리고 `setup`을 안내했다. 임시 HOME에서 `ouroboros config init`을 실행하자 기본 설정이 생성되었고 `config show`와 `config validate`가 성공했다. 기존 설정을 덮어쓰는 복구 방법으로 일반화하지 않는다.
+2. 임시 설정 YAML을 의도적으로 손상하자 `config validate`는 오류와 종료 코드 1을 반환했다. 별도 보관한 임시 원본을 복원하자 검증이 성공했다. 실제 복구에서는 먼저 기존 파일을 보존하고 원인을 확인한다.
+3. 실행 DB가 없는 상태에서 가상의 ID로 `status execution`을 조회하자 DB 부재 오류가 났다. 이는 해당 ID가 존재하지 않는다는 증거가 아니다. 올바른 환경과 DB 경로부터 확인한다.
+4. `doctor install`은 패키지를 발견하고 격리 HOME에 호스트 플러그인이 없음을 경고했다. stdio MCP 서버에 연결하여 도구 목록을 읽었지만 실행 도구는 호출하지 않았다. 모델·인증·첫 인터뷰·실행·재개는 시험하지 않았다.
+
+별도의 빈 임시 HOME에서 작업 디렉터리도 HOME으로 지정해 같은 `--keep-data --dry-run`을 실행했을 때, 동일한 `.ouroboros`가 프로젝트 제거 대상과 홈 보존 대상으로 **동시에** 표시됐다. 더미 파일은 미리보기 후 그대로였다. 실제 제거 시 프로젝트 제거 함수가 이 경로를 재귀 삭제한다는 것은 소스 분기에서 확인한 것이며, 실제 삭제는 시험하지 않았다.

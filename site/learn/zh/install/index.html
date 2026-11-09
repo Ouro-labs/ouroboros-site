@@ -51,6 +51,9 @@
 
 <div class="eyebrow">安装</div>
 <h1>安装 Ouroboros</h1>
+
+<p class="guide-cta"><strong>使用当前文档：</strong><a href="/docs/zh/quickstart/">快速入门</a> · <a href="/docs/zh/troubleshooting/">问题排查与恢复</a> · <a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a></p>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围；更完整的 AI 诊断也可参考<a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a>。</p>
 <p class="lead">默认路径是 Claude Code 插件：登录、装插件、<code>ooo setup</code>、验证，四步。文末另有不依赖 Claude Code 的独立命令行装法。</p>
 
 <h2 id="prereq">1. 装之前先确认</h2>
@@ -106,7 +109,7 @@ ouroboros setup</code></pre>
 <h2 id="trouble">装不上的时候</h2>
 <p>如果插件起不来、报 <code>Failed to reconnect to plugin:ouroboros:ouroboros: -32000</code>，先确认版本。0.51.1 修了这个启动失败：在那之前，已有环境里的 <code>mcp</code> 可能盖掉 <code>[mcp]</code> profile 需要的 <code>mcp==2.0.0</code>。修法是让随包发布的启动器走 <code>uvx --isolated</code>。用 <code>ooo update</code> 升到最新版再试。</p>
 
-<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。发现对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页是编写时曾逐条对照 README 和源码（确认日期与 commit 未记录），不是从英文版直译的。发现对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../architecture/">← 上一章<br><strong>03 架构</strong></a><a href="../interview/">下一章 →<br><strong>05 访谈</strong></a></nav>
 </article>

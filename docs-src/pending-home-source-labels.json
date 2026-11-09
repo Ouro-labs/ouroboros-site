@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "b4a164fc28b509b6ab8188e9e726decd8554d9b3ca3811302f90be5602fcb827",
+  "prior_manifest_sha256": "1e77e9be8fa53a901c9f97b26346e6b68b44e31b507233e3ac556ed3fa0d358d",
+  "summary_sha256": "aebe0bad6df1d234ec11bdab151e6a946401b4084f7d394d51993061208a6612",
+  "pages": {
+    "index.md": {
+      "prior": {
+        "source": "content/guide-home.md",
+        "source_sha256": "279e8dcea48c3544a7df1ef10a4dbcc3ce30c90d16a87675cea7e62a58756e33",
+        "page_sha256": "8285ef9b4a999b3468437d1f3d726f53b7aff5c142787fa40a6178ea156f5d7c"
+      },
+      "current": {
+        "source": "content/guide-home.md",
+        "source_sha256": "4329560cf4380b17f29d020ff3c9412ab85082881ffd49cc24a58951b181a52d",
+        "page_sha256": "80b8baaaa83a720281a1c7214eb091ab4f599badba31f4a56a86da8ca1f27935"
+      }
+    }
+  }
+}

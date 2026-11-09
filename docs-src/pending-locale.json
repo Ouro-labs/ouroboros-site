@@ -1,0 +1,14 @@
+{
+  "status": "pending",
+  "manifest_sha256": "51ee6cf67ffed9fba8ab8b593b4728b7169452076b9f741730d833b94e82d56c",
+  "prior_js_sha256": "1ea6858361a4d13a60f1ae3483e16abf75c67bc8f0ee0b46b7de0609b5e9f683",
+  "summary_sha256": "eec934c90f1d21fbb7c42737dc70270e00ba20286d4023717eac16dafeab7668",
+  "files": {
+    "content/assets/ouro-theme.js": "2442b9b72e5a225ddfaf4c2959074880c337b6929138e21c7969380241f4059c",
+    "overrides/main.html": "fbaa5b7642b2eb1c354a5f37ce83725600c0b319140229f25cb39435d91d680f",
+    "overrides/partials/language.html": "104e838bcc7e3acd19eebe9170e25051cc1b4c1e9c2afd602556c6a2bc80a9bf",
+    "overrides/partials/nav.html": "8a0f57603fa893b93e2952b6bb7a38b8bfe3d0ce108c5bc8fefefb5e765d3e76",
+    "overrides/partials/nav-item.html": "fa891f61e114bc0a4dd194ac3f12ea6dc837fca4a593ba7f5d3e92ccf835c8c5",
+    "tests/test_locale_ui.py": "ed071ce983106bfdcde097470d28a371227f0a8ec934ee90249fa9ef9aa430a0"
+  }
+}

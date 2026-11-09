@@ -48,6 +48,9 @@
 
 <div class="eyebrow">是什么</div>
 <h1>Ouroboros 是什么</h1>
+
+<p class="guide-cta"><strong>使用当前文档：</strong><a href="/docs/zh/quickstart/">快速入门</a> · <a href="/docs/zh/troubleshooting/">问题排查与恢复</a> · <a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a></p>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围；更完整的 AI 诊断也可参考<a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a>。</p>
 <p class="lead">一句话：<strong>Ouroboros 自己不写代码。</strong>代码由 Claude Code、Codex 这类 AI 编码工具写。Ouroboros 站在那个工具的前面和后面——开工前把需求钉住，收工后验证结果，并且把过程记下来。</p>
 
 <h2 id="io">1. 进去什么，出来什么</h2>
@@ -66,7 +69,7 @@
 <p>连接两层的东西就是 <strong>Seed</strong>：目标、约束、验收标准存成 YAML，运行时照着这份文件干活。细节看<a href="../seed/">规约那一章</a>。</p>
 
 <h2 id="runtimes">3. 支持哪些运行时</h2>
-<p>目前有 <strong>13 个</strong>运行时各自的接入指南：antigravity、Claude Code、Codex、Copilot、Gemini、GJC、goose、Grok、Hermes、Kiro、OpenCode、Pi、Zcode。</p>
+<p>编写时列出 <strong>13 个</strong>运行时各自的接入指南：antigravity、Claude Code、Codex、Copilot、Gemini、GJC、goose、Grok、Hermes、Kiro、OpenCode、Pi、Zcode。</p>
 <p>这个数字不是营销口径，是 <code>docs/runtime-guides/</code> 里去掉翻译重复之后的实际文档数。你用的工具在不在里面，直接去那个目录看就知道。</p>
 
 <h2 id="why">4. 它到底解决什么</h2>
@@ -82,7 +85,7 @@
 <a href="../glossary/">术语表</a>（包括 <code>-32000</code> 那个启动失败）</li>
 </ul>
 
-<p class="note">这一页对着当前仓库核过：13 这个数字来自 <code>docs/runtime-guides/</code> 的实际文件数（18 个文件减去 4 个韩文翻译重复、再减去 1 个不是运行时的文档）。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照仓库（确认日期与 commit 未记录）：13 这个数字来自 <code>docs/runtime-guides/</code> 的实际文件数（18 个文件减去 4 个韩文翻译重复、再减去 1 个不是运行时的文档）。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../">← 上一页<br><strong>目录</strong></a><a href="../why-ouroboros/">下一章 →<br><strong>02 为什么用它</strong></a></nav>
 </article>

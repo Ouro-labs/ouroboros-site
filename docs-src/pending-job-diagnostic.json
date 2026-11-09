@@ -1,0 +1,44 @@
+{
+  "status": "pending",
+  "manifest_sha256": "0c103b41bad9c41bafd7e0d6713520d49386a225c300ecfc31e35d8f347bf5a6",
+  "prior_manifest_sha256": "b62efecbb144f3f7a1f6af1df1e82dccece51a8e427ecb59bce2171b32c2eee3",
+  "summary_sha256": "75b98b063a5e4d77986e2118e599ba5640a97849dc166889b26cd96c11e17ef4",
+  "pages": {
+    "recovery-detail.md": {
+      "current": {
+        "source": "content/recovery-detail.md",
+        "source_sha256": "7d521a86878760700650909d42897d9d7ccb84758cc645edf7333029111cb444",
+        "page_sha256": "8cd68abb93225b896b4527a858578024ee3741227d7d10dbe0664f3c50f37e13"
+      },
+      "prior": {
+        "source": "content/recovery-detail.md",
+        "source_sha256": "6d217cda98769f4e124572a7871ff5ff2980c1a7b1509f492cb3225ccd6198a0",
+        "page_sha256": "a5b38d99b14614f0c31fdd8194c77ac9a05b9ca1358ac25150e521eb39c0ef99"
+      }
+    },
+    "ai-troubleshooting.md": {
+      "current": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "1b316eaaab73cb5ffd30a9539853dead5a31314504d8fc6223b7afafc80219cf",
+        "page_sha256": "7a2dc76cb16dc276c6da533631a248ae64d7354236dcb2d2662aeb39bea3c8a2"
+      },
+      "prior": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "fbbe33f9a18ec730be0f9f6f59ec0372111400de08530098a5699645c1febd3c",
+        "page_sha256": "06bd770abbe4a91b17db4d540cc1def289a5fedd52ac728d4264ad09ece39ada"
+      }
+    },
+    "en/ai-troubleshooting.md": {
+      "current": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "d6c30f62da06ad7e4031149c3107e454f0c17dfe8269fa7aed12b3e49718940a",
+        "page_sha256": "d6c30f62da06ad7e4031149c3107e454f0c17dfe8269fa7aed12b3e49718940a"
+      },
+      "prior": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "c1c2fb8c1d0df04c290e75033bc69e5e5523442be98628780c1b9a7c2bef84c7",
+        "page_sha256": "c1c2fb8c1d0df04c290e75033bc69e5e5523442be98628780c1b9a7c2bef84c7"
+      }
+    }
+  }
+}

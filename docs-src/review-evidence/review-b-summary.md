@@ -1,0 +1,3 @@
+# Changed-link review B — public summary
+
+The private review record identifies the initial snapshot and groups 47–92 of the changed-link classification. Its SHA-256 is `eb7694c698b636b2bb157fa99744fb43001d2eac9eb8e8cd6e2cc4fd91ef3c8b`. It records static, context-specific link review and subsequent delta observations; it does not certify unchanged links, all factual claims, privacy, external availability, or real host execution. Review B records a non-blocking Chinese status-anchor precision suggestion and says newly added outbound links require separate review. The complete private report is not bundled here; this summary and digest do not independently prove its contents, reviewer identity or independence.

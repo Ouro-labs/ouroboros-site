@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "b90f234ae57313065d61381506accd991d096d06fa832bbd78adef52bf9ecda0",
+  "prior_manifest_sha256": "ca1caefda3ed1fdbda773f10b511444af4d58c05e79b06fce0481a17fabcb101",
+  "summary_sha256": "526d78b7f56e3d990d013903cf8f6a0d235feee0b21f50172bd4d70c6e6ea604",
+  "pages": {
+    "existing-project-detail.md": {
+      "current": {
+        "source": "content/existing-project-detail.md",
+        "source_sha256": "7a39975be4a529d6999c97ac34782d69fb177bb638a74cdc318e95911907c240",
+        "page_sha256": "60630edb54013a0d12077ab84a6c236fe3ceb80910b44dd4889f0b2227287708"
+      },
+      "prior": {
+        "source": "content/existing-project-detail.md",
+        "source_sha256": "00d5f55074179a3218803efe18de2a0f9c0c64e606ffcbe1ad7a20ce193bb922",
+        "page_sha256": "83fad53766c612935a6eead8c9005b10ff04b3d698aee40d5014fd62d160d1a0"
+      }
+    }
+  }
+}

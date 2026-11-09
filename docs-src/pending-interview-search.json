@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "ca1caefda3ed1fdbda773f10b511444af4d58c05e79b06fce0481a17fabcb101",
+  "prior_manifest_sha256": "4dde250ec244f87fa7ae1fdb4f7dcaabd90ed55afe9ef494000c24503cf8a4c0",
+  "summary_sha256": "0a8f10d052ee2451b24b6716be11835534393fa78cf0513f9d8dfafc85eb96f6",
+  "pages": {
+    "en/ai-troubleshooting.md": {
+      "current": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "8a99ec4592552f33fdb583e046743192ec5c12823dee79b1cb56f140c6934ba0",
+        "page_sha256": "8a99ec4592552f33fdb583e046743192ec5c12823dee79b1cb56f140c6934ba0"
+      },
+      "prior": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "563050e5b36163963a8e31437f9cbd15232303c38e3fbaf427679c2637ce5d58",
+        "page_sha256": "563050e5b36163963a8e31437f9cbd15232303c38e3fbaf427679c2637ce5d58"
+      }
+    }
+  }
+}

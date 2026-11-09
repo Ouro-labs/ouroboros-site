@@ -1,0 +1,60 @@
+{
+  "status": "pending",
+  "manifest_sha256": "c82fbdfb3593de50e72fc13d67c53fd8a22444050893b5cd2ea18f6ee947727a",
+  "mid_manifest_sha256": "19b0d170589066675f7dcbbd4dfc7e291fcbe0b6e539feee1c839a2a0b2f4af1",
+  "prior_manifest_sha256": "a488794807be63edc6fbbd65cb474fdafb82b74eb32e62c16362cc66acbe303d",
+  "summary_sha256": "9bccec69ba66d500745671d6b22e6be8d0910ac8e183dc55d56eabdf5d9f758c",
+  "pages": {
+    "ai-troubleshooting.md": {
+      "current": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "6371a7c03fb0badc3f1f2f63d08d949af771c0ebfe25c324b2147bcdb38463f9",
+        "page_sha256": "1f8daac077c38e4736e0750920110fe81aa36a9a7f1a14001312751591108e7c"
+      },
+      "mid": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "6371a7c03fb0badc3f1f2f63d08d949af771c0ebfe25c324b2147bcdb38463f9",
+        "page_sha256": "1f8daac077c38e4736e0750920110fe81aa36a9a7f1a14001312751591108e7c"
+      },
+      "prior": {
+        "source": "content/ai-troubleshooting.md",
+        "source_sha256": "cd4a0e9d2c1d38c255ee54680b5cbbe8dbc42d6039d855ea386c11e63d85f7f4",
+        "page_sha256": "8485fcdfbfcb0eda5447b2b3f46241b7fb0ab93af78f54d8794ce060a14e49fb"
+      }
+    },
+    "en/ai-troubleshooting.md": {
+      "current": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "98f808b565f7bf50a971c7cced78880b209c32cb57f00a87958bdadec1262574",
+        "page_sha256": "98f808b565f7bf50a971c7cced78880b209c32cb57f00a87958bdadec1262574"
+      },
+      "mid": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "98f808b565f7bf50a971c7cced78880b209c32cb57f00a87958bdadec1262574",
+        "page_sha256": "98f808b565f7bf50a971c7cced78880b209c32cb57f00a87958bdadec1262574"
+      },
+      "prior": {
+        "source": "content/ai-troubleshooting-en.md",
+        "source_sha256": "b5311a22d422fb672fce2733eb317573c034eaa57534545a15b53194762ac5ea",
+        "page_sha256": "b5311a22d422fb672fce2733eb317573c034eaa57534545a15b53194762ac5ea"
+      }
+    },
+    "cli-reference-guide.md": {
+      "current": {
+        "source": "content/cli-reference-guide.md",
+        "source_sha256": "340b444de480debb6db0225bad0d1f2636eb2e45aa850dd821fd34e9ce25964c",
+        "page_sha256": "830bc122051ef589356d02f54622ab636a0ce2c922e17c8a7b425a239ee05dc4"
+      },
+      "mid": {
+        "source": "content/cli-reference-guide.md",
+        "source_sha256": "2ad3ee85805dd2569f376bdd20a39213c3a00a7784020c7cd6ed2d5aea34392f",
+        "page_sha256": "222ae73984baca46ab822a4113eb2065d831d97ec52c948c58f0565899ed441e"
+      },
+      "prior": {
+        "source": "content/cli-reference-guide.md",
+        "source_sha256": "2ad3ee85805dd2569f376bdd20a39213c3a00a7784020c7cd6ed2d5aea34392f",
+        "page_sha256": "222ae73984baca46ab822a4113eb2065d831d97ec52c948c58f0565899ed441e"
+      }
+    }
+  }
+}

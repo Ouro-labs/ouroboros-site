@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block htmltitle %}
+{% set uri = page.file.src_uri if page and page.file else '' %}
+{% set site_title = 'Ouroboros Docs' if uri.startswith('en/') else ('Ouroboros 文档' if uri.startswith('zh/') else config.site_name) %}
+{% if page and page.meta and page.meta.title %}<title>{{ page.meta.title }} - {{ site_title }}</title>
+{% elif page and page.title and not page.is_homepage %}<title>{{ page.title | striptags }} - {{ site_title }}</title>
+{% else %}<title>{{ site_title }}</title>{% endif %}
+{% endblock %}
+{% block extrahead %}
+{% if page and page.file.src_uri in ['quickstart.md', 'en/quickstart.md', 'zh/quickstart.md'] %}
+<link rel="alternate" hreflang="ko" href="https://ouroboros.page/docs/quickstart/">
+<link rel="alternate" hreflang="en" href="https://ouroboros.page/docs/en/quickstart/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ouroboros.page/docs/zh/quickstart/">
+{% endif %}
+<style>
+@media (max-width: 800px) {
+  .ouro-top-inner { height: auto; min-height: 64px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
+  .ouro-nav { order: 3; width: 100%; margin-left: 0; flex-wrap: wrap; gap: 8px 12px; }
+  .ouro-nav a:nth-child(2), .ouro-nav a:nth-child(3) { display: inline; }
+}
+</style>
+<script>try{if(localStorage.getItem('learn-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+{% endblock %}
+{% block header %}
+{% set uri = page.file.src_uri if page and page.file else '' %}
+{% set loc = 'en' if uri.startswith('en/') else ('zh' if uri.startswith('zh/') else 'ko') %}
+{% set labels = {
+  'ko': {'menu':'주 메뉴','open':'문서 목차 열기','close':'문서 목차 닫기','home':'Ouroboros 홈','guide':'가이드','install':'설치 기초 (0.51.5)','quickstart':'빠른 시작 (592 초안)','glossary':'용어사전','theme':'테마','theme_label':'테마: 밝은 화면 또는 어두운 화면 전환','search':'검색 열기'},
+  'en': {'menu':'Main navigation','open':'Open documentation navigation','close':'Close documentation navigation','home':'Ouroboros home','guide':'Guide','install':'Install','glossary':'Glossary','theme':'Theme','theme_label':'Theme: toggle light or dark theme','search':'Open search'},
+  'zh': {'menu':'主导航','open':'打开文档目录','close':'关闭文档目录','home':'Ouroboros 首页','guide':'指南','install':'安装','glossary':'术语表','theme':'主题','theme_label':'主题：切换浅色或深色主题','search':'打开搜索'}
+} %}
+{% set l = labels[loc] %}
+{% set learn = '/learn/en/' if loc == 'en' else ('/learn/zh/' if loc == 'zh' else '/learn/') %}
+<header class="md-header ouro-top" data-md-component="header">
+  <nav class="md-header__inner md-grid ouro-top-inner" aria-label="{{ l.menu }}">
+    <button type="button" class="md-header__button md-icon ouro-drawer" aria-label="{{ l.open }}" data-label-open="{{ l.open }}" data-label-close="{{ l.close }}" aria-expanded="false" aria-controls="ouro-navigation">{% include ".icons/material/menu.svg" %}</button>
+    <a class="ouro-brand" href="/" aria-label="{{ l.home }}{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}"><img src="/assets/logo-snake.png" alt=""><span>Ouroboros{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}</span></a>
+    <div class="ouro-nav">
+      <a href="{{ learn }}">{{ l.guide }}</a>{% if loc == 'ko' %}<a href="/docs/quickstart/">{{ l.quickstart }}</a>{% endif %}<a href="{{ learn }}install/">{{ l.install }}</a><a href="{{ learn }}glossary/">{{ l.glossary }}</a>
+      <a class="ouro-github" href="https://github.com/Q00/ouroboros">GitHub{% if loc == 'zh' %}（英文）{% elif loc == 'ko' %} (영어){% endif %}</a>
+      <button class="ouro-theme" data-ouro-theme type="button" aria-label="{{ l.theme_label }}">{{ l.theme }}</button>
+    </div>
+    {% if "material/search" in config.plugins %}
+      {% set search = config.plugins["material/search"] | attr("config") %}
+      {% if search.enabled %}
+        <label class="md-header__button md-icon" for="__search" aria-label="{{ l.search }}" role="button" tabindex="0" data-ouro-search-open>{% include ".icons/material/magnify.svg" %}</label>
+        {% include "partials/search.html" %}
+      {% endif %}
+    {% endif %}
+  </nav>
+</header>
+{% endblock %}
+{% block content %}
+  {{ super() }}
+  {% set chapter_paths = {
+    'architecture-map-public.md': 'architecture',
+    'first-run-detail.md': 'install',
+    'interview-detail.md': 'interview',
+    'seed-format-detail.md': 'seed',
+    'progress-detail.md': 'execute',
+    'evaluation-evolution-detail.md': 'evaluate',
+    'existing-project-detail.md': 'existing-project',
+    'recovery-detail.md': 'troubleshooting'
+  } %}
+  {% if page and page.file.src_uri in chapter_paths %}
+  <aside class="ouro-related" aria-label="관련 기초 가이드">
+    <strong>관련 기초 가이드</strong>
+    <p><a href="/learn/{{ chapter_paths[page.file.src_uri] }}/">해당 주제의 기초 장 읽기</a>{% if page.file.src_uri == 'evaluation-evolution-detail.md' %} · <a href="/learn/evolve/">반복 수정 기초 장 읽기</a>{% endif %} · 기초 장은 이전 판본을 기준으로 하므로 각 페이지의 버전 안내를 확인하세요.</p>
+  </aside>
+  {% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src="{{ 'assets/ouro-search-locale.js' | url }}"></script>
+  {% if page and 'class="mermaid"' in page.content %}
+    <script src="{{ 'assets/vendor/mermaid/mermaid-11.4.1.min.js' | url }}"></script>
+    <script src="{{ 'assets/ouro-mermaid.js' | url }}"></script>
+  {% endif %}
+  {{ super() }}
+{% endblock %}

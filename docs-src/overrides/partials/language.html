@@ -1,0 +1,11 @@
+{# Choose Material's complete UI dictionary per generated page. #}
+{% import "partials/languages/ko.html" as ko %}
+{% import "partials/languages/en.html" as en %}
+{% import "partials/languages/zh.html" as zh %}
+{% macro t(key) %}
+  {%- set uri = page.file.src_uri if page and page.file else '' -%}
+  {%- if uri.startswith('en/') -%}{{ en.t(key) }}
+  {%- elif uri.startswith('zh/') -%}{% if key == 'language' %}zh-Hans{% elif key == 'action.skip' %}跳到正文{% else %}{{ zh.t(key) or en.t(key) }}{% endif %}
+  {%- else -%}{{ ko.t(key) or en.t(key) }}
+  {%- endif -%}
+{% endmacro %}

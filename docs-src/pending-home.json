@@ -1,0 +1,12 @@
+{
+  "status": "pending",
+  "manifest_sha256": "ea59b6a439e9af819e1915035f6bd14fcac6581e37ab211d1aed8f006506a69f",
+  "prior_main_sha256": "70880cfbaec0ae37136ae2276a60552489e1cedbbb93dc576cd0d37892d99ca3",
+  "prior_home_sha256": "3f53646153e3023e81d452e751b5a65649e98e33ce9e69f7c5b89c611dbbff99",
+  "summary_sha256": "5b01dfebdc0dc8739b515a6162111e7d440747aeca4185e858dbeeb67bec86cc",
+  "files": {
+    "site/index.html": "7fc476679a82360a319c59f8146321217070436701d73ddc7f9823e2c0a4fe1c",
+    "docs-src/overrides/main.html": "686aeb5fa7bc624cffa4935c5e45eb952e6e2a47c58b7003a70577458ef45af2",
+    "docs-src/tests/test_home_discovery.py": "deb62591e4b23ffb9d36066fdaab94e346699c8f46f8e06857cb28c2989f43d4"
+  }
+}

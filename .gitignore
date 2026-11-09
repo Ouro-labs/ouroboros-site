@@ -1,2 +1,5 @@
 .DS_Store
 .gstack/
+
+# Generated documentation
+site/docs/

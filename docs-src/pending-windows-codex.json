@@ -1,0 +1,44 @@
+{
+  "status": "pending",
+  "manifest_sha256": "762252f9271573156fed9799dfb9b850e41eeda7ab736de899ff85ca66052446",
+  "prior_manifest_sha256": "b4a164fc28b509b6ab8188e9e726decd8554d9b3ca3811302f90be5602fcb827",
+  "summary_sha256": "62bcfbd847d7dc37f014cd3df7b7d7d7b4bf885b3b7c3c6b9b8067728112ed07",
+  "pages": {
+    "en/quickstart.md": {
+      "prior": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "0b067e8aa18b12c39510719c4fa158b559932ae8a1a655cf20eb69facf846f56",
+        "page_sha256": "22bcda30e83e09294455efed907ef8567a15bf15aaa9a480b07966a51af93853"
+      },
+      "current": {
+        "source": "content/quickstart-en.md",
+        "source_sha256": "4a6f0ea576c757826d127223ab26b85de16308b8f84484f7f8b7b022a0046fac",
+        "page_sha256": "5f8180f35c84439ebe5b411997b931bd462464716658062b65f82c2c93c9c6f3"
+      }
+    },
+    "quickstart.md": {
+      "prior": {
+        "source": "content/quickstart.md",
+        "source_sha256": "90cc191a7a16a8eccd1a83801baffa1eef148069422aea0ed80d5652f874dde9",
+        "page_sha256": "591be9ea0dc6252444a4472d0d6e9583ce4f4b0532b90507bff34821e229b95f"
+      },
+      "current": {
+        "source": "content/quickstart.md",
+        "source_sha256": "aef7c7dfef0381aa1e67463566e25fa904212f9374e99101efde5e122e40eb20",
+        "page_sha256": "fd0293346e41961f80e8c7716ec81610976da481369a23459b4eb783ec6b6b50"
+      }
+    },
+    "zh/quickstart.md": {
+      "prior": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "45a6e7697b6ff2232f4d23ed2399e5cd92e4107466474233af67f51dd53295ae",
+        "page_sha256": "d6dbc138b0fb8d4cac209e3efe4399153d0d5ea2799008a3687675e3a1226b1c"
+      },
+      "current": {
+        "source": "content/quickstart-zh.md",
+        "source_sha256": "99e537ed2a6c777ce1a7bda7ab90ad374a1b9af6ce541edc0478c2102a1b3ebc",
+        "page_sha256": "80f6e6518446aa883525bdd41eceb078a7c4583868df1088ff7ebdb0425be85a"
+      }
+    }
+  }
+}

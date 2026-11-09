@@ -52,6 +52,9 @@
 
 <div class="eyebrow">访谈</div>
 <h1>访谈</h1>
+
+<p class="guide-cta"><strong>使用当前文档：</strong><a href="/docs/zh/quickstart/">快速入门</a> · <a href="/docs/zh/troubleshooting/">问题排查与恢复</a> · <a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a></p>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围；更完整的 AI 诊断也可参考<a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a>。</p>
 <p class="lead">你的想法里有一堆还没做的决定。访谈把它们找出来，一条一条问你，然后把答案攒成下一步生成规约的原料。一句话的输入就够开始。</p>
 
 <h2 id="what">1. 它到底在干什么</h2>
@@ -91,7 +94,7 @@
 <p><strong>预期结果：</strong>提问轮次自动进行，然后进入规约生成和执行。中途停下来的话，输出里会有一个 <code>auto_session_id</code>，用它可以接着跑。</p>
 <p><strong>它不会拿一份没准备好的规约去执行。</strong>auto 模式有一道确定性的 A 级闸：只有等级判定为 A 且没有 blocker 时才放行（<code>auto/grading.py</code> 里是 <code>may_run = grade == SeedGrade.A and not blockers</code>；被挡下来时 <code>auto/pipeline.py</code> 会以 <code>grade_gate</code> 的名义标记 blocked）。等级分 A / B / C 三档。</p>
 
-<p class="note">这一页是对着当前的 README 和源码逐条核过的，不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，读起来像必要条件，但准确的说法是「高于阈值会被挡住，显式 force 可以通过」（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话是对的，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。真正的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。现在第 7 节按实际情况补上了。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页是编写时曾逐条对照 README 和源码（确认日期与 commit 未记录），不是从英文版直译的。和英文版有两处不一样，都写在这里：一是英文版把 0.2 说成「降到这个值以下才能生成规约」，读起来像必要条件，但当时所查实现的说法是「高于阈值会被挡住，显式 force 可以通过」（见第 5 节）；二是英文版说 auto「只有规约拿到 A 级之后才开始执行」——<strong>这句话符合当时所查实现，我一开始判断错了</strong>：我只翻了 <code>auto/interview_driver.py</code>，没找到就写了「源码里没有这个门槛」。当时所查的实现在 <code>auto/grading.py</code>（<code>may_run = grade == SeedGrade.A and not blockers</code>）。当时第 7 节据此补充了说明。<strong>把这段留在这里，是因为「在哪里没找到」和「不存在」是两回事，而我刚好踩了这个坑。</strong>有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../install/">← 上一章<br><strong>04 安装</strong></a><a href="../seed/">下一章 →<br><strong>06 规约</strong></a></nav>
 </article>

@@ -1,0 +1,137 @@
+:root { --md-primary-fg-color: #145d57; --md-accent-fg-color: #146e66; }
+.md-typeset { font-size: .82rem; line-height: 1.7; }
+.md-typeset h1 { font-weight: 760; letter-spacing: -.025em; max-width: 18ch; }
+.md-typeset h2 { margin-top: 2.5em; }
+.md-typeset p, .md-typeset li { max-width: 74ch; }
+.md-typeset table:not([class]) { display: table; width: 100%; }
+.md-typeset a:focus-visible, .md-nav__link:focus-visible { outline: 2px solid #145d57; outline-offset: 3px; }
+.md-typeset ::selection { background: #c7e8df; color: #173c38; }
+.task-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.task-grid a { display: block; padding: 1.05rem 1.2rem; border: 1px solid #b8ccc7; border-radius: .5rem; color: #173c38; text-decoration: none; background: #f7fbfa; }
+.task-grid a:hover, .task-grid a:focus-visible { background: #e5f3ef; }
+.task-grid strong { display: block; font-size: 1.08rem; }
+.task-grid span { display: block; margin-top: .3rem; color: #425d58; }
+@media (max-width: 45rem) { .task-grid { grid-template-columns: 1fr; } .md-typeset table:not([class]) { display: block; overflow-x: auto; } }
+
+.md-typeset .mermaid { overflow-x: auto; }
+
+.md-typeset__scrollwrap:focus-visible { outline: 2px solid #145d57; outline-offset: 2px; }
+
+/* Match the existing /learn/ site's visual language while retaining Material navigation. */
+@font-face{font-family:Paperlogy;src:url('/fonts/Paperlogy-4Regular.ttf')}@font-face{font-family:Paperlogy;src:url('/fonts/Paperlogy-6SemiBold.ttf');font-weight:600}@font-face{font-family:Paperlogy;src:url('/fonts/Paperlogy-8ExtraBold.ttf');font-weight:800}
+:root{--ouro-bg:#fbfaf6;--ouro-paper:#fff;--ouro-ink:#13201b;--ouro-muted:#617069;--ouro-line:#d9dfda;--ouro-accent:#285c48;--ouro-soft:#edf3ef;--md-primary-fg-color:#285c48;--md-accent-fg-color:#285c48;--md-default-bg-color:#fbfaf6;--md-default-fg-color:#13201b;--md-default-fg-color--light:#617069;--md-typeset-a-color:#285c48}
+html[data-theme=dark]{color-scheme:dark;--ouro-bg:#09100d;--ouro-paper:#101914;--ouro-ink:#e9eee9;--ouro-muted:#9da9a2;--ouro-line:#27362f;--ouro-accent:#7fbea1;--ouro-soft:#17251e;--md-primary-fg-color:#7fbea1;--md-accent-fg-color:#7fbea1;--md-default-bg-color:#09100d;--md-default-fg-color:#e9eee9;--md-default-fg-color--light:#9da9a2;--md-typeset-a-color:#7fbea1}
+body,.md-typeset{font-family:Paperlogy,system-ui,sans-serif}.md-container{background:var(--ouro-bg)}
+.ouro-top{background:color-mix(in srgb,var(--ouro-bg) 88%,transparent);color:var(--ouro-ink);border-bottom:1px solid var(--ouro-line);box-shadow:none;backdrop-filter:blur(14px)}
+.ouro-top-inner{max-width:1160px;height:64px;padding:0 24px;gap:24px}.ouro-brand{display:flex;align-items:center;gap:9px;color:var(--ouro-ink)!important;text-decoration:none;font-size:16px;font-weight:800;white-space:nowrap}.ouro-brand img{width:28px;height:28px;object-fit:contain}.ouro-nav{margin-left:auto;display:flex;gap:20px;align-items:center}.ouro-nav a{color:var(--ouro-ink)!important;text-decoration:none;font-size:14px}.ouro-theme{border:1px solid var(--ouro-line);border-radius:999px;background:var(--ouro-paper);color:var(--ouro-ink);padding:8px 12px;font:inherit;font-size:14px;cursor:pointer}.ouro-nav a:focus-visible,.ouro-theme:focus-visible,.ouro-brand:focus-visible{outline:3px solid var(--ouro-accent);outline-offset:3px}
+.md-typeset{color:var(--ouro-ink);line-height:1.75}.md-typeset h1,.md-typeset h2,.md-typeset h3{color:var(--ouro-ink);font-weight:800;letter-spacing:-.03em}.md-typeset h1{font-size:clamp(32px,5vw,48px);line-height:1.18;max-width:none}.md-typeset h2{font-size:1.6rem}.md-typeset a,.md-nav__link--active{color:var(--ouro-accent)}.md-sidebar{background:var(--ouro-bg)}.md-typeset table:not([class]) th{background:var(--ouro-soft);color:var(--ouro-ink)}.md-typeset pre>code{background:#102019;color:#eaf4ee}.task-grid a{background:var(--ouro-paper);border-color:var(--ouro-line);color:var(--ouro-ink)}.task-grid span{color:var(--ouro-muted)}.task-grid a:hover,.task-grid a:focus-visible{background:var(--ouro-soft)}
+@media(max-width:800px){.ouro-top-inner{padding:0 16px;gap:12px}.ouro-nav{gap:12px}.ouro-github{display:none}.ouro-nav a{font-size:13px}}
+@media(max-width:480px){.ouro-brand span{display:none}.ouro-nav a{font-size:12px}.ouro-theme{padding:6px 10px;font-size:13px}.ouro-top-inner{gap:8px}}
+@media(max-width:480px){.md-typeset h1{font-size:28px;line-height:1.22;word-break:keep-all;overflow-wrap:normal}}
+.ouro-top .md-search__form{border:1px solid var(--ouro-line);border-radius:999px;background:var(--ouro-paper);color:var(--ouro-ink)}
+.ouro-top .md-search__input{color:var(--ouro-ink)}.ouro-top .md-search__input::placeholder{color:var(--ouro-muted)}
+
+.ouro-diagram{overflow-x:auto;margin:1.5rem 0}.ouro-diagram svg{max-width:none}.ouro-mermaid-source{overflow-x:auto}
+.ouro-nav a,.ouro-theme{white-space:nowrap}
+@media(max-width:380px){.ouro-nav a:nth-child(2),.ouro-nav a:nth-child(3){display:none}.ouro-nav{gap:8px}.ouro-top-inner{gap:4px}}
+html[data-theme=dark] .md-nav__link{color:var(--ouro-ink)}html[data-theme=dark] .md-nav__link--active{color:var(--ouro-accent)}html[data-theme=dark] .md-nav__title{color:var(--ouro-muted);background:var(--ouro-bg);box-shadow:none}html[data-theme=dark] .md-typeset a:not(.headerlink){color:var(--ouro-accent)}html[data-theme=dark] body[data-md-color-scheme] .ouro-top .md-search__form{background:var(--ouro-paper);color:var(--ouro-ink)}html[data-theme=dark] .ouro-top .md-search__icon{color:var(--ouro-ink)}
+html[data-theme=dark] .md-nav__link{color:var(--ouro-ink)!important}html[data-theme=dark] .md-nav__link--active{color:var(--ouro-accent)!important}html[data-theme=dark] .md-typeset a:not(.headerlink){color:var(--ouro-accent)!important}html[data-theme=dark] .md-search__form{background:var(--ouro-paper)!important;color:var(--ouro-ink)!important}html[data-theme=dark] .md-search__input{color:var(--ouro-ink)!important}html[data-theme=dark] .md-search__input::placeholder{color:var(--ouro-muted)!important}
+/* A filtered header creates a containing block for Material's fixed search
+   overlay, trapping mobile search results behind the document. */
+.ouro-top{backdrop-filter:none}
+
+.ouro-related{margin:3rem 0 1rem;padding:1.2rem 1.4rem;border-left:4px solid var(--ouro-accent);border-radius:0 14px 14px 0;background:var(--ouro-soft);color:var(--ouro-ink)}
+.ouro-related p{margin:.4rem 0 0}
+[data-ouro-search-open]:focus-visible{outline:3px solid var(--ouro-accent);outline-offset:3px}
+[data-ouro-result-language]{display:inline-block;margin-inline-start:.5em;padding:.1em .4em;border:1px solid currentColor;border-radius:.4em;font-size:.7em;font-weight:600;vertical-align:middle}
+
+/* Keep Material's desktop search overlay anchored to the header's search slot. */
+@media screen and (min-width: 60em) {
+  .ouro-top-inner > .md-search {
+    flex: 0 0 11.7rem;
+    width: 11.7rem;
+    min-width: 0;
+  }
+}
+
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  .ouro-top-inner {
+    height: auto;
+    min-height: 64px;
+    padding-block: 8px;
+    gap: 12px;
+  }
+  .ouro-top-inner > .ouro-brand {
+    flex-shrink: 0;
+  }
+  .ouro-top-inner > .ouro-nav {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-inline: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+}
+
+/* The code block has a dark background in both themes; set every Material
+   syntax-token color against that background instead of inheriting the light palette. */
+.md-typeset pre > code {
+  --md-code-fg-color: #eaf4ee;
+  --md-code-hl-name-color: #eaf4ee;
+  --md-code-hl-variable-color: #eaf4ee;
+  --md-code-hl-operator-color: #eaf4ee;
+  --md-code-hl-punctuation-color: #eaf4ee;
+  --md-code-hl-generic-color: #eaf4ee;
+  --md-code-hl-comment-color: #b4c8bd;
+  --md-code-hl-string-color: #b7e4c7;
+  --md-code-hl-number-color: #ffd7a8;
+  --md-code-hl-constant-color: #ffd7a8;
+  --md-code-hl-function-color: #d8c7ff;
+  --md-code-hl-keyword-color: #a8d6ff;
+  --md-code-hl-special-color: #f7bcc8;
+}
+/* Links within prose must remain recognizable without relying on color alone. */
+.md-typeset :is(p, li, td, th, blockquote) a:not(.headerlink) {
+  text-decoration: underline;
+  text-underline-offset: .14em;
+  text-decoration-thickness: .08em;
+}
+/* Dark-theme inline code links and footer must retain contrast on their own backgrounds. */
+html[data-theme=dark] .md-typeset a code { background-color: #17251e; color: #7fbea1; }
+html[data-theme=dark] .md-footer-meta.md-typeset { color: #b4c8bd; }
+html[data-theme=dark] .md-footer-meta.md-typeset a { color: #b4c8bd !important; }
+html[data-theme=dark] .md-footer-meta .md-copyright,
+html[data-theme=dark] .md-footer-meta .md-copyright__highlight { color: #b4c8bd; }
+/* Give navigation links and disclosure labels a usable target without changing their URLs. */
+.md-nav--primary .md-nav__link[href],
+.md-nav--primary .md-nav__link[for],
+.md-nav--secondary .md-nav__link[href] {
+  min-height: 24px;
+  box-sizing: border-box;
+  align-items: center;
+  scroll-margin-block-start: 8px;
+}
+/* A sticky drawer title can cover the first focused or scrolled link. */
+.md-nav--primary .md-nav__title {
+  position: static;
+  box-shadow: none;
+}
+/* On narrow screens the page TOC is a nested panel in the primary drawer.
+   An unchecked, translated-offscreen panel must not intercept pointer or focus. */
+@media screen and (max-width: 59.984375em) {
+  .md-nav--primary #__toc:not(:checked) ~ .md-nav--secondary {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .md-nav--primary #__toc:checked ~ .md-nav--secondary {
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Keep keyboard-selected Material search results visible in both themes. */
+.md-search-result__link:focus-visible { outline: 3px solid #145d57; outline-offset: -3px; }
+html[data-theme="dark"] .md-search-result__link:focus-visible { outline-color: #a9f2cb; }
+
+/* A closed search overlay must not intercept clicks during its fade-out. */
+[data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__overlay { pointer-events: none; }

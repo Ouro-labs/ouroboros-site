@@ -51,6 +51,9 @@
 
 <div class="eyebrow">规约</div>
 <h1>规约（Seed）</h1>
+
+<p class="guide-cta"><strong>使用当前文档：</strong><a href="/docs/zh/quickstart/">快速入门</a> · <a href="/docs/zh/troubleshooting/">问题排查与恢复</a> · <a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a></p>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围；更完整的 AI 诊断也可参考<a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a>。</p>
 <p class="lead">访谈的答案被整理成一个 YAML 文件，叫 Seed。运行时照着它写代码，评估也照着它判分。开跑之前先读一遍，确认它写的是你想要的东西。</p>
 
 <h2 id="what">1. 它是什么</h2>
@@ -90,9 +93,9 @@
 <p>这条设计是为了堵一个具体的漏洞：让 agent 自己出考题，它迟早会把题目改容易。</p>
 
 <h2 id="next">6. 下一步</h2>
-<p>确认 Seed 没问题之后，就可以进入执行。逐章指南的执行、评估、演化目前在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里，中文这几章在补。</p>
+<p>确认 Seed 没问题之后，就可以进入执行。编写时逐章指南的执行、评估、演化在<a href="../../en/">英文版</a>和<a href="../../">한국어版</a>里，当时中文这几章仍在补充。</p>
 
-<p class="note">这一页对着当前源码核过：七个字段来自 <code>core/seed.py</code>，存储路径来自 <code>auto/adapters.py</code>，继承规则来自 <code>evolution/acceptance_contracts.py</code>。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照源码（确认日期与 commit 未记录）：七个字段来自 <code>core/seed.py</code>，存储路径来自 <code>auto/adapters.py</code>，继承规则来自 <code>evolution/acceptance_contracts.py</code>。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../interview/">← 上一章<br><strong>05 访谈</strong></a><a href="../execute/">下一章 →<br><strong>07 执行</strong></a></nav>
 </article>

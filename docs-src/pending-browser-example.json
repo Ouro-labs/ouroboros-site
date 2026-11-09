@@ -1,0 +1,33 @@
+{
+  "status": "pending",
+  "manifest_sha256": "f299710b8495c8378e6a3a719fb54a1774e89a30eba41ddb758ffae12bd1b8a4",
+  "prior_manifest_sha256": "ef700511346707327ec93499a86e7082180ec751ce037b364d82241ed80b6139",
+  "summary_sha256": "ddfcee9be621f3be769603fdc095b7961fbb2faccd5f8e85111947a9b6f84a2c",
+  "generator_sha256": "e91b86c32b079436f8be3f8909e44e972917f1a942fa04286978acf10bef096a",
+  "pages": {
+    "todo-reference-example.md": {
+      "current": {
+        "source": "content/todo-reference-example.md",
+        "source_sha256": "be43c94f750f0c1d7b6980c767ceaa116090ad176e849a7a19c3c7cf802db531",
+        "page_sha256": "796176a7b5abc30f52da5a377f447d59c9c4eca1977a07403eae4367a6fcff1f"
+      },
+      "prior": {
+        "source": "content/todo-reference-example.md",
+        "source_sha256": "137e39e8340ea7bb16d568bffa82af3899bd440b5ad97ce9c1ba189a88527c9f",
+        "page_sha256": "137e39e8340ea7bb16d568bffa82af3899bd440b5ad97ce9c1ba189a88527c9f"
+      }
+    },
+    "seed-guide.md": {
+      "current": {
+        "source": "content/seed-guide.md",
+        "source_sha256": "d4112f5a8c23522def389601f42c47666b182608feef7afdd669b823081cef1a",
+        "page_sha256": "ad93ca65e211d547c13b5db13d6b2022fff2a3242cad2523f2310fa20d15d4a5"
+      },
+      "prior": {
+        "source": "content/seed-guide.md",
+        "source_sha256": "833313bae0e83f43df04a0088184749bcfab38899ccfd065ba6d60196c14b233",
+        "page_sha256": "290a10f1c3e866d5ec4868c36744a739b0140c01399bb649683e2af43346539f"
+      }
+    }
+  }
+}

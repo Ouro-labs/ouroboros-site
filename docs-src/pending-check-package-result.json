@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "45fbf7accf25f610819653693c1c4c380a97571dd12aa6cd44c3254311666d32",
+  "prior_manifest_sha256": "3391d9fa7b7f12b397b11e313eea963e46d10c5fa9c74bffe0dfe9811b22f797",
+  "summary_sha256": "68868b03366766bbcc86e7da520463305d2a2c769e008e02bf7f221b6b7b3823",
+  "pages": {
+    "check-package-detail.md": {
+      "prior": {
+        "source": "content/check-package-detail.md",
+        "source_sha256": "400f1174352d682f3d6bb0caabd826223864ca8fda24e5ca7eeaa9d738d80aa4",
+        "page_sha256": "b1e253afd40a79d1dc16334ff330f4498571357170937c2a9aeef5e3a23bccf9"
+      },
+      "current": {
+        "source": "content/check-package-detail.md",
+        "source_sha256": "1db9ff55706bda4701fa4e185c67dfc98a1c87f97e1a2968bc60a47229bc7619",
+        "page_sha256": "a20aa75a981aba3c295333fafc5cf5db1da3040cf48e9d970e70263dc885477b"
+      }
+    }
+  }
+}

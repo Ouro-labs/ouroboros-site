@@ -1,0 +1,10 @@
+{
+  "status": "pending",
+  "summary_sha256": "9435930377cc12efee54f1883659ea78d849b40366308f3d55fe3ebd2e32886b",
+  "files": {
+    "docs-src/mkdocs.yml": "24cdb66564f5df1aff9a3a8f730df423f3ece4cafc5c1a7ca9aeb4207517110f",
+    "docs-src/content/assets/ouro-search-shortcut.js": "40f93b2d38d6493a66c70da4246e60a8efd1341c71d3a6b259950ff84c253a47",
+    "docs-src/tests/test_search_shortcut.cjs": "cba08d32a47242a682780101493d61140136246d6874d9ca5a5945d43f08166b"
+  },
+  "prior_mkdocs_sha256": "157b68d28a452e49a867151d509ad21485effbd8db49e100470cc7f5102a5a3a"
+}

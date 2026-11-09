@@ -1,0 +1,332 @@
+{
+  "format": 1,
+  "semantic_links_reviewed": false,
+  "pages": {
+    "todo-reference-example.md": {
+      "source": "content/todo-reference-example.md",
+      "source_sha256": "522677eb17bb18653454de605a1a8d2c999000bdbf35ee11f87cb914b2265855",
+      "page_sha256": "628c1b9b8465ed151b4ce12357d922d646bb5b6d473ebfc31a8d631e07c76f8d"
+    },
+    "dashboard-guide.md": {
+      "source": "content/dashboard-guide.md",
+      "source_sha256": "94f7022ebbc8aceb1c992428ab984a0f32155a0ab100cea337afa4b7a15a849a",
+      "page_sha256": "8a551ffd52295abb7f2ba75c3c688231d6520a6d19ceec51676c32f82cd39535"
+    },
+    "harness-traces-guide.md": {
+      "source": "content/harness-traces-guide.md",
+      "source_sha256": "a41a9596d4adecfc4f603bcf9dfc6db4f46f7c63c3bdfc33e161d8e619dfd820",
+      "page_sha256": "86ee9b30fa244b0e7479fce0eb522a773b6adeb0651c9b2a4e976687d76fca5e"
+    },
+    "model-routing-guide.md": {
+      "source": "content/model-routing-guide.md",
+      "source_sha256": "2f5812dfac1b87b14b6589674658ced8cc73b444d54a052286cff77ce14aa674",
+      "page_sha256": "ccb0b4a778616a287fdeed32a3b9161be2757202b438a105db5b2ccc154a7952"
+    },
+    "megacode-guide.md": {
+      "source": "content/megacode-guide.md",
+      "source_sha256": "c437ddb7c8e7d8e456b8f5d05e28819fc17bc14cc22dd3957359c302faf27c27",
+      "page_sha256": "c437ddb7c8e7d8e456b8f5d05e28819fc17bc14cc22dd3957359c302faf27c27"
+    },
+    "settings-gui-guide.md": {
+      "source": "content/settings-gui-guide-ko.md",
+      "source_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5",
+      "page_sha256": "aeb86e82baa4294c912d70a16c688fcdd5d0962534453e5b64966e32fdb1b5c5"
+    },
+    "en/settings-gui-guide.md": {
+      "source": "content/settings-gui-guide.md",
+      "source_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7",
+      "page_sha256": "019e0155b377c6a32a5556eb2b17125344a0558df639df3436dae34c9fce25a7"
+    },
+    "index.md": {
+      "source": "content/guide-home.md",
+      "source_sha256": "6578c98229d659d81017ad2eb3fdfddb24967108689c17b1b035d44a35a016df",
+      "page_sha256": "1a0d939dd5a07340ea4793ae7af375fce6345a10d565af3cc37bd7c09571fb1e"
+    },
+    "quickstart.md": {
+      "source": "content/quickstart.md",
+      "source_sha256": "af364cb1db55c940c8f3bf77e64deeb0b60900ad29bdbdf35192f65a88dca761",
+      "page_sha256": "be5dc16e500ef5ab60bf69215523db4d8b4b745a5c1540d5ebbd05a7642da286"
+    },
+    "interview-guide.md": {
+      "source": "content/interview-guide.md",
+      "source_sha256": "ef9c072a4ccfde37ad9b09d60baea8db6108eb6c63d270d6bde1fa73b6269b81",
+      "page_sha256": "f14d9b7058989392ff7962ad3877ab23fd7442da355cfe6e99c21faea4a1ad7f"
+    },
+    "seed-guide.md": {
+      "source": "content/seed-guide.md",
+      "source_sha256": "d9fbb4d7e0a9ecc687b129262e8feb003a67447603197e76ca80dffbf463f107",
+      "page_sha256": "f7c07c57848c73456694c517c4ab90b55ff4662299d1ee07c1a42a17d4883508"
+    },
+    "ai-troubleshooting.md": {
+      "source": "content/ai-troubleshooting.md",
+      "source_sha256": "3a68320369fff2fc079af174438015fc4baefc137fd2c6021c85525f2eb07030",
+      "page_sha256": "3a35428d894d54d9336ea1f3942fa1022c898beaa369cc862f802ec9bf32002e"
+    },
+    "en/quickstart.md": {
+      "source": "content/quickstart-en.md",
+      "source_sha256": "369c6e0f5016a6b5617e7a1c709acebfb4f37a73b43d5e34269e808f8ca39a6d",
+      "page_sha256": "e11c0f8b7646b9aaba01380f1660d15b093dccbbc7cbef7985ae76cd7a018717"
+    },
+    "zh/quickstart.md": {
+      "source": "content/quickstart-zh.md",
+      "source_sha256": "67e754c5ea59561a27a406306e80f3402755d634d256d2e515ffe109efb53abe",
+      "page_sha256": "2073bcc8b00ad9229021f3823a270e026e4180577a3cee942af87403b9ebf1b6"
+    },
+    "en/troubleshooting.md": {
+      "source": "content/troubleshooting-en.md",
+      "source_sha256": "10bf7f0bf6e91a74a3d32b96c34d60cff301875563f4385219a0ec78ef9ff021",
+      "page_sha256": "5fec66f8890907e6e591c8de587266b5de11c6753dfb44c293a4e3331bd9e722"
+    },
+    "zh/troubleshooting.md": {
+      "source": "content/troubleshooting-zh.md",
+      "source_sha256": "1c18dc0a269e55b81ad9b1879e0d2660d1e82d6cd91b9ef24bbbca0f20d31c33",
+      "page_sha256": "b40812537e7e06de3ee265d3fde9beab6f90e0da812ca1edb18b9a5e00fe5e99"
+    },
+    "en/ai-troubleshooting.md": {
+      "source": "content/ai-troubleshooting-en.md",
+      "source_sha256": "d0071049a008d454576e91344380694b370b6f409952c8ede64412c06bcdd545",
+      "page_sha256": "08be01f80c4320e27048ebf00535ab068a87d25ee8a49c131b01b98f8ce49dea"
+    },
+    "cli-reference-guide.md": {
+      "source": "content/cli-reference-guide.md",
+      "source_sha256": "867121771d397140aacd54f05519c17a331174449e3c442b2331e54dbc9be814",
+      "page_sha256": "067c6469b59d490a1ca92dc2206e89a29b872a21e57d8340ec824a9180d43460"
+    },
+    "mcp-reference-guide.md": {
+      "source": "content/mcp-reference-guide.md",
+      "source_sha256": "c5230466792b765b257a8ddd05961d2730743a9ed3ea21ebfe8419ffe6b95b6e",
+      "page_sha256": "f070aa75817eb5f89fcf85684e4763e70c10daf45267d956e8ee67a023b752c7"
+    },
+    "config-reference-guide.md": {
+      "source": "content/config-reference-guide.md",
+      "source_sha256": "a269b4036c54cab7d746ef488a5725bc691d9f59bfdf1e434a79598b9725b6e2",
+      "page_sha256": "788dc36db89ccce958910733ff20d0b374f5f790fa77e2355e2c784587fbd279"
+    },
+    "version-guide.md": {
+      "source": "content/version-guide.md",
+      "source_sha256": "2b9eeba1dd33c61a5938d3678631773d480dc696e19501dc64a52ad6df42c6e8",
+      "page_sha256": "ba2042660e2063ca449071b4af60e1752192627b58cb29639bee413a408b1948"
+    },
+    "status-guide.md": {
+      "source": "content/status-guide.md",
+      "source_sha256": "5a89f7c0a788d218d5a40d2dd28c2f199ae6730fdb4f166a732c3771a3e65477",
+      "page_sha256": "0e540f51ccd1224c81feb4ebc0a954f1ac23b80111c04c20605a6eaa95c84eaf"
+    },
+    "architecture-map-public.md": {
+      "source": "content/architecture-map-public.md",
+      "source_sha256": "98e6ebd8c19f26a5d18bfa9e6929f838bf80391ccefd8dff1a46ee7a70ad4554",
+      "page_sha256": "ee0273aa65e04a87968de8487c3d9eec91aa015c5633918f5c6c5f27341f5129"
+    },
+    "cli-reference-detail.md": {
+      "source": "content/cli-reference-detail.md",
+      "source_sha256": "9c124794a4f0086f2c543ceee55af50de6c4c01cad228ca715792f862021755c",
+      "page_sha256": "9a2644a281eb6f298574dfe535ac35c0ad126e688d0af82a2fc86eb74c9996d4"
+    },
+    "mcp-reference-detail.md": {
+      "source": "content/mcp-reference-detail.md",
+      "source_sha256": "392e3e81524f0886c2798b28259fd551491435b527d1c4323ba252326f7e26d1",
+      "page_sha256": "a4f659a0bfc5c1339b8b652dc34491ba6a5037b15fc374c2552100596c83f9e8"
+    },
+    "config-reference-detail.md": {
+      "source": "content/config-reference-detail.md",
+      "source_sha256": "dc337d5af5a1631188f342f3a38b9bc495b9df78779132e333746cc9107a7f24",
+      "page_sha256": "e0c979aa11db8ea7e9cb3ce21db43caa8abcfc07197e78acc5a71db82505aad5"
+    },
+    "auto-detail.md": {
+      "source": "content/auto-detail.md",
+      "source_sha256": "483c5c74465b80e6949f7ce1ea654e585027cc064924cf4c7ad956029c3d1f3c",
+      "page_sha256": "d9e4d9dc2786b5915cc1c45de4f908c929eb88b91ebe685b29ad4bebcb1cc97f"
+    },
+    "evaluation-evolution-detail.md": {
+      "source": "content/evaluation-evolution-detail.md",
+      "source_sha256": "b4239428cadd23759bebe96abb42ebbd547f9472cfa2c6a88da8164547d8f104",
+      "page_sha256": "13dc88d122e12449d1bbbc563b11482ab63a592c63283c717e9d9375d374f49d"
+    },
+    "qa-detail.md": {
+      "source": "content/qa-detail.md",
+      "source_sha256": "ff0fd5824fb78701aa88bd05f9b33af1b0615cf267eca016736525f7384d991e",
+      "page_sha256": "6b250a61e5a3bfa71aaaffd48c330d7b21fa65a411f81d5b18df506c889e8f36"
+    },
+    "workflow-ir-detail.md": {
+      "source": "content/workflow-ir-detail.md",
+      "source_sha256": "56efbdf08197a43a2d051fd045568f149a140ab3e8710d4bb119ee90b4f88d56",
+      "page_sha256": "bf7d4fdb2f416caa52bf8bc337aae97fea23d9a66284d840ed793c9aafd6b332"
+    },
+    "recovery-detail.md": {
+      "source": "content/recovery-detail.md",
+      "source_sha256": "dbbc2661beee9a20d615071aac2f20bc6d19ce92cad72629b6125e011c825518",
+      "page_sha256": "b9c60d0bf113e01c3f63d6cc6953f20b405bfa16eb0102f84f046155d2659d65"
+    },
+    "setup-host-detail.md": {
+      "source": "content/setup-host-detail.md",
+      "source_sha256": "f0e59c76580a42c4559b8c837d4aad01f11134a34a782f4d65ad47c188253139",
+      "page_sha256": "c2889ffc8d0ee2311e0d58ff0a00300ac02eb7434dedb860a912585822523727"
+    },
+    "update-detail.md": {
+      "source": "content/update-detail.md",
+      "source_sha256": "467450a2a34b425ab1a0ab88ae760e09a47cca418deff4526803d0efbd09d96c",
+      "page_sha256": "5d008bf715374149e60ab9e007afeb31e421d78d7913d769f58073349bf8895c"
+    },
+    "diagnostics-detail.md": {
+      "source": "content/diagnostics-detail.md",
+      "source_sha256": "f3d3fcb699e9027827567331d0766eaab7aafc9a310df81afe901cc6507a58ec",
+      "page_sha256": "496b17e341189aa3884ec319ce7ca5cea55af2d31c9cabb0ae2ad52b69143173"
+    },
+    "first-run-detail.md": {
+      "source": "content/first-run-detail.md",
+      "source_sha256": "63378434aa652fbd21b9a5e708ec803de049a7ab5c2ec8f271a34c0cee30d878",
+      "page_sha256": "ac843662b82caac7dbb2fc5446b733a7781b1e1b202915c672806fe817150742"
+    },
+    "interview-detail.md": {
+      "source": "content/interview-detail.md",
+      "source_sha256": "ed9bb310ca5db479ef646922fcc3ce34c69cbacd21a130655709ced3b769f7b2",
+      "page_sha256": "a18a2c591987e90559e816259a0bceb63173001e8c3a93e51b29a132fb89cdf8"
+    },
+    "seed-format-detail.md": {
+      "source": "content/seed-format-detail.md",
+      "source_sha256": "bd3d0fac8a526fce1a6f70d045d7857ae8f9556904ef1f913758bfab7e969e7c",
+      "page_sha256": "5f3a5132ebb83564c646635215427552fd4435e7f5ee52b613c55e995cdb5df8"
+    },
+    "existing-project-detail.md": {
+      "source": "content/existing-project-detail.md",
+      "source_sha256": "2fe296b7cbb9dca1f61d9cabcef0cca96c631752d4714e846203eb049258f8d4",
+      "page_sha256": "f0b8717df8ae0315565d90df62863ac3e5d4e4539b0060fc9d157ce1df625640"
+    },
+    "progress-detail.md": {
+      "source": "content/progress-detail.md",
+      "source_sha256": "202572f2289f8900df35cd80c89799f92095acfd009a795f7057d7f103e71ed1",
+      "page_sha256": "d92470d608a0a52001dd02ea43b1ec2f5a63e500d38444488414a33b7894230b"
+    },
+    "query-projections-detail.md": {
+      "source": "content/query-projections-detail.md",
+      "source_sha256": "46117c18a607344d7bab3ee93a7ccf429fd8887c84bc45751ce1561085a7b08a",
+      "page_sha256": "368c036b6c2be1733398a6fb62e575989a6f25fd02d752cc55f5ebbeb4b25eed"
+    },
+    "architecture-detail.md": {
+      "source": "content/architecture-detail.md",
+      "source_sha256": "8ff1f7e6a461af6fc3ff9b91e16b823d7c0b8d92f0725cf1aa9d04652ade1947",
+      "page_sha256": "446b75789172c265fae2e95998f3806fa4b49e933bf9f0f093d1fd19f9e10747"
+    },
+    "concepts-detail.md": {
+      "source": "content/concepts-detail.md",
+      "source_sha256": "9a5f54adf4473158983d4240283f938cdd1b2406dbe6f181466387ec91c1c9fb",
+      "page_sha256": "d415d16e91a05c54eb28f74443ed59ca620e5f802f886baaa3999bfda423c979"
+    },
+    "operations-detail.md": {
+      "source": "content/operations-detail.md",
+      "source_sha256": "a305c6366de31925b965efb75b9c010157663dd89706272212029e4f9e17c295",
+      "page_sha256": "4c84547e44761c0953ea09dd9f484bb176ec2efc581ccf11f82160b1a2c5cf15"
+    },
+    "runtime-support-detail.md": {
+      "source": "content/runtime-support-detail.md",
+      "source_sha256": "d31d20cf2d9dd690dc1eac1298a4f91c6c143b89bf523173a145eccfa4e4c6a3",
+      "page_sha256": "eff73ec8cb16e61b427bdc01bbfa2ad9ea01ca338a98e4f12737f0a6c0abc3cb"
+    },
+    "opencode-bridge-detail.md": {
+      "source": "content/opencode-bridge-detail.md",
+      "source_sha256": "22a6ae78e0d571642a6661596edc3cbf2d83329c342df6ae95cd98a59d512fe0",
+      "page_sha256": "6c497311c36d4dda5b3a3180efe7e2a8407df3aa17627f7f910ab9e28a991dd4"
+    },
+    "lifecycle-detail.md": {
+      "source": "content/lifecycle-detail.md",
+      "source_sha256": "4fce159c8e1c5e0ecc04d3195ec3ecc8f833bd7c25611193045b7c71a24eea47",
+      "page_sha256": "bf25bd7a51e52e10de4257397f1edb7dc20668b28b6faac0c76ba896c5a52475"
+    },
+    "artifacts-detail.md": {
+      "source": "content/artifacts-detail.md",
+      "source_sha256": "22348b6934fa85f392e496b85d747496cb3c7739bc7bbf1075bdd3d3fb115986",
+      "page_sha256": "fa8a31f1f01501e4a3eb7a1a5d25330b206030e60d5bb940414bcc6ff0d5c25d"
+    },
+    "check-package-detail.md": {
+      "source": "content/check-package-detail.md",
+      "source_sha256": "1db9ff55706bda4701fa4e185c67dfc98a1c87f97e1a2968bc60a47229bc7619",
+      "page_sha256": "a20aa75a981aba3c295333fafc5cf5db1da3040cf48e9d970e70263dc885477b"
+    },
+    "cleanup-detail.md": {
+      "source": "content/cleanup-detail.md",
+      "source_sha256": "bb02b32246eaf1ee801b99010767c33be6b8d754ebe101bfc4b537e6c226ba6e",
+      "page_sha256": "885d5a4a16ebe88625608a1d6050ce28023ad080e82898377556e5c137dd78a1"
+    },
+    "integration-detail.md": {
+      "source": "content/integration-detail.md",
+      "source_sha256": "ab4ac34820eb588c0be4b9f3f490c795fa26d65515663a33c06408d096ff7ea4",
+      "page_sha256": "9d9562aadfc10fb3f2acf9e9076f6f922ddfd365d8cdda23144f0a45c9495ff2"
+    },
+    "ac-recovery-detail.md": {
+      "source": "content/ac-recovery-detail.md",
+      "source_sha256": "58cd3bc23eb5606d497c25f3a9715d2d6746beb132d95e256ff92b8989500901",
+      "page_sha256": "f20282f5fb30d2399b7dd09d60058b1eb249bcf29ef9b5d821e5f00f18bc6ef5"
+    },
+    "windows-wsl-detail.md": {
+      "source": "content/windows-wsl-detail.md",
+      "source_sha256": "53fc71b164c159fc1bcd9c37f4aaf11e12af3eec2527fc79ad0d5bd10b0114a9",
+      "page_sha256": "84d44976debcae2d7b703ee87f7616bf78c9c4466a00ade6a99a8f76d86076bc"
+    },
+    "example-detail.md": {
+      "source": "content/example-detail.md",
+      "source_sha256": "eef7c7e838ebc87b19972aaaccb15f7c5ded98d832ec7838d0fc761ccf7a519b",
+      "page_sha256": "e39056c9c2e22fb4d212d1036a7a2942b49f7fbda482a21fe562f9496cb44841"
+    },
+    "fanout-detail.md": {
+      "source": "content/fanout-detail.md",
+      "source_sha256": "c1d767edb4fe233045e85a0a2acfacbfd0f3d8e9f00d172c750a0f09e41e5d11",
+      "page_sha256": "f209cf1c2da3a98dfcfa3ec805bbf10a305abf0ee00685adce86eeb9887f83c9"
+    },
+    "workflows-detail.md": {
+      "source": "content/workflows-detail.md",
+      "source_sha256": "62c8ae3f6816dc582eb071afff4afb7d41170c2ae5a31a83a4cadf68bee6e9a7",
+      "page_sha256": "566ac811f2eb78985b5118b104ca15476bf4b8e8b2ca07b0a4c723fcf0f82e68"
+    },
+    "plugins-detail.md": {
+      "source": "content/plugins-detail.md",
+      "source_sha256": "85f3d241244a6233cfb88f15e8649728076c253edea4d1238cb5d8729cb38881",
+      "page_sha256": "f8ecdcf5e41eb15cbb0ad37b9adb04bfeae6ef8769623d4bce2f6f78233a7cd1"
+    },
+    "routing-detail.md": {
+      "source": "content/routing-detail.md",
+      "source_sha256": "5a509f5f8f3f225019ab8d0cd18e2f8465e75d43b403a9aae41960981d08af09",
+      "page_sha256": "85abfa784f868d06e28b19e76e12eb5da65b3de7118d3dc0e787c070ec0decdd"
+    },
+    "drift-detail.md": {
+      "source": "content/drift-detail.md",
+      "source_sha256": "8911d223e3ae9dacdadf3a5e6d2067787f4f5865ef5c612681d8480696cf5932",
+      "page_sha256": "fbaf4b7daa9351d186c8578d2a8ccf8d54023cace868cb8a6297b9d321fe7c4c"
+    },
+    "event-contract-detail.md": {
+      "source": "content/event-contract-detail.md",
+      "source_sha256": "6e9f327ca2d0ed3ceb40110c1696825754507fe63caa0bb762f441d1674fb9b0",
+      "page_sha256": "3a0d500895c13e7d6e5acad63cf3be4965b2494a1399ced0ed63ec6d3443d76a"
+    },
+    "python-api-detail.md": {
+      "source": "content/python-api-detail.md",
+      "source_sha256": "147709d2232952c7f7b333ebf13c4aa81bea65527b149a01d6db29cedd5a07aa",
+      "page_sha256": "8c7ed9092044d871f4ba701a7f102cf3cd5f3050831f5ad282bf5908d63694d9"
+    },
+    "mcp-schema-snapshot-detail.md": {
+      "source": "content/mcp-schema-snapshot-detail.md",
+      "source_sha256": "e25045cc776a2f2660c7f9b22c77711039b6ecd687393bbb8742c5515730271f",
+      "page_sha256": "884e1dcf73c00e3f8deef4b509f068fbef2c37bd562e8d04b6b259849d4335e3"
+    },
+    "synapse-detail.md": {
+      "source": "content/synapse-detail.md",
+      "source_sha256": "97e4077a6b50f98407d62ea1880d3ab1344c960a2fa3153a96e9c23896371123",
+      "page_sha256": "6bf5e9a00277b88c2d08a02f4f53734af7029a6d91f03730456068c5d83db34b"
+    },
+    "python-api-inventory-detail.md": {
+      "source": "content/python-api-inventory-detail.md",
+      "source_sha256": "6ffab33468eab349fc5f1a6952fed7cc352b6e7a421eb43fd09d8d879a6f7398",
+      "page_sha256": "ffa8a865338fcd4756c9919422c47a3d0baae76ea4f272a68abb89a3a3e4209c"
+    }
+  },
+  "assets": {
+    "assets/mcp-input-schema-722172ef.json": {
+      "sha256": "64c06b10adebd6534b6a2211cc840dac633407105554abf7e1dbf318d0afdd12",
+      "provenance": "Captured list_tools inputSchema from a 722172ef stdio server; see mcp-schema-snapshot-detail.md"
+    },
+    "assets/ooo-tui-monitor.gif": {
+      "sha256": "e79711f2a0fc6b9f53224ed893d2222b7f8b7eb5d67303da80df78ddf176e932",
+      "upstream": "https://github.com/Q00/ouroboros/blob/722172ef096767583679d04aef5e847458fee6b2/docs/images/ooo-tui-monitor.gif",
+      "license": "MIT; Copyright (c) 2025 Q00; repository LICENSE"
+    }
+  }
+}

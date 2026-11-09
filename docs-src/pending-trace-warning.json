@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "5147f04b196249b65d56feb5948c94c1b0dd156295243f6a1b722fc65b9283f6",
+  "prior_manifest_sha256": "f76e6ecec5cb9c8e939ee71c8c53065e0c476e764f5729f0c88166e47e7312c8",
+  "summary_sha256": "55219adf13af57ef1a7f4c71270c8e9a21bf3adbf2d2fe01d142841ee1089cf8",
+  "pages": {
+    "harness-traces-guide.md": {
+      "prior": {
+        "source": "content/harness-traces-guide.md",
+        "source_sha256": "8d736bfcb4db564b5791a16a014e87ecf687ae7aefbfe688affa8ce4a17d1ec4",
+        "page_sha256": "1d374c9e9c302fe6b331241a3fea74256d930696bf081074df9a1a1515659004"
+      },
+      "current": {
+        "source": "content/harness-traces-guide.md",
+        "source_sha256": "a41a9596d4adecfc4f603bcf9dfc6db4f46f7c63c3bdfc33e161d8e619dfd820",
+        "page_sha256": "86ee9b30fa244b0e7479fce0eb522a773b6adeb0651c9b2a4e976687d76fca5e"
+      }
+    }
+  }
+}

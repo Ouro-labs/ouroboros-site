@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "584116a069cd45690197827d96bb8cfae6f5c2625d36fdf31c2f548117d77a90",
+  "prior_manifest_sha256": "0eacf7755d589f85cea05a5f054de0ce1b9dc2868017e72d4417582446b9951b",
+  "summary_sha256": "ea13d4ba3054e692dd6778b91bb7e3c9ae3871e19f4f5d4aa78c1c84f71d1d8e",
+  "pages": {
+    "query-projections-detail.md": {
+      "prior": {
+        "source": "content/query-projections-detail.md",
+        "source_sha256": "b5a179421ab457b82c8e79af28c5768b9f0ad594edc9e1c486f3994a7a4c36da",
+        "page_sha256": "26d6a3297d1c6be84c67780fb495332a2ab274575d5934ed5b71ec845dac1ee2"
+      },
+      "current": {
+        "source": "content/query-projections-detail.md",
+        "source_sha256": "46117c18a607344d7bab3ee93a7ccf429fd8887c84bc45751ce1561085a7b08a",
+        "page_sha256": "368c036b6c2be1733398a6fb62e575989a6f25fd02d752cc55f5ebbeb4b25eed"
+      }
+    }
+  }
+}

@@ -1,0 +1,1673 @@
+{
+  "ouroboros_ac_dashboard": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "ID of the lineage to display"
+      },
+      "mode": {
+        "type": "string",
+        "description": "Display mode: 'summary' (default), 'full', or 'ac'"
+      },
+      "ac_index": {
+        "type": "integer",
+        "description": "AC index (1-based) for 'ac' mode. Required when mode='ac'."
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_ac_tree_hud": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "Session ID to inspect."
+      },
+      "cursor": {
+        "type": "integer",
+        "description": "Previous EventStore row ID cursor.",
+        "default": 0
+      },
+      "view": {
+        "type": "string",
+        "description": "Verbosity: 'tree' (default) for the full AC tree, 'summary' for a short monitor, or 'compact' for one-line polling.",
+        "default": "tree"
+      },
+      "max_nodes": {
+        "type": "integer",
+        "description": "Maximum tree nodes to render when view='tree'.",
+        "default": 50
+      }
+    },
+    "required": [
+      "session_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_auto": {
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Goal/task for ooo auto"
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory"
+      },
+      "resume": {
+        "type": "string",
+        "description": "Auto session id to resume"
+      },
+      "max_interview_rounds": {
+        "type": "integer",
+        "description": "Max interview rounds",
+        "default": 50
+      },
+      "max_repair_rounds": {
+        "type": "integer",
+        "description": "Max repair rounds",
+        "default": 5
+      },
+      "skip_run": {
+        "type": "boolean",
+        "description": "Stop after A-grade Seed",
+        "default": false
+      },
+      "attach_execution": {
+        "type": "string",
+        "description": "Attach an externally verified execution id to an unknown run handoff"
+      },
+      "attach_job": {
+        "type": "string",
+        "description": "Attach an externally verified job id to an unknown run handoff"
+      },
+      "attach_session": {
+        "type": "string",
+        "description": "Attach an externally verified run session id to an unknown run handoff"
+      },
+      "attach_source": {
+        "type": "string",
+        "description": "Source label for an attached run handle"
+      },
+      "reconcile_run": {
+        "type": "boolean",
+        "description": "Try to reconcile an unknown run handoff without starting a duplicate run",
+        "default": false
+      },
+      "reconcile_source": {
+        "type": "string",
+        "description": "Source label for run handoff reconciliation"
+      },
+      "pipeline_timeout_seconds": {
+        "type": "number",
+        "description": "Top-level pipeline deadline in seconds. Defaults to 7200s for new sessions. Range: 60-86400. Cannot be changed on resume; the deadline is preserved across process restarts."
+      },
+      "user_preferences": {
+        "type": "object",
+        "description": "Caller-supplied user preferences keyed by ledger section name (e.g. runtime_context, constraints, non_goals). The Driver tags matching answers with [from-auto][user_preference] in the ledger. Keys must be valid ledger section names; values must be non-empty strings or non-empty lists of strings/numbers. On resume, null/empty values clear the persisted preference for that section."
+      },
+      "efficiency_mode": {
+        "type": "string",
+        "description": "Execution efficiency policy: adaptive may use lower-cost child tiers with recovery escalation; quality_first keeps child ACs at the parent starting tier. When omitted on a fresh start, a configured execution.default_policy supplies it (default quality_first; adaptive only when the policy is ask).",
+        "enum": [
+          "adaptive",
+          "quality_first"
+        ]
+      },
+      "frugality_assurance": {
+        "type": "string",
+        "description": "Frugality assurance: off, observe, or explicitly authorized strict. Defaults from efficiency_mode and is immutable on resume.",
+        "enum": [
+          "off",
+          "observe",
+          "strict"
+        ]
+      },
+      "complete_product": {
+        "type": "boolean",
+        "description": "Deprecated and ignored. The run job owns run -> evaluate -> ralph; follow it with ouroboros_job_status or ouroboros_job_wait instead.",
+        "default": false
+      },
+      "domain": {
+        "type": "string",
+        "description": "Optional domain profile name (for example, coding)"
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Checkpoint commit policy: ac_checkpoint, final_only, or none"
+      },
+      "worktree_policy": {
+        "type": "string",
+        "description": "Worktree isolation policy: auto, always, current, or none"
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_brownfield": {
+    "properties": {
+      "action": {
+        "type": "string",
+        "description": "Action to perform: 'scan' to discover repos from ~/, 'register' to add a single repo, 'query' to list all registered repos from the DB without rescanning, get the default, or rank repos by 'text', 'set_default' to toggle a repo's default flag (supports multiple defaults; does NOT clear others). Auto-detected from parameters when omitted.",
+        "enum": [
+          "scan",
+          "register",
+          "query",
+          "set_default",
+          "set_defaults"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "description": "Absolute filesystem path of the repository. Required for 'register' and 'set_default' actions."
+      },
+      "name": {
+        "type": "string",
+        "description": "Human-readable name for the repository. Used with 'register'. Defaults to directory name."
+      },
+      "desc": {
+        "type": "string",
+        "description": "One-line description of the repository. Used with 'register'. Optional."
+      },
+      "is_default": {
+        "type": "boolean",
+        "description": "For 'set_default' action: set to true to mark as default, false to unmark. Defaults to true.",
+        "default": true
+      },
+      "default_only": {
+        "type": "boolean",
+        "description": "When true with 'query' action, return only the default repo instead of the full list. Defaults to false.",
+        "default": false
+      },
+      "scan_root": {
+        "type": "string",
+        "description": "Existing directory to walk for the 'scan' action. Defaults to the current user's home directory."
+      },
+      "indices": {
+        "type": "string",
+        "description": "Comma-separated repo numbers from the scan list (e.g. '6,18,19'). Used with 'set_defaults' action to replace all defaults at once."
+      },
+      "text": {
+        "type": "string",
+        "description": "Free-text topic for the 'query' action. When set, repos are ranked by BM25 relevance over name, description, path, manifest, README head, and top-level entries stored at scan time; only matching repos are returned, best first. offset/limit then page the ranked list (limit defaults to 10)."
+      },
+      "offset": {
+        "type": "integer",
+        "description": "Number of rows to skip for 'query' pagination. Defaults to 0.",
+        "default": 0
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of rows to return for 'query' pagination. Omit for no limit."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_cancel_execution": {
+    "properties": {
+      "execution_id": {
+        "type": "string",
+        "description": "The execution/session ID to cancel"
+      },
+      "reason": {
+        "type": "string",
+        "description": "Reason for cancellation",
+        "default": "Cancelled by user"
+      }
+    },
+    "required": [
+      "execution_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_cancel_job": {
+    "properties": {
+      "job_id": {
+        "type": "string",
+        "description": "Job ID returned by a start tool"
+      }
+    },
+    "required": [
+      "job_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_checklist_verify": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "The execution session ID being verified"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Seed YAML containing acceptance_criteria, goal, constraints. The seed's acceptance_criteria list is evaluated in full."
+      },
+      "artifact": {
+        "type": "string",
+        "description": "The Run output/artifact to verify against the seed's ACs"
+      },
+      "artifact_type": {
+        "type": "string",
+        "description": "Type of artifact: code, docs, config. Default: code",
+        "default": "code",
+        "enum": [
+          "code",
+          "docs",
+          "config"
+        ]
+      },
+      "working_dir": {
+        "type": "string",
+        "description": "Project working directory (for language auto-detection)."
+      }
+    },
+    "required": [
+      "session_id",
+      "seed_content",
+      "artifact"
+    ],
+    "type": "object"
+  },
+  "ouroboros_evaluate": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "The execution session ID to evaluate"
+      },
+      "artifact": {
+        "type": "string",
+        "description": "The execution output/artifact to evaluate"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Original seed YAML for goal/constraints extraction"
+      },
+      "acceptance_criterion": {
+        "type": "string",
+        "description": "Specific acceptance criterion to evaluate against"
+      },
+      "acceptance_criteria": {
+        "type": "array",
+        "description": "Multiple acceptance criteria for checklist evaluation. When two or more items are provided, each AC is evaluated independently and the results are aggregated into a pass/fail checklist (#366). Overrides acceptance_criterion."
+      },
+      "artifact_type": {
+        "type": "string",
+        "description": "Type of artifact: code, docs, config. Default: code",
+        "default": "code",
+        "enum": [
+          "code",
+          "docs",
+          "config"
+        ]
+      },
+      "trigger_consensus": {
+        "type": "boolean",
+        "description": "Force Stage 3 consensus evaluation. Default: False",
+        "default": false
+      },
+      "working_dir": {
+        "type": "string",
+        "description": "Project root used to resolve Stage 1 mechanical verification commands and Stage 2 source-file visibility. Commands are read from .ouroboros/mechanical.toml; when the file is missing, the evaluator makes one AI detect call that inspects manifests (package.json, pyproject.toml, Cargo.toml, Makefile, ...) and authors the toml. Stage 1 skips every check when no toml is produced — it never guesses."
+      }
+    },
+    "required": [
+      "session_id",
+      "artifact"
+    ],
+    "type": "object"
+  },
+  "ouroboros_evolve_rewind": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "ID of the lineage to rewind"
+      },
+      "to_generation": {
+        "type": "integer",
+        "description": "Generation number to rewind to (inclusive)"
+      }
+    },
+    "required": [
+      "lineage_id",
+      "to_generation"
+    ],
+    "type": "object"
+  },
+  "ouroboros_evolve_step": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "Lineage ID to continue or new ID for Gen 1"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Seed YAML text for Gen 1. Pass a YAML-formatted string (for example, newline-delimited 'goal: ...' fields), not JSON-shaped text or an object literal; some MCP clients may otherwise coerce the value to an object before Ouroboros receives it. Omit for Gen 2+ (seed reconstructed from events)."
+      },
+      "execute": {
+        "type": "boolean",
+        "description": "Whether to run seed execution and evaluation. True (default): full pipeline with Execute→Validate→Evaluate. False: ontology-only evolution (fast, no execution).",
+        "default": true
+      },
+      "benchmark_control": {
+        "type": "boolean",
+        "description": "Run a deliberate full-graph frugality control. Default: false. Requires execute=true, Gen 2+, an explicit Git project_dir, and a clean baseline; unavailable through plugin delegation.",
+        "default": false
+      },
+      "parallel": {
+        "type": "boolean",
+        "description": "Whether to run ACs in parallel. True (default): parallel execution (fast, may cause import conflicts). False: sequential execution (slower, more stable code generation).",
+        "default": true
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA evaluation. Default: false",
+        "default": false
+      },
+      "recover_expired_claim": {
+        "type": "boolean",
+        "description": "Explicitly recover an expired lineage writer claim after confirming the prior owner process is dead. Default: false",
+        "default": false
+      },
+      "project_dir": {
+        "type": "string",
+        "description": "Project root directory for validation (pytest collection check). If omitted, auto-detected from execution output or CWD."
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Optional checkpoint commit policy for passed ACs."
+      },
+      "auto_session_id": {
+        "type": "string",
+        "description": "Optional auto session id for checkpoint commit metadata."
+      },
+      "execution_id": {
+        "type": "string",
+        "description": "Optional execution id for checkpoint commit metadata."
+      },
+      "checkpoint_commits": {
+        "type": "array",
+        "description": "Existing checkpoint commit records for idempotency."
+      },
+      "checkpoint_attempted_ac_ids": {
+        "type": "array",
+        "description": "Acceptance criteria already considered for checkpoint commits."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision authorizing this successor generation."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution or generation that this successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Bounded corrective context for this successor generation."
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_execute_seed": {
+    "properties": {
+      "seed_content": {
+        "type": "string",
+        "description": "Inline seed YAML content to execute."
+      },
+      "seed_path": {
+        "type": "string",
+        "description": "Path to a seed YAML file. If the path does not exist, the value is treated as inline seed YAML."
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory used to resolve relative seed paths."
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Optional session ID to resume. If not provided, a new session is created."
+      },
+      "efficiency_mode": {
+        "type": "string",
+        "description": "Execution efficiency policy. adaptive may start decomposed ACs on lower-cost tiers and escalate on recovery; quality_first keeps children at the parent starting tier. When omitted on a fresh start, execution.default_policy supplies it (default quality_first; adaptive only when the policy is ask).",
+        "enum": [
+          "adaptive",
+          "quality_first"
+        ]
+      },
+      "frugality_assurance": {
+        "type": "string",
+        "description": "Frugality assurance: off, lightweight observe, or explicit strict baseline eligibility. Defaults from efficiency_mode; strict is never enabled implicitly.",
+        "enum": [
+          "off",
+          "observe",
+          "strict"
+        ]
+      },
+      "model_tier": {
+        "type": "string",
+        "description": "Model-tier routing: small/medium/large → frugal/standard/frontier execution tier (trusted decomposed children may run one tier below; retries escalate). Omit to preserve automatic runtime selection; pass medium explicitly to pin standard routing.",
+        "enum": [
+          "small",
+          "medium",
+          "large"
+        ]
+      },
+      "max_iterations": {
+        "type": "integer",
+        "description": "Maximum number of execution iterations. Default: 10",
+        "default": 10
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA evaluation. Default: false",
+        "default": false
+      },
+      "auto_evaluate": {
+        "type": "boolean",
+        "description": "Override execution.auto_evaluate for this call. When true, a completed background execute_seed run enqueues formal 3-stage evaluation as a separate bounded background job."
+      },
+      "auto_evolve": {
+        "type": "boolean",
+        "description": "Override execution.auto_evolve for the chained evaluation. When true, an explicitly rejected evaluation starts a bounded Ralph continuation loop."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision receipt authorizing a fresh successor."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution ID that the new successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Bounded corrective context copied exactly from the selected conductor decision. Fresh successor executions only."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_fetch_artifact": {
+    "properties": {
+      "contract_id": {
+        "type": "string",
+        "description": "The contract_id from a disposable artifact envelope. Omit it and pass lane_id alone to list instead: that lane's own recent findings in this project, newest first, as contract_ids to read back with this same tool."
+      },
+      "lane_id": {
+        "type": "string",
+        "description": "Optional. Narrows a fan-out artifact to the output of one lane, returning that lane's body alone. Pass the lane_id offered beside the contract_id; omit it to read the whole artifact. A supplied lane the artifact does not carry is an error, never a broader read."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_generate_seed": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "Interview session ID to convert to a seed. Required unless session_context is provided."
+      },
+      "session_context": {
+        "type": "object",
+        "description": "Interview-less path: settled material from THIS session. Keys: goal (required), acceptance_criteria (required, verifiable checks), constraints, decisions (become constraints), project_type. Anchored verbatim — supply the user's own settled wording, never your paraphrase."
+      },
+      "ambiguity_score": {
+        "type": "number",
+        "description": "Ambiguity score for the interview (0.0 = clear, 1.0 = ambiguous). Required if interview didn't calculate it. Generation fails if > 0.2."
+      },
+      "client_gates": {
+        "type": "array",
+        "description": "Client-side interview gates acknowledged before seed generation. Expected values include seed_ready_acceptance_guard and restate_goal_approved.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "force": {
+        "type": "boolean",
+        "description": "Bypass the ambiguity-score threshold and generate the seed even when ambiguity_score > 0.2. Mirrors the CLI 'Generate Seed anyway' opt-in: the real score is still recorded in seed metadata for provenance, and the bypass is emitted to the audit log. Defaults to false."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_interview": {
+    "properties": {
+      "initial_context": {
+        "type": "string",
+        "description": "Initial context to start a new interview session"
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Session ID to resume an existing interview"
+      },
+      "answer": {
+        "type": "string",
+        "description": "Response to the current interview question"
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory for brownfield auto-detection. Defaults to the current working directory if not provided."
+      },
+      "last_question": {
+        "type": "string",
+        "description": "The question text from the previous child session's response. In plugin mode each dispatch creates a new child session whose questions are not automatically persisted server-side. Pass the child's last question here when submitting an answer so the interview transcript preserves the real question text instead of a placeholder."
+      },
+      "interview_id": {
+        "type": "string",
+        "description": "Optional caller-supplied id for a brand-new interview. Must match the server format 'interview_<16 lowercase hex>' and must NOT collide with an existing interview file. Only valid for the start action — supplying it together with session_id (resume) or answer is rejected with an error to prevent silent identifier hijacking; do not preserve this argument across turns. Used by the bounded auto driver to pre-allocate the id so a driver-level cancel cannot leave auto state out of sync with the persisted interview file (see Q00/ouroboros#687)."
+      },
+      "confused_terms": {
+        "type": "array",
+        "description": "Explicit domain terms the user says they do not understand. Queued on the start turn and applied only after the first answer.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "references": {
+        "type": "array",
+        "description": "Bounded user-provided reference cues. Each object requires reference_id, label, and origin; url/excerpt are optional.",
+        "items": {
+          "type": "object"
+        }
+      },
+      "calibration_input": {
+        "type": "string",
+        "description": "User-reported topic knowledge for session-local interview wording. This does not answer a pending question."
+      },
+      "interview_calibration": {
+        "type": "object",
+        "description": "Validated session-local language calibration transported by the runtime handle; it is not persisted in interview state."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_job_result": {
+    "properties": {
+      "job_id": {
+        "type": "string",
+        "description": "Job ID returned by a start tool"
+      }
+    },
+    "required": [
+      "job_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_job_status": {
+    "properties": {
+      "job_id": {
+        "type": "string",
+        "description": "Job ID returned by a start tool"
+      },
+      "view": {
+        "type": "string",
+        "description": "'full' (default), 'summary', or 'compact'.",
+        "default": "full"
+      }
+    },
+    "required": [
+      "job_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_job_wait": {
+    "properties": {
+      "job_id": {
+        "type": "string",
+        "description": "Job ID returned by a start tool"
+      },
+      "cursor": {
+        "type": "integer",
+        "description": "Previous cursor from job_status or job_wait",
+        "default": 0
+      },
+      "timeout_seconds": {
+        "type": "integer",
+        "description": "Maximum seconds to wait for a change. Defaults to 0 so the tool returns an immediate snapshot and never holds the MCP client open unless the caller explicitly asks for long-polling. Values above 5 are capped so clients with MCP tool-call timeouts can poll safely.",
+        "default": 0
+      },
+      "view": {
+        "type": "string",
+        "description": "'full' (default), 'summary', or 'compact'.",
+        "default": "full"
+      },
+      "stream": {
+        "type": "string",
+        "description": "'progress' (default) watches job/execution progress; 'linked' also streams linked session, lineage, and subagent events.",
+        "default": "progress"
+      },
+      "wait_for": {
+        "type": "string",
+        "description": "'raw' (default) returns on any job event, preserving existing behavior; 'ac_change' waits for AC/Sub-AC/phase progress or terminal status; 'attention_or_ac_change' additionally wakes for Synapse delivery status; 'phase_change' waits for phase transitions or terminal status; 'terminal' waits only for terminal status.",
+        "default": "raw"
+      }
+    },
+    "required": [
+      "job_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_lateral_think": {
+    "properties": {
+      "problem_context": {
+        "type": "string",
+        "description": "Description of the stuck situation or problem"
+      },
+      "current_approach": {
+        "type": "string",
+        "description": "What has been tried so far that isn't working"
+      },
+      "persona": {
+        "type": "string",
+        "description": "Single persona (hacker, researcher, simplifier, architect, contrarian) OR 'all' to dispatch ALL 5 personas in parallel as separate Task panes.",
+        "enum": [
+          "hacker",
+          "researcher",
+          "simplifier",
+          "architect",
+          "contrarian",
+          "all"
+        ]
+      },
+      "stagnation_pattern": {
+        "type": "string",
+        "description": "Detected stagnation pattern used to suggest a persona when persona is omitted.",
+        "enum": [
+          "spinning",
+          "oscillation",
+          "no_drift",
+          "diminishing_returns"
+        ]
+      },
+      "personas": {
+        "type": "array",
+        "description": "Explicit list of personas to dispatch in parallel. Takes precedence over 'persona' arg. Example: ['hacker','contrarian','architect']. Each runs in its own parallel Task pane."
+      },
+      "failed_attempts": {
+        "type": "array",
+        "description": "Previous failed approaches to avoid repeating"
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Interview/lateral session id the fan-out belongs to. The id is recorded with the fan-out so a later ouroboros_submit_fanout_results from a different session is refused."
+      },
+      "mode": {
+        "type": "string",
+        "description": "'unstuck' (default): break through stagnation. 'decision': personas advise on a consequential choice; problem_context describes the options, current_approach the currently favored one (or 'undecided'). The fan-out synthesis contract then requires ONE recommendation, its grounds, the strongest dissent, and flip conditions.",
+        "enum": [
+          "unstuck",
+          "decision"
+        ]
+      },
+      "research": {
+        "type": "boolean",
+        "description": "Deep tier opt-in: personas ground claims with web evidence when their runtime exposes web tools, and emit a machine-readable evidence block. Slower; never the default. Runtimes without web tools degrade to opinion-only instead of failing."
+      }
+    },
+    "required": [
+      "problem_context",
+      "current_approach"
+    ],
+    "type": "object"
+  },
+  "ouroboros_lineage_status": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "ID of the lineage to query"
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_measure_drift": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "The execution session ID to measure drift for"
+      },
+      "current_output": {
+        "type": "string",
+        "description": "Current execution output to measure drift against the seed goal"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Original seed YAML content for drift calculation"
+      },
+      "constraint_violations": {
+        "type": "array",
+        "description": "Known constraint violations (e.g., ['Missing tests', 'Wrong language'])"
+      },
+      "current_concepts": {
+        "type": "array",
+        "description": "Concepts present in the current output (for ontology drift)"
+      }
+    },
+    "required": [
+      "session_id",
+      "current_output",
+      "seed_content"
+    ],
+    "type": "object"
+  },
+  "ouroboros_pm_interview": {
+    "properties": {
+      "initial_context": {
+        "type": "string",
+        "description": "Initial product description to start a new PM interview"
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Session ID to resume an existing PM interview"
+      },
+      "answer": {
+        "type": "string",
+        "description": "PM's response to a single-question turn. Pass the question it answers as 'last_question'. This singular form is mutually exclusive with 'answers'; for a turn that asked more than one question, use 'answers' instead."
+      },
+      "answers": {
+        "type": "array",
+        "description": "A turn's answers, sent together: [{question, answer}, ...], one entry per question the turn asked. This batch form is mutually exclusive with 'answer'. A turn is recorded whole, so collect every answer before calling. Each entry names its own question and the batch accepts one to three entries.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "question": {
+              "type": "string",
+              "minLength": 1
+            },
+            "answer": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "question",
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        "minItems": 1,
+        "maxItems": 3
+      },
+      "action": {
+        "type": "string",
+        "description": "Action to perform. Auto-detected from parameter presence when omitted: initial_context → 'start', session_id + answer → 'resume'. Use 'generate' explicitly to produce PM seed from completed interview."
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory for PM document output. Defaults to current working directory. Brownfield context is loaded from DB (is_default=true)."
+      },
+      "selected_repos": {
+        "type": "array",
+        "description": "List of repository paths selected for brownfield context (2-step start: returned by step 1, sent back in step 2). All repos are assigned role=main. When provided with initial_context, starts the interview with the selected brownfield repos.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "last_question": {
+        "type": "string",
+        "description": "The question this answer is answering. A turn persists nothing when it asks, on any runtime, so an answer without its question is refused — there is no remembered question to file it under, and the round behind it is one somebody already answered."
+      }
+    },
+    "required": [],
+    "type": "object",
+    "not": {
+      "required": [
+        "answer",
+        "answers"
+      ]
+    }
+  },
+  "ouroboros_project_status": {
+    "properties": {
+      "project_dir": {
+        "type": "string",
+        "description": "Project or workspace directory. Defaults to the MCP server caller directory captured at startup."
+      },
+      "workspace": {
+        "type": "string",
+        "description": "Optional canonical project-relative workspace filter."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Complete-run safety cap. The query fails instead of truncating when the matching population exceeds this value.",
+        "default": 100
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_qa": {
+    "properties": {
+      "artifact": {
+        "type": "string",
+        "description": "The artifact content to evaluate (code, text, JSON, etc.)"
+      },
+      "quality_bar": {
+        "type": "string",
+        "description": "Natural language description of what 'pass' means. E.g., 'All public functions must have type hints and docstrings.'"
+      },
+      "artifact_type": {
+        "type": "string",
+        "description": "Type of artifact: code, api_response, document, screenshot, test_output, custom. Default: code",
+        "default": "code",
+        "enum": [
+          "code",
+          "api_response",
+          "document",
+          "screenshot",
+          "test_output",
+          "custom"
+        ]
+      },
+      "reference": {
+        "type": "string",
+        "description": "Optional reference artifact for comparison (expected output, target schema, reference description)."
+      },
+      "pass_threshold": {
+        "type": "number",
+        "description": "Score threshold for pass verdict (0.0-1.0). Default: 0.80",
+        "default": 0.8,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "qa_session_id": {
+        "type": "string",
+        "description": "QA session ID for multi-iteration tracking. If omitted, a new session is created."
+      },
+      "iteration_history": {
+        "type": "array",
+        "description": "Previous iteration results for loop context (JSON array)."
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Optional seed YAML for additional context (goal, constraints)."
+      }
+    },
+    "required": [
+      "artifact",
+      "quality_bar"
+    ],
+    "type": "object"
+  },
+  "ouroboros_query_events": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "Filter events by session ID. If not provided, returns events across all sessions."
+      },
+      "event_type": {
+        "type": "string",
+        "description": "Filter by event type (e.g., 'execution', 'evaluation', 'error')"
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of events to return. Default: 50",
+        "default": 50
+      },
+      "offset": {
+        "type": "integer",
+        "description": "Number of events to skip for pagination. Default: 0",
+        "default": 0
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_query_projection": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "Optional orchestrator session ID to project."
+      },
+      "execution_id": {
+        "type": "string",
+        "description": "Optional execution aggregate ID. When session_id is also provided, this narrows related session-event lookup."
+      },
+      "seed_id": {
+        "type": "string",
+        "description": "Optional seed ID override. If omitted, the handler derives one from events and falls back to the queried ID."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Optional safety cap for related events. If the run has more events than this cap, the tool fails instead of returning a partial projection."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_ralph": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "Lineage ID to start or continue."
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Seed YAML content for generation 1. Omit for continuation."
+      },
+      "execute": {
+        "type": "boolean",
+        "description": "Whether each generation should execute and evaluate. Default: true.",
+        "default": true
+      },
+      "parallel": {
+        "type": "boolean",
+        "description": "Whether each generation may execute ACs in parallel. Default: true.",
+        "default": true
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA. Default: false.",
+        "default": false
+      },
+      "project_dir": {
+        "type": "string",
+        "description": "Project root forwarded to each evolve_step generation."
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Optional checkpoint commit policy forwarded to evolve_step."
+      },
+      "auto_session_id": {
+        "type": "string",
+        "description": "Optional auto session id used for checkpoint commit metadata."
+      },
+      "execution_id": {
+        "type": "string",
+        "description": "Optional execution id used for checkpoint commit metadata."
+      },
+      "checkpoint_commits": {
+        "type": "array",
+        "description": "Existing checkpoint commit records forwarded to evolve_step."
+      },
+      "checkpoint_attempted_ac_ids": {
+        "type": "array",
+        "description": "Acceptance criteria already considered for checkpoint commits."
+      },
+      "max_generations": {
+        "type": "integer",
+        "description": "Maximum generations to run before stopping. Default: 10. Range: 1-10.",
+        "default": 10
+      },
+      "per_iteration_timeout_seconds": {
+        "type": "number",
+        "description": "Per-iteration wall-clock bound in seconds. In-process runtime: hard-enforced via asyncio.timeout, the loop stops with stop_reason='iteration_timeout' on expiry. OpenCode plugin runtime: advisory bound advertised to the child session via prompt + subagent context — the child is expected to honor it and return stop_reason='iteration_timeout', but the parent MCP process cannot interrupt the child, so a non-conforming child session may still exceed this bound. Default: 1800. Range: 30-7200.",
+        "default": 1800.0
+      },
+      "oscillation_window": {
+        "type": "integer",
+        "description": "Number of trailing iterations whose findings_hash must match (and QA must not have passed) to stop with stop_reason='oscillation_detected'. Default: 3. Range: 2-10. Values < 2 are rejected because a single iteration cannot oscillate with itself.",
+        "default": 3
+      },
+      "grade_regression_window": {
+        "type": "integer",
+        "description": "Number of trailing iterations whose non-None grades must strictly decrease to stop with stop_reason='grade_regressing'. Default: 2. Range: 2-10. Values < 2 are rejected because strict-decrease requires at least two grades to compare.",
+        "default": 2
+      },
+      "max_total_seconds": {
+        "type": "number",
+        "description": "Total wall-clock budget for the entire Ralph loop in seconds. In the in-process runner this is enforced by RalphLoopRunner: checked at the top of every iteration BEFORE launching evolve_step, and on exhaustion the loop stops with stop_reason='wall_clock_exhausted'. In OpenCode plugin mode the bound is forwarded to the child session and the plugin is expected to self-enforce; the MCP server cannot abort a foreign child process. When omitted, a derived ceiling of max_generations * per_iteration_timeout_seconds is auto-applied (with a WARNING log) for standalone callers. Range: 1-86400."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision authorizing one successor generation."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution or generation that this successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Deterministic non-relaxing directive for one successor generation."
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_record_conductor_decision": {
+    "properties": {
+      "decision_id": {
+        "type": "string",
+        "description": "Stable idempotent decision ID."
+      },
+      "phase": {
+        "type": "string",
+        "description": "Decision phase.",
+        "enum": [
+          "selected",
+          "completed",
+          "failed",
+          "declined"
+        ]
+      },
+      "attention_event_id": {
+        "type": "string",
+        "description": "Source attention relay/event ID; required for selected."
+      },
+      "evidence_event_ids": {
+        "type": "array",
+        "description": "Bounded evidence event IDs; required for selected."
+      },
+      "verification_summary": {
+        "type": "string",
+        "description": "Short read-only verifier conclusion; required for selected."
+      },
+      "selected_action": {
+        "type": "string",
+        "description": "Selected menu action; required for selected."
+      },
+      "selected_effect": {
+        "type": "string",
+        "description": "Action effect class; required for selected.",
+        "enum": [
+          "read_only",
+          "successor_only",
+          "specification_change",
+          "user_escalation"
+        ]
+      },
+      "actor_mode": {
+        "type": "string",
+        "description": "Host policy mode; required for selected.",
+        "enum": [
+          "run",
+          "auto",
+          "ralph",
+          "advisory"
+        ]
+      },
+      "engine_ownership_state": {
+        "type": "string",
+        "description": "Authoritative ownership state from the attention envelope.",
+        "enum": [
+          "active",
+          "closed",
+          "unknown"
+        ]
+      },
+      "action_arguments": {
+        "type": "object",
+        "description": "Action arguments; only a digest and bounded key list are persisted."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Optional bounded corrective successor directive."
+      },
+      "root_job_id": {
+        "type": "string",
+        "description": "Root job used for the two-successor budget."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution that the selected successor will follow."
+      },
+      "user_approval_event_id": {
+        "type": "string",
+        "description": "Required approval receipt for specification changes."
+      },
+      "result_receipt": {
+        "type": "string",
+        "description": "Bounded outcome receipt or failure/decline reason for terminal phases."
+      },
+      "successor_execution_id": {
+        "type": "string",
+        "description": "New execution ID returned by a completed successor action."
+      }
+    },
+    "required": [
+      "decision_id",
+      "phase"
+    ],
+    "type": "object"
+  },
+  "ouroboros_session_signal": {
+    "properties": {
+      "target_session_scope_id": {
+        "type": "string",
+        "description": "Stable logical AC session scope ID."
+      },
+      "target_session_attempt_id": {
+        "type": "string",
+        "description": "Exact runtime attempt ID; stale attempts fail closed."
+      },
+      "expected_execution_id": {
+        "type": "string",
+        "description": "Execution generation guard."
+      },
+      "mode": {
+        "type": "string",
+        "description": "Requested Synapse delivery mode. For the direct path, the exact attempt must advertise the requested mode in ouroboros_session_signal_targets. For the sole fallback path, redirect may be requested while omitted from discovery only when fallback_mode=after_turn is explicit and that attempt advertises after_turn; its effective mode is then after_turn. Shipped adapters currently advertise/effect only inform and after_turn; redirect and replace remain reserved advertised/effective capabilities.",
+        "enum": [
+          "inform",
+          "after_turn",
+          "redirect",
+          "replace"
+        ]
+      },
+      "fallback_mode": {
+        "type": "string",
+        "description": "Explicit redirect-only fallback; after_turn is the sole valid value and is used only when the selected attempt advertises after_turn.",
+        "enum": [
+          "after_turn"
+        ]
+      },
+      "message": {
+        "type": "string",
+        "description": "Bounded additive implementation intent; no secrets or transcripts."
+      },
+      "source": {
+        "type": "string",
+        "description": "Audited source authority.",
+        "enum": [
+          "user",
+          "conductor",
+          "worker"
+        ]
+      },
+      "contract_effect": {
+        "type": "string",
+        "description": "Whether this preserves the approved shared contract or changes the goal, ACs, constraints, or non-goals.",
+        "default": "additive",
+        "enum": [
+          "additive",
+          "specification_change"
+        ]
+      },
+      "reason": {
+        "type": "string",
+        "description": "Short user-visible rationale."
+      },
+      "idempotency_key": {
+        "type": "string",
+        "description": "Stable key for this exact execution/scope/attempt intent."
+      },
+      "expires_at": {
+        "type": "string",
+        "description": "Optional timezone-aware ISO-8601 expiry."
+      },
+      "user_approval_event_id": {
+        "type": "string",
+        "description": "Required approval receipt for replace mode."
+      },
+      "expected_contract_version": {
+        "type": "integer",
+        "description": "Optional shared execution-contract generation guard."
+      }
+    },
+    "required": [
+      "target_session_scope_id",
+      "target_session_attempt_id",
+      "expected_execution_id",
+      "mode",
+      "message",
+      "source",
+      "reason",
+      "idempotency_key"
+    ],
+    "type": "object"
+  },
+  "ouroboros_session_signal_targets": {
+    "properties": {
+      "execution_id": {
+        "type": "string",
+        "description": "Execution ID returned by run/auto/evolve/ralph start or its job observer."
+      }
+    },
+    "required": [
+      "execution_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_session_status": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "The session ID to query"
+      }
+    },
+    "required": [
+      "session_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_start_auto": {
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Goal/task for ooo auto"
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory"
+      },
+      "resume": {
+        "type": "string",
+        "description": "Auto session id to resume"
+      },
+      "max_interview_rounds": {
+        "type": "integer",
+        "description": "Max interview rounds",
+        "default": 50
+      },
+      "max_repair_rounds": {
+        "type": "integer",
+        "description": "Max repair rounds",
+        "default": 5
+      },
+      "skip_run": {
+        "type": "boolean",
+        "description": "Stop after A-grade Seed",
+        "default": false
+      },
+      "attach_execution": {
+        "type": "string",
+        "description": "Attach an externally verified execution id to an unknown run handoff"
+      },
+      "attach_job": {
+        "type": "string",
+        "description": "Attach an externally verified job id to an unknown run handoff"
+      },
+      "attach_session": {
+        "type": "string",
+        "description": "Attach an externally verified run session id to an unknown run handoff"
+      },
+      "attach_source": {
+        "type": "string",
+        "description": "Source label for an attached run handle"
+      },
+      "reconcile_run": {
+        "type": "boolean",
+        "description": "Try to reconcile an unknown run handoff without starting a duplicate run",
+        "default": false
+      },
+      "reconcile_source": {
+        "type": "string",
+        "description": "Source label for run handoff reconciliation"
+      },
+      "pipeline_timeout_seconds": {
+        "type": "number",
+        "description": "Top-level pipeline deadline in seconds. Defaults to 7200s for new sessions. Range: 60-86400. Cannot be changed on resume; the deadline is preserved across process restarts."
+      },
+      "user_preferences": {
+        "type": "object",
+        "description": "Caller-supplied user preferences keyed by ledger section name (e.g. runtime_context, constraints, non_goals). The Driver tags matching answers with [from-auto][user_preference] in the ledger. Keys must be valid ledger section names; values must be non-empty strings or non-empty lists of strings/numbers. On resume, null/empty values clear the persisted preference for that section."
+      },
+      "efficiency_mode": {
+        "type": "string",
+        "description": "Execution efficiency policy: adaptive may use lower-cost child tiers with recovery escalation; quality_first keeps child ACs at the parent starting tier. When omitted on a fresh start, a configured execution.default_policy supplies it (default quality_first; adaptive only when the policy is ask).",
+        "enum": [
+          "adaptive",
+          "quality_first"
+        ]
+      },
+      "frugality_assurance": {
+        "type": "string",
+        "description": "Frugality assurance: off, observe, or explicitly authorized strict. Defaults from efficiency_mode and is immutable on resume.",
+        "enum": [
+          "off",
+          "observe",
+          "strict"
+        ]
+      },
+      "complete_product": {
+        "type": "boolean",
+        "description": "Deprecated and ignored. The run job owns run -> evaluate -> ralph; follow it with ouroboros_job_status or ouroboros_job_wait instead.",
+        "default": false
+      },
+      "domain": {
+        "type": "string",
+        "description": "Optional domain profile name (for example, coding)"
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Checkpoint commit policy: ac_checkpoint, final_only, or none"
+      },
+      "worktree_policy": {
+        "type": "string",
+        "description": "Worktree isolation policy: auto, always, current, or none"
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_start_evaluate": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "The execution session ID to evaluate"
+      },
+      "artifact": {
+        "type": "string",
+        "description": "The execution output/artifact to evaluate"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Original seed YAML for goal/constraints extraction"
+      },
+      "acceptance_criterion": {
+        "type": "string",
+        "description": "Specific acceptance criterion to evaluate against"
+      },
+      "acceptance_criteria": {
+        "type": "array",
+        "description": "Multiple acceptance criteria for checklist evaluation. When two or more items are provided, each AC is evaluated independently and the results are aggregated into a pass/fail checklist (#366). Overrides acceptance_criterion."
+      },
+      "artifact_type": {
+        "type": "string",
+        "description": "Type of artifact: code, docs, config. Default: code",
+        "default": "code",
+        "enum": [
+          "code",
+          "docs",
+          "config"
+        ]
+      },
+      "trigger_consensus": {
+        "type": "boolean",
+        "description": "Force Stage 3 consensus evaluation. Default: False",
+        "default": false
+      },
+      "working_dir": {
+        "type": "string",
+        "description": "Project root used to resolve Stage 1 mechanical verification commands and Stage 2 source-file visibility. Commands are read from .ouroboros/mechanical.toml; when the file is missing, the evaluator makes one AI detect call that inspects manifests (package.json, pyproject.toml, Cargo.toml, Makefile, ...) and authors the toml. Stage 1 skips every check when no toml is produced — it never guesses."
+      },
+      "auto_evolve": {
+        "type": "boolean",
+        "description": "Override execution.auto_evolve for this background call. When true, an explicitly rejected formal evaluation starts a bounded Ralph continuation loop."
+      },
+      "seed_handoff_id": {
+        "type": "string",
+        "description": "Opaque parent-owned Seed handle for plugin evaluation"
+      }
+    },
+    "required": [
+      "session_id",
+      "artifact"
+    ],
+    "type": "object"
+  },
+  "ouroboros_start_evolve_step": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "Lineage ID to continue or new ID for Gen 1"
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Seed YAML text for Gen 1. Pass a YAML-formatted string (for example, newline-delimited 'goal: ...' fields), not JSON-shaped text or an object literal; some MCP clients may otherwise coerce the value to an object before Ouroboros receives it. Omit for Gen 2+ (seed reconstructed from events)."
+      },
+      "execute": {
+        "type": "boolean",
+        "description": "Whether to run seed execution and evaluation. True (default): full pipeline with Execute→Validate→Evaluate. False: ontology-only evolution (fast, no execution).",
+        "default": true
+      },
+      "benchmark_control": {
+        "type": "boolean",
+        "description": "Run a deliberate full-graph frugality control. Default: false. Requires execute=true, Gen 2+, an explicit Git project_dir, and a clean baseline; unavailable through plugin delegation.",
+        "default": false
+      },
+      "parallel": {
+        "type": "boolean",
+        "description": "Whether to run ACs in parallel. True (default): parallel execution (fast, may cause import conflicts). False: sequential execution (slower, more stable code generation).",
+        "default": true
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA evaluation. Default: false",
+        "default": false
+      },
+      "recover_expired_claim": {
+        "type": "boolean",
+        "description": "Explicitly recover an expired lineage writer claim after confirming the prior owner process is dead. Default: false",
+        "default": false
+      },
+      "project_dir": {
+        "type": "string",
+        "description": "Project root directory for validation (pytest collection check). If omitted, auto-detected from execution output or CWD."
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Optional checkpoint commit policy for passed ACs."
+      },
+      "auto_session_id": {
+        "type": "string",
+        "description": "Optional auto session id for checkpoint commit metadata."
+      },
+      "execution_id": {
+        "type": "string",
+        "description": "Optional execution id for checkpoint commit metadata."
+      },
+      "checkpoint_commits": {
+        "type": "array",
+        "description": "Existing checkpoint commit records for idempotency."
+      },
+      "checkpoint_attempted_ac_ids": {
+        "type": "array",
+        "description": "Acceptance criteria already considered for checkpoint commits."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision authorizing this successor generation."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution or generation that this successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Bounded corrective context for this successor generation."
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_start_execute_seed": {
+    "properties": {
+      "seed_content": {
+        "type": "string",
+        "description": "Inline seed YAML content to execute."
+      },
+      "seed_path": {
+        "type": "string",
+        "description": "Path to a seed YAML file. If the path does not exist, the value is treated as inline seed YAML."
+      },
+      "cwd": {
+        "type": "string",
+        "description": "Working directory used to resolve relative seed paths."
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Optional session ID to resume. If not provided, a new session is created."
+      },
+      "efficiency_mode": {
+        "type": "string",
+        "description": "Execution efficiency policy. adaptive may start decomposed ACs on lower-cost tiers and escalate on recovery; quality_first keeps children at the parent starting tier. When omitted on a fresh start, execution.default_policy supplies it (default quality_first; adaptive only when the policy is ask).",
+        "enum": [
+          "adaptive",
+          "quality_first"
+        ]
+      },
+      "frugality_assurance": {
+        "type": "string",
+        "description": "Frugality assurance: off, lightweight observe, or explicit strict baseline eligibility. Defaults from efficiency_mode; strict is never enabled implicitly.",
+        "enum": [
+          "off",
+          "observe",
+          "strict"
+        ]
+      },
+      "model_tier": {
+        "type": "string",
+        "description": "Model-tier routing: small/medium/large → frugal/standard/frontier execution tier (trusted decomposed children may run one tier below; retries escalate). Omit to preserve automatic runtime selection; pass medium explicitly to pin standard routing.",
+        "enum": [
+          "small",
+          "medium",
+          "large"
+        ]
+      },
+      "max_iterations": {
+        "type": "integer",
+        "description": "Maximum number of execution iterations. Default: 10",
+        "default": 10
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA evaluation. Default: false",
+        "default": false
+      },
+      "auto_evaluate": {
+        "type": "boolean",
+        "description": "Override execution.auto_evaluate for this call. When true, a completed background execute_seed run enqueues formal 3-stage evaluation as a separate bounded background job."
+      },
+      "auto_evolve": {
+        "type": "boolean",
+        "description": "Override execution.auto_evolve for the chained evaluation. When true, an explicitly rejected evaluation starts a bounded Ralph continuation loop."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision receipt authorizing a fresh successor."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution ID that the new successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Bounded corrective context copied exactly from the selected conductor decision. Fresh successor executions only."
+      },
+      "idempotency_key": {
+        "type": "string",
+        "description": "Optional process-local idempotency key. A second call with the same key returns the same execution metadata and does NOT enqueue a new execution. Map TTL is process lifetime — not persistent across server restarts."
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "ouroboros_start_ralph": {
+    "properties": {
+      "lineage_id": {
+        "type": "string",
+        "description": "Lineage ID to start or continue."
+      },
+      "seed_content": {
+        "type": "string",
+        "description": "Seed YAML content for generation 1. Omit for continuation."
+      },
+      "execute": {
+        "type": "boolean",
+        "description": "Whether each generation should execute and evaluate. Default: true.",
+        "default": true
+      },
+      "parallel": {
+        "type": "boolean",
+        "description": "Whether each generation may execute ACs in parallel. Default: true.",
+        "default": true
+      },
+      "skip_qa": {
+        "type": "boolean",
+        "description": "Skip post-execution QA. Default: false.",
+        "default": false
+      },
+      "project_dir": {
+        "type": "string",
+        "description": "Project root forwarded to each evolve_step generation."
+      },
+      "commit_policy": {
+        "type": "string",
+        "description": "Optional checkpoint commit policy forwarded to evolve_step."
+      },
+      "auto_session_id": {
+        "type": "string",
+        "description": "Optional auto session id used for checkpoint commit metadata."
+      },
+      "execution_id": {
+        "type": "string",
+        "description": "Optional execution id used for checkpoint commit metadata."
+      },
+      "checkpoint_commits": {
+        "type": "array",
+        "description": "Existing checkpoint commit records forwarded to evolve_step."
+      },
+      "checkpoint_attempted_ac_ids": {
+        "type": "array",
+        "description": "Acceptance criteria already considered for checkpoint commits."
+      },
+      "max_generations": {
+        "type": "integer",
+        "description": "Maximum generations to run before stopping. Default: 10. Range: 1-10.",
+        "default": 10
+      },
+      "per_iteration_timeout_seconds": {
+        "type": "number",
+        "description": "Per-iteration wall-clock bound in seconds. In-process runtime: hard-enforced via asyncio.timeout, the loop stops with stop_reason='iteration_timeout' on expiry. OpenCode plugin runtime: advisory bound advertised to the child session via prompt + subagent context — the child is expected to honor it and return stop_reason='iteration_timeout', but the parent MCP process cannot interrupt the child, so a non-conforming child session may still exceed this bound. Default: 1800. Range: 30-7200.",
+        "default": 1800.0
+      },
+      "oscillation_window": {
+        "type": "integer",
+        "description": "Number of trailing iterations whose findings_hash must match (and QA must not have passed) to stop with stop_reason='oscillation_detected'. Default: 3. Range: 2-10. Values < 2 are rejected because a single iteration cannot oscillate with itself.",
+        "default": 3
+      },
+      "grade_regression_window": {
+        "type": "integer",
+        "description": "Number of trailing iterations whose non-None grades must strictly decrease to stop with stop_reason='grade_regressing'. Default: 2. Range: 2-10. Values < 2 are rejected because strict-decrease requires at least two grades to compare.",
+        "default": 2
+      },
+      "max_total_seconds": {
+        "type": "number",
+        "description": "Total wall-clock budget for the entire Ralph loop in seconds. In the in-process runner this is enforced by RalphLoopRunner: checked at the top of every iteration BEFORE launching evolve_step, and on exhaustion the loop stops with stop_reason='wall_clock_exhausted'. In OpenCode plugin mode the bound is forwarded to the child session and the plugin is expected to self-enforce; the MCP server cannot abort a foreign child process. When omitted, a derived ceiling of max_generations * per_iteration_timeout_seconds is auto-applied (with a WARNING log) for standalone callers. Range: 1-86400."
+      },
+      "conductor_decision_id": {
+        "type": "string",
+        "description": "Selected conductor decision authorizing one successor generation."
+      },
+      "predecessor_execution_id": {
+        "type": "string",
+        "description": "Execution or generation that this successor follows."
+      },
+      "conductor_directive": {
+        "type": "object",
+        "description": "Deterministic non-relaxing directive for one successor generation."
+      }
+    },
+    "required": [
+      "lineage_id"
+    ],
+    "type": "object"
+  },
+  "ouroboros_submit_fanout_results": {
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "description": "Interview/lateral session id. Supply the exact session_id stamped in the originating fan-out when one was registered; omit only when that fan-out has no session binding. An omitted value does not bypass a registered binding."
+      },
+      "fanout_id": {
+        "type": "string",
+        "description": "The fanout_id stamped into the originating tool's meta."
+      },
+      "correlation_key": {
+        "type": "string",
+        "description": "The result_correlation_key from the originating meta (e.g. 'context.persona' or 'code_facts'). Supply the exact registered value when present; omit only when the fan-out has no correlation binding. Omission does not bypass a registered binding."
+      },
+      "results": {
+        "type": "array",
+        "description": "Correlated child outputs: objects with a 'key' (the correlation value) and a 'content' (the child result), or 'undispatched': true when the child never ran."
+      }
+    },
+    "required": [
+      "fanout_id",
+      "results"
+    ],
+    "type": "object"
+  }
+}

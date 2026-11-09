@@ -1,0 +1,10 @@
+{
+  "status": "pending",
+  "manifest_sha256": "263d4ecf1f03cc86d3feccb53ee56a3e75885cce329f41c12d622b6650093da0",
+  "prior_llms_sha256": "2cd7c7103e8b8dedd9bd6efc13e61b31665f4aca57b95ee917cdbeddf09cc544",
+  "summary_sha256": "19dc277277e56425d6733c4dcfbe6048bf89b2c81ac021269f9474c2da3e3e02",
+  "files": {
+    "site/llms.txt": "64bdb4b2e17d1ec6c39dd1be137a843dd90b4c9bf891fd2d117de7da4eff3248",
+    "docs-src/tests/test_ai_manual_discovery.py": "494f29335710ff52380534f58cdccdff06ac1d8612c88fb65002049345ad49cc"
+  }
+}

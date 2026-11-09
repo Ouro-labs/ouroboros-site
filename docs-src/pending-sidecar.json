@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "manifest_sha256": "079bf2deb6f23de29c939d49785aacb812a1fa8f4af4282412832caeed281af5",
+  "prior_manifest_sha256": "ec55fb966abb8da9d404100ad5f9252c0278e9c1dd06d5a9cfad26a18ab0e9e1",
+  "summary_sha256": "861ca304f0e9e665dc4a5533d877e1264b104e2f904fdca5052362d7a778d315",
+  "pages": {
+    "status-guide.md": {
+      "current": {
+        "source": "content/status-guide.md",
+        "source_sha256": "2b4b6871b8195e4d4bd6b52913ffb26e1fc6acceebebc62367fa9dd8a14c4425",
+        "page_sha256": "b74835957f2ee39e7443140634c66981f742413e85f7502648d77788481a249d"
+      },
+      "prior": {
+        "source": "content/status-guide.md",
+        "source_sha256": "e11a0972a52f51aa81e1b5b26e432db7aafbcb3f16be2d7df5f2e4190eb17c65",
+        "page_sha256": "97df9368602590f2c050b38ce93dbcdaf97878a5fd365136766ad1212bcd2c29"
+      }
+    }
+  }
+}

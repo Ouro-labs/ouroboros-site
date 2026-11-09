@@ -51,6 +51,9 @@
 
 <div class="eyebrow">执行</div>
 <h1>执行</h1>
+
+<p class="guide-cta"><strong>使用当前文档：</strong><a href="/docs/zh/quickstart/">快速入门</a> · <a href="/docs/zh/troubleshooting/">问题排查与恢复</a> · <a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a></p>
+<p class="note"><strong>版本提示：</strong>本旧指南各页未统一标注适用版本，部分命令和更新说明可能已过时。请先核对已安装的版本；新增的<a href="/docs/zh/quickstart/">中文快速入门（草稿）</a>和<a href="/docs/zh/troubleshooting/">中文问题排查（草稿）</a>说明其源码依据与验证范围；更完整的 AI 诊断也可参考<a href="/docs/en/ai-troubleshooting/">英文 AI 故障排查指南</a>。</p>
 <p class="lead">上一章确认了 Seed。执行就是把这份 Seed 交给运行时，让它产出真正的代码。运行时负责写文件、跑命令，Ouroboros 负责管顺序和状态。</p>
 
 <h2 id="start">1. 开始</h2>
@@ -102,7 +105,7 @@
 </ul>
 <p>第二条值得单独说：<strong>状态说完成了，和文件真的在那儿，是两件事。</strong>用眼睛确认一遍再往下走。</p>
 
-<p class="note">这一页对着当前源码核过：四个阶段名和 Double Diamond 的说法在 <code>orchestrator_stage.py</code> 与 <code>tui/events.py</code> 里，五种 ID 前缀在源码中都能查到（对照组：不存在的前缀查出 0 条）。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
+<p class="note">这一页编写时曾对照源码（确认日期与 commit 未记录）：四个阶段名和 Double Diamond 的说法在 <code>orchestrator_stage.py</code> 与 <code>tui/events.py</code> 里，五种 ID 前缀在源码中都能查到（对照组：不存在的前缀查出 0 条）。有对不上的地方，欢迎到 <a href="https://github.com/Q00/ouroboros/issues">GitHub Issues</a> 说一声。</p>
 
 <nav class="pager" aria-label="章节"><a href="../seed/">← 上一章<br><strong>06 规约</strong></a><a href="../evaluate/">下一章 →<br><strong>08 评估</strong></a></nav>
 </article>
